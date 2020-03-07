@@ -16,6 +16,7 @@ final class StationPresenter implements IPresenter
 {
     private $database;
 
+
     public function __construct(Nette\Database\Context $database)
     {
         $this->database = $database;
