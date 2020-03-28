@@ -24,8 +24,13 @@ final class StationPresenter implements IPresenter
 
     public function run(Request $request): Nette\Application\IResponse
     {
+        $apiToken = $request->getParameter("api_token");
+        if ($this->database->table("stations")->where("id_station", $request->getParameter('id_station'))->where("api_token", $apiToken)->count() != 1) {
+            $response = ["s" => "err", "error" => "Empty or invalid request!"];
+            $hash = (string)md5(json_encode($response));
+            return new Responses\JsonResponse(["m" => $response, "h" => $hash]);
+        }
         $action = $request->getParameter('action');
-        $response = "";
         switch ($action) {
             case "getUsers":
                 $response = $this->getUsers($request);
@@ -39,7 +44,7 @@ final class StationPresenter implements IPresenter
             default:
                 $response = ["s" => "err", "error" => "Empty or invalid request!"];
         }
-        $hash = (string) md5(json_encode($response));
+        $hash = (string)md5(json_encode($response));
         return new Responses\JsonResponse(["m" => $response, "h" => $hash]);
     }
 
@@ -165,9 +170,9 @@ final class StationPresenter implements IPresenter
                 $count++;
             }
 
-            
+
         }
-        $response["c"] = (string) $count;
+        $response["c"] = (string)$count;
 
 
         //$response["d"] = (string) json_encode($response);
