@@ -4,32 +4,38 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use Tracy;
 use Nette;
 use Nette\Application\IPresenter;
 use Nette\Application\Responses;
 use Nette\Application\Request;
 use Nette\Utils\DateTime;
-use Nette\Utils\Json;
 
-final class StationPresenter implements IPresenter
+final class ApiPresenter implements IPresenter
 {
-    private $database;
-
+    private Nette\Database\Context $database;
+    private Nette\Application\Request $request;
+    private string $response;
 
     public function __construct(Nette\Database\Context $database)
     {
         $this->database = $database;
     }
 
+    private function checkToken()
+    {
+        $apiToken = $this->request->getParameter("token");
+        $idStation=$this->request->getParameter('id_station');
+        if ($this->database->table("stations")->where("id_station", $idStation)->where("api_token", $apiToken)->count() != 1) {
+           return ["s" => "err", "error" => "Id of station doesn't match with token!"];
+
+        }
+        return null;
+    }
+
     public function run(Request $request): Nette\Application\IResponse
     {
-        $apiToken = $request->getParameter("api_token");
-        if ($this->database->table("stations")->where("id_station", $request->getParameter('id_station'))->where("api_token", $apiToken)->count() != 1) {
-            $response = ["s" => "err", "error" => "Empty or invalid request!"];
-            $hash = (string)md5(json_encode($response));
-            return new Responses\JsonResponse(["m" => $response, "h" => $hash]);
-        }
+        $this->request=$request;
+
         $action = $request->getParameter('action');
         switch ($action) {
             case "getUsers":
@@ -42,7 +48,7 @@ final class StationPresenter implements IPresenter
                 $response = $this->saveTemp($request);
                 break;
             default:
-                $response = ["s" => "err", "error" => "Empty or invalid request!"];
+                $response = ["s" => "err", "error" => "Empty or invalid request!","debug:"=>[$action]];
         }
         $hash = (string)md5(json_encode($response));
         return new Responses\JsonResponse(["m" => $response, "h" => $hash]);
@@ -108,6 +114,7 @@ final class StationPresenter implements IPresenter
 
     private function saveAccess(Request $request)
     {
+
         $id_station = $request->getParameter('id_station');
         $user_rfid = $request->getParameter('user_rfid');
         $status = $request->getParameter('status');
@@ -120,7 +127,7 @@ final class StationPresenter implements IPresenter
         $row = $this->database->table('stations')->where("id_station = ?", $id_station)->fetch();
 
         if (!$row) {
-            return ["s" => "err", "error" => "Station doesnt exist!"];
+            return ["s" => "err", "error" => "ApiPresenter doesnt exist!"];
         }
 
         $result = $this->database->table('access_log')->insert([
@@ -138,6 +145,12 @@ final class StationPresenter implements IPresenter
 
     private function getUsers(Request $request)
     {
+        $response= $this->checkToken();
+        if($response!=null)
+        {
+            return $response;
+        }
+
         $id_station = $request->getParameter('id_station');
 
         if (empty($id_station) || ctype_digit($id_station) == false) {

@@ -12,4 +12,5 @@ session:
 
 
 services:
-	router: App\Router\RouterFactory::createRouter
+    router: App\Router\RouterFactory::createRouter
+    #routing.router: Nette\Application\Routers\SimpleRouter('Homepage:default')
