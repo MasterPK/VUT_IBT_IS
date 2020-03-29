@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
+use App\Modules\DatabaseModel;
 use Nette;
 use Nette\Application\IPresenter;
 use Nette\Application\Responses;
@@ -12,13 +13,15 @@ use Nette\Utils\DateTime;
 
 final class ApiPresenter implements IPresenter
 {
-    private Nette\Database\Context $database;
-    private Nette\Application\Request $request;
-    private string $response;
+    private $database;
+    private $request;
+    private $response;
+    private $databaseModel;
 
     public function __construct(Nette\Database\Context $database)
     {
         $this->database = $database;
+        $this->databaseModel = new DatabaseModel($database);
     }
 
     private function checkToken()
@@ -122,7 +125,6 @@ final class ApiPresenter implements IPresenter
         if (empty($id_station) || empty($user_rfid) || (empty($status) && $status !== "0") || ctype_digit($id_station) == false || ctype_digit($status) == false) {
             return ["s" => "err", "error" => "Empty or invalid request!"];
         }
-        Tracy\Debugger::barDump("C1");
         //check existing station and user
         $row = $this->database->table('stations')->where("id_station = ?", $id_station)->fetch();
 
