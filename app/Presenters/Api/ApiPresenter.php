@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Presenters;
 
-use App\Modules\DatabaseModel;
+use App;
 use Nette;
 use Nette\Application\IPresenter;
 use Nette\Application\Responses;
@@ -18,10 +18,10 @@ final class ApiPresenter implements IPresenter
     private $response;
     private $databaseModel;
 
-    public function __construct(Nette\Database\Context $database)
+    public function __construct(Nette\Database\Context $database, App\Modules\DatabaseModel $databaseModel)
     {
         $this->database = $database;
-        $this->databaseModel = new DatabaseModel($database);
+        $this->databaseModel = $databaseModel;
     }
 
     private function checkToken()

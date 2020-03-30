@@ -9,7 +9,7 @@ Require all granted
 # enable cool URL
 <IfModule mod_rewrite.c>
 	RewriteEngine On
-	# RewriteBase /
+	RewriteBase /
 
 	# use HTTPS
 	# RewriteCond %{HTTPS} !on
