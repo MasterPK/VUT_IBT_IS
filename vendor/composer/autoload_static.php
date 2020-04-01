@@ -8,12 +8,89 @@ class ComposerStaticInit091ed5d24b4127ffc48411e34be2086f
 {
     public static $files = array (
         '19a7e2c3b1d506dcdc1b60aab8e102e4' => __DIR__ . '/..' . '/tracy/tracy/src/Tracy/shortcuts.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'e7a6fd2e7a869bb207158e9416bdd9b0' => __DIR__ . '/..' . '/nette/application/src/compatibility.php',
         'afdda9f94b76f77a7518e02eee753cc9' => __DIR__ . '/..' . '/nette/mail/src/compatibility.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+    );
+
+    public static $prefixLengthsPsr4 = array (
+        'S' => 
+        array (
+            'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Contracts\\Translation\\' => 30,
+            'Symfony\\Component\\Translation\\' => 30,
+            'Symfony\\Component\\Filesystem\\' => 29,
+            'Symfony\\Component\\Config\\' => 25,
+        ),
+        'P' => 
+        array (
+            'Psr\\Log\\' => 8,
+        ),
+        'K' => 
+        array (
+            'Kdyby\\Translation\\' => 18,
+            'Kdyby\\StrictObjects\\' => 20,
+        ),
+        'C' => 
+        array (
+            'Contributte\\Translation\\' => 24,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'Symfony\\Polyfill\\Mbstring\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Polyfill\\Ctype\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Contracts\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/translation-contracts',
+        ),
+        'Symfony\\Component\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/translation',
+        ),
+        'Symfony\\Component\\Filesystem\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/filesystem',
+        ),
+        'Symfony\\Component\\Config\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/config',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Kdyby\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kdyby/translation/src',
+        ),
+        'Kdyby\\StrictObjects\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/kdyby/strict-objects/src',
+        ),
+        'Contributte\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/contributte/translation/src',
+        ),
     );
 
     public static $classMap = array (
         'App\\Bootstrap' => __DIR__ . '/../..' . '/app/Bootstrap.php',
+        'Kdyby\\StrictObjects\\Exception' => __DIR__ . '/..' . '/kdyby/strict-objects/src/exceptions.php',
+        'Kdyby\\StrictObjects\\MemberAccessException' => __DIR__ . '/..' . '/kdyby/strict-objects/src/exceptions.php',
+        'Kdyby\\Translation\\Exception' => __DIR__ . '/..' . '/kdyby/translation/src/exceptions.php',
+        'Kdyby\\Translation\\InvalidArgumentException' => __DIR__ . '/..' . '/kdyby/translation/src/exceptions.php',
+        'Kdyby\\Translation\\InvalidResourceException' => __DIR__ . '/..' . '/kdyby/translation/src/exceptions.php',
+        'Kdyby\\Translation\\InvalidStateException' => __DIR__ . '/..' . '/kdyby/translation/src/exceptions.php',
+        'Kdyby\\Translation\\LoaderNotFoundException' => __DIR__ . '/..' . '/kdyby/translation/src/exceptions.php',
         'Latte\\CompileException' => __DIR__ . '/..' . '/latte/latte/src/Latte/exceptions.php',
         'Latte\\Compiler' => __DIR__ . '/..' . '/latte/latte/src/Latte/Compiler/Compiler.php',
         'Latte\\Engine' => __DIR__ . '/..' . '/latte/latte/src/Latte/Engine.php',
@@ -112,6 +189,7 @@ class ComposerStaticInit091ed5d24b4127ffc48411e34be2086f
         'Nette\\Bridges\\HttpDI\\SessionExtension' => __DIR__ . '/..' . '/nette/http/src/Bridges/HttpDI/SessionExtension.php',
         'Nette\\Bridges\\HttpTracy\\SessionPanel' => __DIR__ . '/..' . '/nette/http/src/Bridges/HttpTracy/SessionPanel.php',
         'Nette\\Bridges\\MailDI\\MailExtension' => __DIR__ . '/..' . '/nette/mail/src/Bridges/MailDI/MailExtension.php',
+        'Nette\\Bridges\\ReflectionDI\\ReflectionExtension' => __DIR__ . '/..' . '/nette/reflection/src/Bridges/ReflectionDI/ReflectionExtension.php',
         'Nette\\Bridges\\SecurityDI\\SecurityExtension' => __DIR__ . '/..' . '/nette/security/src/Bridges/SecurityDI/SecurityExtension.php',
         'Nette\\Bridges\\SecurityTracy\\UserPanel' => __DIR__ . '/..' . '/nette/security/src/Bridges/SecurityTracy/UserPanel.php',
         'Nette\\Caching\\Cache' => __DIR__ . '/..' . '/nette/caching/src/Caching/Cache.php',
@@ -303,6 +381,16 @@ class ComposerStaticInit091ed5d24b4127ffc48411e34be2086f
         'Nette\\PhpGenerator\\Traits\\NameAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/NameAware.php',
         'Nette\\PhpGenerator\\Traits\\VisibilityAware' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Traits/VisibilityAware.php',
         'Nette\\PhpGenerator\\Type' => __DIR__ . '/..' . '/nette/php-generator/src/PhpGenerator/Type.php',
+        'Nette\\Reflection\\Annotation' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/Annotation.php',
+        'Nette\\Reflection\\AnnotationsParser' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/AnnotationsParser.php',
+        'Nette\\Reflection\\ClassType' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/ClassType.php',
+        'Nette\\Reflection\\Extension' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/Extension.php',
+        'Nette\\Reflection\\GlobalFunction' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/GlobalFunction.php',
+        'Nette\\Reflection\\Helpers' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/Helpers.php',
+        'Nette\\Reflection\\IAnnotation' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/IAnnotation.php',
+        'Nette\\Reflection\\Method' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/Method.php',
+        'Nette\\Reflection\\Parameter' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/Parameter.php',
+        'Nette\\Reflection\\Property' => __DIR__ . '/..' . '/nette/reflection/src/Reflection/Property.php',
         'Nette\\Routing\\Route' => __DIR__ . '/..' . '/nette/routing/src/Routing/Route.php',
         'Nette\\Routing\\RouteList' => __DIR__ . '/..' . '/nette/routing/src/Routing/RouteList.php',
         'Nette\\Routing\\Router' => __DIR__ . '/..' . '/nette/routing/src/Routing/Router.php',
@@ -357,6 +445,13 @@ class ComposerStaticInit091ed5d24b4127ffc48411e34be2086f
         'Nette\\Utils\\Strings' => __DIR__ . '/..' . '/nette/utils/src/Utils/Strings.php',
         'Nette\\Utils\\UnknownImageFileException' => __DIR__ . '/..' . '/nette/utils/src/Utils/exceptions.php',
         'Nette\\Utils\\Validators' => __DIR__ . '/..' . '/nette/utils/src/Utils/Validators.php',
+        'Nittro\\Bridges\\NittroDI\\NittroExtension' => __DIR__ . '/..' . '/nittro/nette-bridges/src/Bridges/NittroDI/NittroExtension.php',
+        'Nittro\\Bridges\\NittroLatte\\NittroMacros' => __DIR__ . '/..' . '/nittro/nette-bridges/src/Bridges/NittroLatte/NittroMacros.php',
+        'Nittro\\Bridges\\NittroLatte\\NittroRuntime' => __DIR__ . '/..' . '/nittro/nette-bridges/src/Bridges/NittroLatte/NittroRuntime.php',
+        'Nittro\\Bridges\\NittroUI\\ComponentUtils' => __DIR__ . '/..' . '/nittro/nette-bridges/src/Bridges/NittroUI/ComponentUtils.php',
+        'Nittro\\Bridges\\NittroUI\\Helpers' => __DIR__ . '/..' . '/nittro/nette-bridges/src/Bridges/NittroUI/Helpers.php',
+        'Nittro\\Bridges\\NittroUI\\Presenter' => __DIR__ . '/..' . '/nittro/nette-bridges/src/Bridges/NittroUI/Presenter.php',
+        'Nittro\\Bridges\\NittroUI\\PresenterUtils' => __DIR__ . '/..' . '/nittro/nette-bridges/src/Bridges/NittroUI/PresenterUtils.php',
         'Tester\\Assert' => __DIR__ . '/..' . '/nette/tester/src/Framework/Assert.php',
         'Tester\\AssertException' => __DIR__ . '/..' . '/nette/tester/src/Framework/AssertException.php',
         'Tester\\CodeCoverage\\Collector' => __DIR__ . '/..' . '/nette/tester/src/CodeCoverage/Collector.php',
@@ -407,6 +502,8 @@ class ComposerStaticInit091ed5d24b4127ffc48411e34be2086f
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
+            $loader->prefixLengthsPsr4 = ComposerStaticInit091ed5d24b4127ffc48411e34be2086f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit091ed5d24b4127ffc48411e34be2086f::$prefixDirsPsr4;
             $loader->classMap = ComposerStaticInit091ed5d24b4127ffc48411e34be2086f::$classMap;
 
         }, null, ClassLoader::class);

@@ -18,7 +18,7 @@ final class ApiPresenter implements IPresenter
     private $response;
     private $databaseModel;
 
-    public function __construct(Nette\Database\Context $database, App\Modules\DatabaseModel $databaseModel)
+    public function __construct(Nette\Database\Context $database, App\Models\DatabaseModel $databaseModel)
     {
         $this->database = $database;
         $this->databaseModel = $databaseModel;

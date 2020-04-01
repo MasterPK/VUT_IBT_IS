@@ -1,0 +1,51 @@
+{block body}
+    <p class="login-box-msg">{_messages.visitor.signinMsg}</p>
+    {snippet alertS}
+        {control alert}
+    {/snippet}
+    <form n:name="signInForm" data-validation-mode="live" class="ajax">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="input-group mb-3">
+                    {input email}
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+            </div>
+            <div class="row">
+                <div class="input-group mb-3">
+                    {input password}
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <div class="row">
+
+            </div>
+        </div>
+        <div class="row">
+            <!-- /.col -->
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-block ajax">{_messages.visitor.signin}</button>
+            </div>
+            <!-- /.col -->
+        </div>
+
+    </form>
+
+
+    <p class="mb-1 mt-3">
+        <a n:href="ForgotPassword:default">{_messages.visitor.forgotPassword}</a>
+    </p>
+
+{/block}

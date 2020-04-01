@@ -1,0 +1,16 @@
+prefix:
+    for: "zprava" # messages.prefix.for
+
+visitor:
+    name: "Docházkový systém"
+    signin: "Přihlásit se"
+    signinMsg: "Přihlaste se pro přístup do systému"
+    password: "Heslo"
+    signInPersistent: "Trvalé přihlášení"
+    forgotPassword: "Zapomenuté heslo"
+    emailMissing: "Musíte vyplnit email!"
+    passwordMissing: "Musíte vyplnit heslo!"
+    email: "Emailová adresa"
+    sigInSuccess: "Přihlášení bylo úspěšné!"
+    signInError: "Email nebo heslo jsou nesprávné!"
+    signOutSuccess: "Odhlášení proběhlo úspěšně!"

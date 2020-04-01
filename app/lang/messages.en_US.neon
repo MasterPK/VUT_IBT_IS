@@ -1,0 +1,16 @@
+prefix:
+    for: "message" #
+
+visitor:
+    name: "Attendance system"
+    signin: "Sign in"
+    signinMsg: "Sign in to start your session"
+    password: "Password"
+    signInPersistent: "Remember me"
+    forgotPassword: "Forgot password"
+    emailMissing: "You need to specify email!"
+    passwordMissing: "You need to specify password!"
+    email: "Email address"
+    sigInSuccess: "Sign in was succesful!"
+    signInError: "Email or password are incorrect!"
+    signOutSuccess: "Sign out was successful!"

@@ -21,7 +21,8 @@
 		"latte/latte": "^2.5",
 		"tracy/tracy": "^2.6",
       "ext-ctype": "*",
-		"ext-json": "*"
+		"ext-json": "*",
+		"kdyby/translation": "^3.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0"

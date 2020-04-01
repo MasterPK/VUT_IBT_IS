@@ -10,7 +10,20 @@ application:
 session:
 	expiration: 14 days
 
-
 services:
     router: App\Router\RouterFactory::createRouter
-    #routing.router: Nette\Application\Routers\SimpleRouter('Homepage:default')
+    authenticator: App\Security\Authenticator
+
+extensions:
+    translation: Contributte\Translation\DI\TranslationExtension
+    - Nittro\Bridges\NittroDI\NittroExtension
+
+translation:
+    locales:
+        whitelist: [en, cs]
+        default: cs
+        fallback: [cs]
+    dirs:
+        - %appDir%/lang
+    localeResolvers:
+        - Contributte\Translation\LocalesResolvers\Router

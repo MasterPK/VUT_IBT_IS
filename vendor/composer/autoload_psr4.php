@@ -6,4 +6,14 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
+    'Symfony\\Polyfill\\Ctype\\' => array($vendorDir . '/symfony/polyfill-ctype'),
+    'Symfony\\Contracts\\Translation\\' => array($vendorDir . '/symfony/translation-contracts'),
+    'Symfony\\Component\\Translation\\' => array($vendorDir . '/symfony/translation'),
+    'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem'),
+    'Symfony\\Component\\Config\\' => array($vendorDir . '/symfony/config'),
+    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
+    'Kdyby\\Translation\\' => array($vendorDir . '/kdyby/translation/src'),
+    'Kdyby\\StrictObjects\\' => array($vendorDir . '/kdyby/strict-objects/src'),
+    'Contributte\\Translation\\' => array($vendorDir . '/contributte/translation/src'),
 );
