@@ -26,7 +26,7 @@ final class LoginPresenter extends App\Models\BasePresenter
             ->setHtmlAttribute("class", "form-control")
             ->setHtmlAttribute("placeholder", $this->translator->translate("messages.visitor.email"))
             ->setRequired($this->translator->translate("messages.visitor.emailMissing"))
-            ->addCondition(Form::EMAIL,$this->translate("messages.visitor.emailMissing"));
+            ->addRule(Form::EMAIL,$this->translate("messages.visitor.emailMissing"));
         $form->addPassword('password', '')
             ->setHtmlAttribute("class", "form-control")
             ->setHtmlAttribute("placeholder", $this->translator->translate("messages.visitor.password"))
