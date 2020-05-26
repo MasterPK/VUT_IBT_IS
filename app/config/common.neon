@@ -5,6 +5,7 @@ application:
 	errorPresenter: Error
 	mapping:
 		*: App\*Module\Presenters\*Presenter
+		Error: App\Presenters\*Presenter
 
 
 session:
@@ -13,6 +14,7 @@ session:
 services:
     router: App\Router\RouterFactory::createRouter
     authenticator: App\Security\Authenticator
+    authorizator: App\Security\Authorizator
 
 extensions:
     translation: Contributte\Translation\DI\TranslationExtension

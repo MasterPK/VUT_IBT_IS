@@ -32,6 +32,7 @@ class Authenticator implements Nette\Security\IAuthenticator
         if (!password_verify($password, $row->password)) {
             throw new Nette\Security\AuthenticationException('Password not match.');
         }
+        $decodedRoles="";
         try {
             $decodedRoles = Json::decode((string)$row->roles, Json::FORCE_ARRAY);
         } catch (\Nette\Utils\JsonException $e)
