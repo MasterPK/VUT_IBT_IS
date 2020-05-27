@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\MainModule\Presenters;
+namespace App\Models;
 
 use Nette;
-use App\Models;
-use App\Models\BasePresenter;
 use Nette\Security\Permission;
 
 /**
@@ -33,7 +31,7 @@ class MainPresenter extends BasePresenter
     protected $acl;
 
 
-    /** @var Models\DatabaseService @inject */
+    /** @var DatabaseService @inject */
     public $databaseService;
 
     /**
