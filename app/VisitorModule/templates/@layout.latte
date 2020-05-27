@@ -1,6 +1,6 @@
-{snippet all}
+
 <!DOCTYPE html>
-<html>
+<html lang="cs">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,11 +20,11 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- Nittro style -->
     <link rel="stylesheet" href="{$basePath}/dist/css/nittro.min.css">
-
+    <script type="application/javascript" src="{$basePath}/dist/js/nittro.min.js" async defer></script>
     <!-- Visitor style -->
     <link rel="stylesheet" href="{$basePath}/dist/css/visitor.css">
 </head>
-<body class="hold-transition login-page nittro-transition-auto nittro-transition-bar">
+<body class="hold-transition login-page nittro-transition-auto nittro-transition-dim">
 
 <div class="login-box">
     <div class="login-logo">
@@ -33,7 +33,9 @@
     <!-- /.login-logo -->
     <div class="card">
         <div class="card-body login-card-body">
+            {snippet all}
             {include body}
+            {/snippet}
         </div>
         <!-- /.login-card-body -->
     </div>
@@ -50,6 +52,7 @@
 
 
 
+
+
 </body>
 </html>
-{/snippet}

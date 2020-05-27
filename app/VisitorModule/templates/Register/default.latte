@@ -1,9 +1,9 @@
 {block body}
-    <p class="login-box-msg">{_messages.visitor.signinMsg}</p>
-    {snippet alertS}
+    <p class="login-box-msg">{_messages.visitor.registerMsg}</p>
+    {snippet formS}
         {control alert}
 
-        <form n:name="signInForm" data-validation-mode="live" class="ajax">
+        <form n:name="registerForm">
             <div class="container-fluid">
                 <div class="row">
                     <div class="input-group mb-3">
@@ -31,17 +31,42 @@
                 </div>
                 <div class="row">
                     <div class="input-group mb-3">
-                        <div class="form-check">
-                            {input permanent}
+                        {input passwordCheck}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-lock"></span>
+                            </div>
                         </div>
-
+                        <br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-group mb-3">
+                        {input firstName}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-group mb-3">
+                        {input surName}
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-user"></span>
+                            </div>
+                        </div>
+                        <br>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <!-- /.col -->
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary btn-block ajax">{_messages.visitor.signin}</button>
+                    {input register}
                 </div>
                 <!-- /.col -->
             </div>
@@ -55,7 +80,7 @@
                 <a n:href="ForgotPassword:default">{_messages.visitor.forgotPassword}</a>
             </div>
             <div class="col-sm-12 col-md-6">
-                <a class="float-right" n:href="Register:default">{_messages.visitor.registerNewUser}</a>
+                <a class="float-right" data-ajax="true" n:href="Login:">{_messages.visitor.signin}</a>
             </div>
         </div>
     </div>

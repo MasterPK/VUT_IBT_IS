@@ -11,13 +11,6 @@ use App\Controls;
 
 final class LoginPresenter extends App\Models\BasePresenter
 {
-    /** @persistent */
-    public $alertState;
-
-    /** @persistent */
-    public $alertText;
-
-
 
     protected function createComponentSignInForm(): Form
     {
@@ -26,11 +19,13 @@ final class LoginPresenter extends App\Models\BasePresenter
             ->setHtmlAttribute("class", "form-control")
             ->setHtmlAttribute("placeholder", $this->translator->translate("messages.visitor.email"))
             ->setRequired($this->translator->translate("messages.visitor.emailMissing"))
-            ->addRule(Form::EMAIL,$this->translate("messages.visitor.emailMissing"));
+            ->addRule(Form::EMAIL, $this->translate("messages.visitor.emailMissing"));
         $form->addPassword('password', '')
             ->setHtmlAttribute("class", "form-control")
             ->setHtmlAttribute("placeholder", $this->translator->translate("messages.visitor.password"))
             ->setRequired($this->translator->translate("messages.visitor.passwordMissing"));
+        $form->addCheckbox('permanent', $this->translator->translate("messages.visitor.permanentLogin"))
+            ->setHtmlAttribute("class", "form-check-input");
 
         $form->addSubmit('login', $this->translator->translate("messages.visitor.signin"));
         $form->onSuccess[] = [$this, 'signInFormSucceeded'];
@@ -41,27 +36,20 @@ final class LoginPresenter extends App\Models\BasePresenter
     public function afterRender()
     {
 
-        $user=$this->getUser();
-        if($user->isLoggedIn())
-        {
+        $user = $this->getUser();
+        if ($user->isLoggedIn()) {
             $this->payload->allowAjax = FALSE;
             $this->redirect(':Main:Homepage:default');
         }
     }
 
-
     public function renderLogout()
     {
         $this->getUser()->logout();
-        $this->alertState="Success";
-        $this->alertText=$this->translate("messages.visitor.signOutSuccess");
+        $this->alertState = "Success";
+        $this->alertText = $this->translate("messages.visitor.signOutSuccess");
         $this->postGet(":Visitor:Login:");
         $this->redrawDefault(true);
-    }
-
-    public function createComponentAlert(): Controls\AlertControl
-    {
-        return new Controls\AlertControl($this->alertText, $this->alertState);
     }
 
     public function signInFormSucceeded(Form $form, \stdClass $values)
@@ -70,15 +58,20 @@ final class LoginPresenter extends App\Models\BasePresenter
         $user = $this->getUser();
         try {
             $user->login($values->email, $values->password);
-            $user->setExpiration('30 minutes');
+            if ($values->permanent == true) {
+                $user->setExpiration(null);
+            } else {
+                $user->setExpiration('30 minutes');
+            }
+
             $this->payload->allowAjax = FALSE;
             $this->redirect(':Main:Homepage:default');
 
         } catch (Nette\Security\AuthenticationException $e) {
             $this->alertState = "Danger";
-            $this->alertText=$this->translate("messages.visitor.signInError");
-            $this->redrawDefault(true);
-            //$this->redrawControl("alert"); //TODO redraw only one control
+            $this->alertText = $this->translate("messages.visitor.signInError");
+            //$this->redrawDefault(true);
+            $this->redrawControl("alertS"); //TODO redraw only one control
         }
     }
 

@@ -16,8 +16,8 @@ use Nette\Security\Permission;
  */
 class MainPresenter extends BasePresenter
 {
-    protected Permission $acl;
-    private String $aclResource;
+    protected $acl;
+    private $aclResource;
 
 
     /**
@@ -63,7 +63,6 @@ class MainPresenter extends BasePresenter
         $acl->addRole('admin', 'manager');
 
         $acl->addResource(':Main:Homepage:Default');
-
         //$acl->deny('guest', Permission::ALL, Permission::ALL);
         $acl->allow('registered', ':Main:Homepage:Default');
 

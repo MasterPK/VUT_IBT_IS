@@ -9,6 +9,7 @@ use Nette;
 use Nette\Application\IPresenter;
 use Nette\Application\Responses;
 use Nette\Application\Request;
+use Nette\Mail\Message;
 use Nette\Utils\DateTime;
 
 final class ApiPresenter implements IPresenter
@@ -17,19 +18,24 @@ final class ApiPresenter implements IPresenter
     private $request;
     private $response;
     private $databaseModel;
+    private $mailer;
 
-    public function __construct(Nette\Database\Context $database, App\Models\DatabaseModel $databaseModel)
+    /** @var App\Models\EmailService @inject */
+    public $emailService;
+
+    public function __construct(Nette\Mail\IMailer $mailer, Nette\Database\Context $database, App\Models\DatabaseService $databaseModel)
     {
         $this->database = $database;
         $this->databaseModel = $databaseModel;
+        $this->mailer = $mailer;
     }
 
     private function checkToken()
     {
         $apiToken = $this->request->getParameter("token");
-        $idStation=$this->request->getParameter('id_station');
+        $idStation = $this->request->getParameter('id_station');
         if ($this->database->table("stations")->where("id_station", $idStation)->where("api_token", $apiToken)->count() != 1) {
-           return ["s" => "err", "error" => "Id of station doesn't match with token!"];
+            return ["s" => "err", "error" => "Id of station doesn't match with token!"];
 
         }
         return null;
@@ -37,10 +43,13 @@ final class ApiPresenter implements IPresenter
 
     public function run(Request $request): Nette\Application\IResponse
     {
-        $this->request=$request;
+        $this->request = $request;
 
         $action = $request->getParameter('action');
         switch ($action) {
+            case "emailHandle":
+                $response = $this->emailHandle($request);
+                break;
             case "getUsers":
                 $response = $this->getUsers($request);
                 break;
@@ -51,10 +60,16 @@ final class ApiPresenter implements IPresenter
                 $response = $this->saveTemp($request);
                 break;
             default:
-                $response = ["s" => "err", "error" => "Empty or invalid request!","debug:"=>[$action]];
+                $response = ["s" => "err", "error" => "Empty or invalid request!", "debug:" => [$action]];
         }
         $hash = (string)md5(json_encode($response));
         return new Responses\JsonResponse(["m" => $response, "h" => $hash]);
+    }
+
+    private function emailHandle($request)
+    {
+        $err_count = $this->emailService->handle();
+        return ["s" => "ok", "email_err" => $err_count];
     }
 
     private function saveTemp(Request $request)
@@ -147,9 +162,8 @@ final class ApiPresenter implements IPresenter
 
     private function getUsers(Request $request)
     {
-        $response= $this->checkToken();
-        if($response!=null)
-        {
+        $response = $this->checkToken();
+        if ($response != null) {
             return $response;
         }
 

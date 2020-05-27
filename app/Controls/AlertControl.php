@@ -4,8 +4,12 @@
 namespace App\Controls;
 use Nette;
 
+
 class AlertControl extends Nette\Application\UI\Control
 {
+    public const SUCCESS = "Success";
+    public const DANGER = "Danger";
+
     private $message;
     private $type;
 

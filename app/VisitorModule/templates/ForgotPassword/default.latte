@@ -1,24 +1,32 @@
 {block body}
-<p class="login-box-msg">You forgot your password? Here you can easily retrieve a new password.</p>
-
-<form action="recover-password.html" method="post">
-    <div class="input-group mb-3">
-        <input type="email" class="form-control" placeholder="Email">
-        <div class="input-group-append">
-            <div class="input-group-text">
-                <span class="fas fa-envelope"></span>
+    <p class="login-box-msg">{_messages.visitor.forgotMsg}</p>
+    {snippet alertForm}
+        {control alert}
+        <form n:name="forgotForm">
+            <div class="input-group mb-3">
+                {input email}
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    {input send}
+                </div>
+                <!-- /.col -->
+            </div>
+        </form>
+    {/snippet}
+    <div class="mb-1 mt-3">
+        <div class="row">
+            <div class="col-sm-12 col-md-6">
+                <a n:href="Register:default">{_messages.visitor.registerNewUser}</a>
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <a class="float-right" n:href="Login:">{_messages.visitor.signin}</a>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary btn-block">Request new password</button>
-        </div>
-        <!-- /.col -->
-    </div>
-</form>
-
-<p class="mt-3 mb-1">
-    <a n:href=":Visitor:Login:default">{_messages.visitor.signin}</a>
-</p>
 {/block}

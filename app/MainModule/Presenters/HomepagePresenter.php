@@ -9,6 +9,7 @@ class HomepagePresenter extends MainPresenter
 {
     public function renderDefault()
     {
+        $this->template->add("userFullName",$this->getUser()->getIdentity()->data);
     }
 
     public function startup()

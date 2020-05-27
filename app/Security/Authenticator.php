@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace App\Security;
 
 use Nette;
@@ -13,7 +14,7 @@ class Authenticator implements Nette\Security\IAuthenticator
 
     public function __construct(Nette\Database\Context $database)
     {
-        $this->database=$database;
+        $this->database = $database;
     }
 
     /**
@@ -32,14 +33,18 @@ class Authenticator implements Nette\Security\IAuthenticator
         if (!password_verify($password, $row->password)) {
             throw new Nette\Security\AuthenticationException('Password not match.');
         }
-        $decodedRoles="";
+
+        if($row->registration!=1)
+        {
+            throw new Nette\Security\AuthenticationException('Account is not active!');
+        }
+        $decodedRoles = "";
         try {
             $decodedRoles = Json::decode((string)$row->roles, Json::FORCE_ARRAY);
-        } catch (\Nette\Utils\JsonException $e)
-        {
+        } catch (\Nette\Utils\JsonException $e) {
 
         }
 
-        return new \Nette\Security\Identity($row->id_user,$decodedRoles,$row->toArray());
+        return new \Nette\Security\Identity($row->id_user, $decodedRoles, $row->toArray());
     }
 }

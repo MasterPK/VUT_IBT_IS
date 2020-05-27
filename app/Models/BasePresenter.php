@@ -6,6 +6,7 @@ use Nette;
 use Contributte;
 use Nette\Security\Permission;
 use Nittro;
+use App\Controls;
 
 class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
 {
@@ -20,6 +21,16 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
     public $translatorSessionResolver;
 
 
+    /** @var String Type of alert. */
+    public $alertState;
+
+    /** @var String Text in alert. */
+    public $alertText;
+
+    public function createComponentAlert(): Controls\AlertControl
+    {
+        return new Controls\AlertControl($this->alertText, $this->alertState);
+    }
 
     protected function startup()
     {
