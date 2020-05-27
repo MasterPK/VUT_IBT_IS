@@ -29,3 +29,10 @@ visitor:
     forgotSuccess: "Password was changed. Check you email inbox"
     forgotError: "Password was not changed. Email does not exist in system"
     send: "Send"
+
+main:
+    global:
+        title: "Attendance system"
+        logout: "Log out"
+    menu:
+        dashboard: "Dashboard"

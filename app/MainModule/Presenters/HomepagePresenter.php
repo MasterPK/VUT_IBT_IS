@@ -7,15 +7,11 @@ use Nette;
 
 class HomepagePresenter extends MainPresenter
 {
-    public function renderDefault()
-    {
-        $this->template->add("userFullName",$this->getUser()->getIdentity()->data);
-    }
 
     public function startup()
     {
-        $this->setAclResource(":Main:Homepage:Default");
         parent::startup();
+        $this->checkPermission("Main:Homepage",self::VIEW);
     }
 
 }

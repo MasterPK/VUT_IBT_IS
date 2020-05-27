@@ -27,6 +27,10 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
     /** @var String Text in alert. */
     public $alertText;
 
+    /**
+     * Create universal alert box.
+     * @return Controls\AlertControl  Return new component.
+     */
     public function createComponentAlert(): Controls\AlertControl
     {
         return new Controls\AlertControl($this->alertText, $this->alertState);
@@ -36,7 +40,7 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
     {
         parent::startup();
 
-        $this->setDefaultSnippets(['all']);
+        $this->setDefaultSnippets(['all',"content"]);
     }
 
     protected function translate($value):string
@@ -44,6 +48,11 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
         return $this->translator->translate($value);
     }
 
+    /**
+     * Change localization.
+     * @deprecated Localization is set by router.
+     * @param string $locale
+     */
     public function handleChangeLocale(string $locale): void
     {
         $this->locale = $locale;

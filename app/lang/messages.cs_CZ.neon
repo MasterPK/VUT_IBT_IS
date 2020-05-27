@@ -29,3 +29,10 @@ visitor:
     forgotSuccess: "Změna hesla provedena. Zkontrolujte, prosím, vaši emailovou schránku."
     forgotError: "Změna hesla nebyla provedena. Email v systému neexistuje."
     send: "Odeslat"
+
+main:
+    global:
+        title: "Docházkový systém"
+        logout: "Odhlásit se"
+    menu:
+        dashboard: "Nástěnka"

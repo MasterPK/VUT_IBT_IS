@@ -13,6 +13,7 @@
         <LatteVariableSettings VarName="iterator" VarType="\Latte\Runtime\CachingIterator" />
         <LatteVariableSettings VarName="form" VarType="\Nette\Application\UI\Form" />
         <LatteVariableSettings VarName="user" VarType="\Nette\Security\User" />
+        <LatteVariableSettings VarName="activeMenuItem" VarType="mixed" />
       </list>
     </option>
     <option name="customMacroSettings">
