@@ -47,5 +47,13 @@ main:
         rfid: "Osobní RFID"
         pin: "Osobní pin"
         submit: "Potvrdit"
+        settings: "Nastavení"
+        timeline: "Události"
+        passwordChangedSuccessfully: "Heslo úspěšně změněno!"
+        currentPasswordIncorrect: "Současné heslo není správné!"
+        newPasswordsNotSame: "Nová hesla se neshodují"
+        oldPassword: "Aktuální heslo"
+        newPassword: "Nové heslo"
+        newPasswordCheck: "Zadejte nové heslo znovu"
     menu:
         dashboard: "Nástěnka"

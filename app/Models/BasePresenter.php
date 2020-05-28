@@ -57,7 +57,7 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
         }
 
         $html = "iziToast.show({";
-        $html.= "position: 'topRight',";
+        $html.= "position: 'bottomRight',";
         foreach ($options as $option => $value) {
             $html .= $option . ":\"" . $value . "\",";
         }
@@ -66,6 +66,28 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
         $this->template->toastHTML = $html;
         $this->redrawControl("toastSnippet");
 
+    }
+
+    /**
+     * Helper function to easily show toast notification.
+     * You can only specify message.
+     * For full options use function showToast.
+     * @param string $message Message to be displayed.
+     */
+    public function showDangerToast(string $message)
+    {
+        $this->showToast(["color"=>"red","message"=>$message]);
+    }
+
+    /**
+     * Helper function to easily show toast notification.
+     * You can only specify message.
+     * For full options use function showToast.
+     * @param string $message Message to be displayed.
+     */
+    public function showSuccessToast(string $message)
+    {
+        $this->showToast(["color"=>"green","message"=>$message]);
     }
 
     protected function startup()

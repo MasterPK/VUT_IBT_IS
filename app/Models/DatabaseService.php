@@ -4,6 +4,7 @@
 namespace App\Models;
 
 use Nette;
+use Throwable;
 
 class DatabaseService
 {
@@ -24,13 +25,31 @@ class DatabaseService
     }
 
     /**
+     * Search user by email and return all data of user including password.
+     * Implicitly checks if user exists.
+     * @param string $email Email of user.
+     * @return array Data of user.
+     * @throws UserNotFoundException When user is not found.
+     */
+    public function getUser($email)
+    {
+        $result = $this->database->table("users")->where("email", $email)->fetch()->toArray();
+        if ($result == null) {
+            throw new UserNotFoundException();
+        } else {
+            return $result;
+        }
+    }
+
+
+    /**
      * Search if user exists.
      * @param String $email Email to by found.
      * @return bool True if found, else false.
      */
     public function checkIfUserExistsByEmail(String $email): bool
     {
-        $row = $this->database->table("users")->where("email", $email)->select("id_user")->fetchAll();
+        $row = $this->database->table("users")->where("email", $email)->select("email")->fetchAll();
         if ($row == null) {
             return false;
         } else {
@@ -56,7 +75,7 @@ class DatabaseService
     /**
      * Return all roles that is assigned to user.
      * @param String $email User to search.
-     * @return array Array of roles.
+     * @return array|null Array of roles.
      */
     public function getUserRoles(String $email): array
     {
@@ -67,5 +86,74 @@ class DatabaseService
         }
     }
 
+    /**
+     * Update information of user.
+     * @param array $values Array of new values in format key => value.
+     * @return array
+     */
+    public function profileUpdate(array $values)
+    {
+        if ($this->checkIfUserExistsByEmail($values["email"])) {
 
+            $this->database->table("users")->where("email", $values["email"])->update($values);
+            try {
+                return $this->getUser($values["email"]);
+            } catch (UserNotFoundException $e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Update password to user.
+     * @param string $email User email.
+     * @param string $password New password.
+     * @throws UserNotFoundException When user with specified email does not exist.
+     */
+    public function updatePassword(string $email, string $password)
+    {
+        if ($this->checkIfUserExistsByEmail($email)) {
+            $this->database->table("users")->where("email", $email)->update(["password" => password_hash($password, PASSWORD_BCRYPT)]);
+        } else {
+            throw new UserNotFoundException("User not found in database!");
+        }
+    }
+
+    /**
+     * Check if user password is correct.
+     * @param string $email user email.
+     * @param string $password Specified password
+     * @return bool True if check is correct. Otherwise false.
+     * @throws UserNotFoundException When user with specified email does not exist.
+     */
+    public function checkPassword(string $email, string $password): bool
+    {
+        $user = $this->getUser($email);
+        if (password_verify( $password,$user["password"])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+}
+
+/**
+ * Class UserNotFoundException
+ * Specific exception when user is not found in database.
+ * @package App\Models
+ */
+class UserNotFoundException extends \Exception
+{
+    public function __construct($message = "", $code = 0, Throwable $previous = null)
+    {
+        if($message=="")
+        {
+            $message="User not found in database!";
+        }
+        parent::__construct($message, $code, $previous);
+    }
 }

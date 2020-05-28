@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Nette;
 use Nette\Security\Permission;
+use Nette\Utils\Json;
 
 /**
  * Class MainPresenter
@@ -109,10 +110,39 @@ class MainPresenter extends BasePresenter
         $userData = $this->getUser()->getIdentity()->data;
 
         // User full name
-        $this->template->userName = $userData["first_name"] ." ". $userData["lastname"];
+        $this->template->userName = $userData["firstName"] ." ". $userData["surName"];
 
         // Active menu item
         $this->template->activeMenuItem=$this->getName();
+
+    }
+
+    /**
+     * Update current identity with updated data from database.
+     * @param array $data New data.
+     */
+    protected function updateUserIdentity($data)
+    {
+
+        $decodedRoles = "";
+        try {
+            $decodedRoles = Json::decode((string)$data["roles"], Json::FORCE_ARRAY);
+        } catch (\Nette\Utils\JsonException $e) {
+
+        }
+
+        $newIdentity=new Nette\Security\Identity ($data["idUser"],$decodedRoles,$data);
+
+
+        if($newIdentity !== $this->user->identity)
+        {
+            foreach($data as $key => $item)
+            {
+                if($key=="roles")
+                    continue;
+                $this->getUser()->getIdentity()->$key = $item;
+            }
+        }
 
     }
 

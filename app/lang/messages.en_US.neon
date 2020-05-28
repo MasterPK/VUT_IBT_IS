@@ -47,5 +47,13 @@ main:
         rfid: "Personal RFID"
         pin: "Personal PIN"
         submit: "Submit"
+        settings: "Settings"
+        timeline: "Timeline"
+        passwordChangedSuccessfully: "Password changed successfully!"
+        currentPasswordIncorrect: "Current password is incorrect!"
+        newPasswordsNotSame: "New passwords are not same!"
+        oldPassword: "Current password"
+        newPassword: "New password"
+        newPasswordCheck: "Retype new password"
     menu:
         dashboard: "Dashboard"

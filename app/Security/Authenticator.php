@@ -45,6 +45,9 @@ class Authenticator implements Nette\Security\IAuthenticator
 
         }
 
-        return new \Nette\Security\Identity($row->id_user, $decodedRoles, $row->toArray());
+        $array=$row->toArray();
+        unset($array["roles"]);
+
+        return new \Nette\Security\Identity($row->idUser, $decodedRoles, $array);
     }
 }

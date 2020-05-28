@@ -97,11 +97,11 @@ class RegisterPresenter extends BasePresenter
         }
 
         $this->database->table("users")->insert([
-            "first_name" => $values->firstName,
+            "firstName" => $values->firstName,
             "email" => $values->email,
-            "lastname" => $values->surName,
+            "surName" => $values->surName,
             "registration" => 0,
-            "registration_date" => new Nette\Utils\DateTime(),
+            "registrationDate" => new Nette\Utils\DateTime(),
             "password" => password_hash($values->password,PASSWORD_BCRYPT)
         ]);
 
