@@ -19,7 +19,7 @@ visitor:
     passwordCheck: "Password check"
     firstName: "First name"
     surName: "Surname"
-    missing: "This filed is required!"
+    missing: "This field is required!"
     registerBtn: "Register me"
     passwordMatchError: "Passwords doesn't match!"
     emailExistReg: "This email is already in system!"
@@ -31,8 +31,21 @@ visitor:
     send: "Send"
 
 main:
+    roles:
+        visitor: "Visitor"
+        registered: "Registered user"
+        manager: "Manager"
+        admin: "Administrator"
     global:
         title: "Attendance system"
         logout: "Log out"
+        localeChanged: "Language changed to english."
+        home: "Home"
+        missing: "This field is required!"
+    profile:
+        myprofile: "My Profile"
+        rfid: "Personal RFID"
+        pin: "Personal PIN"
+        submit: "Submit"
     menu:
         dashboard: "Dashboard"

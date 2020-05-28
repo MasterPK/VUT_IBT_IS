@@ -12,6 +12,7 @@ use Nette\Security\Permission;
  * @package App\MainModule\Presenters
  * Layer between BasePresenter and other presenters in MainModule
  * Main purpose of class is to authenticate and authorize users based on privileges.
+ * Presenters that extends this class can in function startup check permission after calling parent.
  */
 class MainPresenter extends BasePresenter
 {
@@ -65,11 +66,11 @@ class MainPresenter extends BasePresenter
 
         // Homepage
         $acl->addResource('Main:Homepage');
-        $acl->allow('registered', 'Main:Homepage');
-        //$acl->allow('manager', 'Main:Homepage', "extended");
+        $acl->addResource('Main:Profile');
 
+        $acl->allow('registered', 'Main:Homepage', self::VIEW);
+        $acl->allow('registered', 'Main:Profile', self::EDIT);
 
-        // Admin has access to everything
         $acl->allow("admin");
 
         $this->acl = $acl;
@@ -77,16 +78,21 @@ class MainPresenter extends BasePresenter
 
     /**
      * Check if current user has specific permissions to this resource.
-     * @param string $resource Resource to be checked.
+     * @param string $resource Resource to be checked. If not specified then is used name of current presenter as resource.
      * @param int $permission Permission to be checked. Always use constants!
      * @return bool True if user has access. False otherwise.
      * @throws Nette\InvalidArgumentException If $permission is outside of specific bounds.
      */
-    protected function checkPermission(string $resource,int $permission): bool
+    protected function checkPermission(int $permission,string $resource=null): bool
     {
         if($permission<self::MIN_PERM || $permission>self::MAX_PERM)
         {
             throw new Nette\InvalidArgumentException("Specified permission is not valid. Check constants.");
+        }
+
+        if($resource==null)
+        {
+            $resource=$this->getName();
         }
         foreach ($this->getUser()->getRoles() as $role)
         {
@@ -107,6 +113,7 @@ class MainPresenter extends BasePresenter
 
         // Active menu item
         $this->template->activeMenuItem=$this->getName();
+
     }
 
 

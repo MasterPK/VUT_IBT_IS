@@ -6,13 +6,18 @@ namespace App\MainModule\Presenters;
 use Nette;
 use App\Models;
 
-class HomepagePresenter extends Models\MainPresenter
+final class HomepagePresenter extends Models\MainPresenter
 {
 
     public function startup()
     {
         parent::startup();
-        $this->checkPermission("Main:Homepage",self::VIEW);
+        $this->checkPermission(self::VIEW);
+    }
+
+    public function handleToastTest()
+    {
+        $this->showToast(["color" => "green", "title" => "Test", "message" => "Zprava"]);
     }
 
 }

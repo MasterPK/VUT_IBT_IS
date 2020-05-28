@@ -31,8 +31,21 @@ visitor:
     send: "Odeslat"
 
 main:
+    roles:
+        visitor: "Návštěvník"
+        registered: "Registrovaný uživatel"
+        manager: "Správce"
+        admin: "Administrátor"
     global:
         title: "Docházkový systém"
         logout: "Odhlásit se"
+        localeChanged: "Jazyk změněn na češtinu."
+        home: "Domov"
+        missing: "Toto pole je povinné!"
+    profile:
+        myprofile: "Můj Profil"
+        rfid: "Osobní RFID"
+        pin: "Osobní pin"
+        submit: "Potvrdit"
     menu:
         dashboard: "Nástěnka"

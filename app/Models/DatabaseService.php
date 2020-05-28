@@ -30,7 +30,7 @@ class DatabaseService
      */
     public function checkIfUserExistsByEmail(String $email): bool
     {
-        $row = $this->database->table("users")->where("email", $email)->fetchAll();
+        $row = $this->database->table("users")->where("email", $email)->select("id_user")->fetchAll();
         if ($row == null) {
             return false;
         } else {
@@ -46,11 +46,24 @@ class DatabaseService
      */
     public function changePassword(String $email, String $newPassword)
     {
-        if($this->checkIfUserExistsByEmail($email))
-        {
-            $this->database->table("users")->where("email", $email)->update(["password"=>password_hash($newPassword,PASSWORD_BCRYPT)]);
-        }else{
+        if ($this->checkIfUserExistsByEmail($email)) {
+            $this->database->table("users")->where("email", $email)->update(["password" => password_hash($newPassword, PASSWORD_BCRYPT)]);
+        } else {
             throw new Nette\InvalidArgumentException("User not found.");
+        }
+    }
+
+    /**
+     * Return all roles that is assigned to user.
+     * @param String $email User to search.
+     * @return array Array of roles.
+     */
+    public function getUserRoles(String $email): array
+    {
+        if ($this->checkIfUserExistsByEmail($email)) {
+            return $this->database->table("users")->where("email", $email)->select("roles")->fetch()->toArray();
+        } else {
+            return null;
         }
     }
 

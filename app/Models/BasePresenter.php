@@ -27,6 +27,8 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
     /** @var String Text in alert. */
     public $alertText;
 
+
+
     /**
      * Create universal alert box.
      * @return Controls\AlertControl  Return new component.
@@ -36,28 +38,67 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
         return new Controls\AlertControl($this->alertText, $this->alertState);
     }
 
+    /**
+     * Show toast notification by iziToast library.
+     * Currently support only basic options key => value (string).
+     * Support only AJAX requests.
+     * Example:
+     * iziToast.show({
+     *  title: 'Hey',
+     *  message: 'What would you like to add?'
+     *  });
+     * @param array $options Holds toast options. Array has to has same syntax like original library. See documentation at https://izitoast.marcelodolza.com/.
+     * Implicitly sets position of toast at top right. You cannot change this because this position is best for template.
+     */
+    public function showToast(array $options)
+    {
+        if (!$this->isAjax() || $options == null || empty($options)) {
+            return;
+        }
+
+        $html = "iziToast.show({";
+        $html.= "position: 'topRight',";
+        foreach ($options as $option => $value) {
+            $html .= $option . ":\"" . $value . "\",";
+        }
+        $html .= "});";
+
+        $this->template->toastHTML = $html;
+        $this->redrawControl("toastSnippet");
+
+    }
+
     protected function startup()
     {
         parent::startup();
 
-        $this->setDefaultSnippets(['all',"content"]);
+        $this->setDefaultSnippets(['all']);
     }
 
-    protected function translate($value):string
+    protected function translate($value): string
     {
         return $this->translator->translate($value);
     }
 
-    /**
-     * Change localization.
-     * @deprecated Localization is set by router.
-     * @param string $locale
-     */
-    public function handleChangeLocale(string $locale): void
+    protected function afterRender()
     {
-        $this->locale = $locale;
-        $this->translatorSessionResolver->setLocale($locale);
-        $this->redirect('this');
+        parent::afterRender();
+
+        // Set variable with language info
+        if($this->getParameter("locale") == null || $this->getParameter("locale") == "cs")
+        {
+            $this->template->locale=true;
+        }
+        else
+        {
+            $this->template->locale=false;
+        }
+    }
+
+    public function handleChangeLocale($locale)
+    {
+        $this->showToast(["message"=>$this->translate("messages.main.global.localeChanged"),"color"=>"green"]);
+        $this->redrawControl("all");
     }
 
 
