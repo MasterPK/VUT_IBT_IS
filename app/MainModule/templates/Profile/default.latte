@@ -40,10 +40,10 @@
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
                         <li class="nav-item "><a
-                                    class="nav-link active" n:href="tab! timeline">{_messages.main.profile.timeline}</a>
+                                    class="nav-link {ifset $tab}{if $tab=="timeline"}active{/if}{/ifset}" n:href="tab! timeline">{_messages.main.profile.timeline}</a>
                         </li>
                         <li class="nav-item"><a
-                                    class="nav-link" n:href="tab! settings">{_messages.main.profile.settings}</a></li>
+                                    class="nav-link {ifset $tab}{if $tab=="settings"}active{/if}{/ifset}" n:href="tab! settings">{_messages.main.profile.settings}</a></li>
                     </ul>
                 </div><!-- /.card-header -->
                 <div class="card-body">
