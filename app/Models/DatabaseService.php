@@ -3,6 +3,7 @@
 
 namespace App\Models;
 
+use Exception;
 use Nette;
 use Throwable;
 
@@ -19,9 +20,9 @@ class DatabaseService
      * Get all users.
      * @return array|Nette\Database\Table\IRow[] Iterable list of all users.
      */
-    public function getAllUsers()
+    public function getAllUsers():array
     {
-        return $this->database->table("users")->fetchAll();
+        return $this->database->table("users")->fetchAssoc("id");
     }
 
     /**
@@ -138,6 +139,33 @@ class DatabaseService
         }
     }
 
+    /**
+     * Get table object for use as data source.
+     * @param string $name Name of table.
+     * @return Nette\Database\Table\Selection
+     * @throws Exception
+     */
+    public function getTable(string $name)
+    {
+        try{
+            return $this->database->table($name);
+        }catch (Exception $ignored)
+        {
+            throw new Exception("Table not found!");
+        }
+
+    }
+
+    /**
+     * Get maximum user permission.
+     * @param $email
+     * @return int
+     */
+    public function getUserPermission($email):int
+    {
+        return (int)($this->database->table("users")->where("email",$email)->select("permission")->fetch())->permission;
+    }
+
 
 }
 
@@ -146,7 +174,7 @@ class DatabaseService
  * Specific exception when user is not found in database.
  * @package App\Models
  */
-class UserNotFoundException extends \Exception
+class UserNotFoundException extends Exception
 {
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {

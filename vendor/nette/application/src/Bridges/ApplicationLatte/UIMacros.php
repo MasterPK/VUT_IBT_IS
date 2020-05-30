@@ -92,7 +92,7 @@ final class UIMacros extends Latte\Macros\MacroSet
 				break;
 			}
 		}
-		if (empty($wrap)) {
+		if (empty($wrap) && $param[0] === '[') {
 			$param = substr($param, 1, -1); // removes array() or []
 		}
 		return "/* line $node->startLine */ "
@@ -114,7 +114,7 @@ final class UIMacros extends Latte\Macros\MacroSet
 	public function macroLink(MacroNode $node, PhpWriter $writer)
 	{
 		$node->modifiers = preg_replace('#\|safeurl\s*(?=\||$)#Di', '', $node->modifiers);
-		return $writer->using($node)
+		return $writer->using($node, $this->getCompiler())
 			->write('echo %escape(%modify('
 				. ($node->name === 'plink' ? '$this->global->uiPresenter' : '$this->global->uiControl')
 				. '->link(%node.word, %node.array?)))'

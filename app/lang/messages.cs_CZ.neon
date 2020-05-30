@@ -42,6 +42,10 @@ main:
         localeChanged: "Jazyk změněn na češtinu."
         home: "Domov"
         missing: "Toto pole je povinné!"
+        yesB: "ANO"
+        yes: "Ano"
+        no: "Ne"
+        noB: "NE"
     profile:
         myprofile: "Můj Profil"
         rfid: "Osobní RFID"
@@ -57,3 +61,11 @@ main:
         newPasswordCheck: "Zadejte nové heslo znovu"
     menu:
         dashboard: "Nástěnka"
+        usersManagement: "Správa uživatelů"
+        managerModule: "Modul manažera"
+        adminModule: "Modul správce"
+    manager:
+        registration: "Schválený účet?"
+datagrid:
+    "- select action -": "- Vybrat akci -"
+

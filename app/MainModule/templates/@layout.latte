@@ -39,18 +39,6 @@
                 </li>
             </ul>
 
-            <!-- SEARCH FORM -->
-            <form class="form-inline ml-3">
-                <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" type="search" placeholder="Search"
-                           aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-navbar" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
@@ -199,15 +187,47 @@
                                 </p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
-                                <p>
-                                    Simple Link
-                                    <span class="right badge badge-danger">New</span>
-                                </p>
-                            </a>
-                        </li>
+                        {if isset($manager) || isset($admin)}
+                            <li class="nav-item has-treeview {$activeMenuItem=="Main:Manager" ? "menu-open" : ""}">
+                                <a href="javascript:void(0);" class="nav-link {$activeMenuItem=="Main:Manager" ? "active" : ""}">
+                                    <i class="nav-icon fas fa-user-tie"></i>
+                                    <p>
+                                        {_messages.main.menu.managerModule}
+                                    </p>
+                                    <i class="fas fa-angle-left right"></i>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a n:href="Manager:usersManagement" class="nav-link {$activeMenuItem=="Main:Manager" && $currentAction=="usersManagement" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-users-cog"></i>
+                                            <p>
+                                                {_messages.main.menu.usersManagement}
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {/if}
+                        {ifset $admin}
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-th"></i>
+                                    <p>
+                                        {_messages.main.menu.adminModule}
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="#" class="nav-link">
+                                            <i class="nav-icon fas fa-th"></i>
+                                            <p>
+                                                Test
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {/ifset}
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -265,6 +285,7 @@
 <script src="{$basePath}/dist/js/adminlte.min.js"></script>
 <!-- Nittro script -->
 <script type="application/javascript" src="{$basePath}/dist/js/nittro.min.js" async defer></script>
+
 <!-- iziToast script -->
 <script src="{$basePath}/dist/js/iziToast.min.js" type="text/javascript"></script>
 

@@ -35,6 +35,36 @@
       <path value="$PROJECT_DIR$/vendor/kdyby/translation" />
       <path value="$PROJECT_DIR$/vendor/contributte/translation" />
       <path value="$PROJECT_DIR$/vendor/nittro/nette-bridges" />
+      <path value="$PROJECT_DIR$/vendor/contributte/di" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/annotations" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/cache" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/collections" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/common" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/dbal" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/event-manager" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/inflector" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/lexer" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/orm" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/persistence" />
+      <path value="$PROJECT_DIR$/vendor/doctrine/reflection" />
+      <path value="$PROJECT_DIR$/vendor/nettrine/annotations" />
+      <path value="$PROJECT_DIR$/vendor/nettrine/cache" />
+      <path value="$PROJECT_DIR$/vendor/nettrine/dbal" />
+      <path value="$PROJECT_DIR$/vendor/nettrine/orm" />
+      <path value="$PROJECT_DIR$/vendor/ocramius/package-versions" />
+      <path value="$PROJECT_DIR$/vendor/psr/container" />
+      <path value="$PROJECT_DIR$/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php73" />
+      <path value="$PROJECT_DIR$/vendor/symfony/service-contracts" />
+      <path value="$PROJECT_DIR$/vendor/contributte/application" />
+      <path value="$PROJECT_DIR$/vendor/symfony/inflector" />
+      <path value="$PROJECT_DIR$/vendor/symfony/property-access" />
+      <path value="$PROJECT_DIR$/vendor/ublaboo/datagrid" />
+      <path value="$PROJECT_DIR$/vendor/nextras/datagrid" />
+      <path value="$PROJECT_DIR$/vendor/nette/tokenizer" />
+      <path value="$PROJECT_DIR$/vendor/nextras/dbal" />
+      <path value="$PROJECT_DIR$/vendor/nextras/orm" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3" />

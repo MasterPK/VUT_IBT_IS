@@ -16,6 +16,18 @@ services:
 extensions:
     translation: Contributte\Translation\DI\TranslationExtension
     - Nittro\Bridges\NittroDI\NittroExtension
+    nextras.orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
+    dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
+
+dbal:
+	driver: mysqli
+	host: localhost
+	database: ibt_database
+	username: root
+	password: 75369512369rpi
+
+nextras.orm:
+    model: App\Models\Orm\Orm
 
 translation:
     locales:

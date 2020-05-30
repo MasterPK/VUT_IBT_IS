@@ -57,6 +57,11 @@ final class LoginPresenter extends App\Models\BasePresenter
         //$values = $form->getValues();
         $user = $this->getUser();
         try {
+            if ($values->permanent == true) {
+                $user->setExpiration(null);
+            } else {
+                $user->setExpiration('30 minutes');
+            }
             $user->login($values->email, $values->password);
             if ($values->permanent == true) {
                 $user->setExpiration(null);

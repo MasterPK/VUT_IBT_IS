@@ -42,6 +42,10 @@ main:
         localeChanged: "Language changed to english."
         home: "Home"
         missing: "This field is required!"
+        yesB: "YES"
+        yes: "Yes"
+        no: "No"
+        noB: "NO"
     profile:
         myprofile: "My Profile"
         rfid: "Personal RFID"
@@ -57,3 +61,10 @@ main:
         newPasswordCheck: "Retype new password"
     menu:
         dashboard: "Dashboard"
+        usersManagement: "Users management"
+        managerModule: "Manager module"
+        adminModule: "Administrator module"
+    manager:
+        registration: "Approved account?"
+datagrid:
+    "- select action -": "- Select action -"

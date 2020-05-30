@@ -6,14 +6,19 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Ublaboo\\DataGrid\\' => array($vendorDir . '/ublaboo/datagrid/src'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Polyfill\\Ctype\\' => array($vendorDir . '/symfony/polyfill-ctype'),
     'Symfony\\Contracts\\Translation\\' => array($vendorDir . '/symfony/translation-contracts'),
     'Symfony\\Component\\Translation\\' => array($vendorDir . '/symfony/translation'),
+    'Symfony\\Component\\PropertyAccess\\' => array($vendorDir . '/symfony/property-access'),
+    'Symfony\\Component\\Inflector\\' => array($vendorDir . '/symfony/inflector'),
     'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem'),
     'Symfony\\Component\\Config\\' => array($vendorDir . '/symfony/config'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
+    'Nextras\\Datagrid\\' => array($vendorDir . '/nextras/datagrid/src'),
     'Kdyby\\Translation\\' => array($vendorDir . '/kdyby/translation/src'),
     'Kdyby\\StrictObjects\\' => array($vendorDir . '/kdyby/strict-objects/src'),
     'Contributte\\Translation\\' => array($vendorDir . '/contributte/translation/src'),
+    'Contributte\\Application\\' => array($vendorDir . '/contributte/application/src'),
 );

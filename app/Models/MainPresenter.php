@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Exception;
 use Nette;
 use Nette\Security\Permission;
 use Nette\Utils\Json;
+use Tracy\Debugger;
 
 /**
  * Class MainPresenter
@@ -28,6 +30,15 @@ class MainPresenter extends BasePresenter
     public const VIEW = 1;
     public const EXTENDED_VIEW = 2;
     public const EDIT = 3;
+
+
+    /**
+     * Roles
+     */
+    public const VISITOR = 0;
+    public const REGISTERED = 1;
+    public const MANAGER = 2;
+    public const ADMIN = 3;
 
     /** @var Nette\Security\Permission */
     protected $acl;
@@ -53,6 +64,7 @@ class MainPresenter extends BasePresenter
 
     /**
      * Set up static roles and permission ACL list.
+     * You need to manually create resources and
      */
     private function setUpPermissions(): void
     {
@@ -68,9 +80,14 @@ class MainPresenter extends BasePresenter
         // Homepage
         $acl->addResource('Main:Homepage');
         $acl->addResource('Main:Profile');
+        $acl->addResource('Main:User');
+        $acl->addResource('Main:Manager');
+        $acl->addResource('Main:Admin');
 
         $acl->allow('registered', 'Main:Homepage', self::VIEW);
         $acl->allow('registered', 'Main:Profile', self::EDIT);
+        $acl->allow('registered', 'Main:User', self::EXTENDED_VIEW);
+        $acl->allow('manager', 'Main:Manager', self::EDIT);
 
         $acl->allow("admin");
 
@@ -81,27 +98,30 @@ class MainPresenter extends BasePresenter
      * Check if current user has specific permissions to this resource.
      * @param string $resource Resource to be checked. If not specified then is used name of current presenter as resource.
      * @param int $permission Permission to be checked. Always use constants!
-     * @return bool True if user has access. False otherwise.
+     * @return bool True if user has access.
      * @throws Nette\InvalidArgumentException If $permission is outside of specific bounds.
+     * @throws Nette\Security\AuthenticationException If user has no access to resource.
+     * @throws Exception When fatal error.
      */
-    protected function checkPermission(int $permission,string $resource=null): bool
+    protected function checkPermission(int $permission, string $resource = null): bool
     {
-        if($permission<self::MIN_PERM || $permission>self::MAX_PERM)
-        {
+        if ($permission < self::MIN_PERM || $permission > self::MAX_PERM) {
             throw new Nette\InvalidArgumentException("Specified permission is not valid. Check constants.");
         }
 
-        if($resource==null)
-        {
-            $resource=$this->getName();
+        if ($resource == null) {
+            $resource = $this->getName();
         }
-        foreach ($this->getUser()->getRoles() as $role)
-        {
-            if ($this->acl->isAllowed($role,$resource,$permission)) {
-                return true;
+        foreach ($this->getUser()->getRoles() as $role) {
+            try {
+                if ($this->acl->isAllowed($role, $resource, $permission)) {
+                    return true;
+                }
+            } catch (Exception $ignored) {
+                throw new Exception("Resource not found!");
             }
         }
-        return false;
+        throw new Nette\Security\AuthenticationException();
     }
 
     protected function beforeRender()
@@ -110,18 +130,48 @@ class MainPresenter extends BasePresenter
         $userData = $this->getUser()->getIdentity()->data;
 
         // User full name
-        $this->template->userName = $userData["firstName"] ." ". $userData["surName"];
+        $this->template->userName = $userData["firstName"] . " " . $userData["surName"];
 
         // Active menu item
-        $this->template->activeMenuItem=$this->getName();
+        $this->template->activeMenuItem = $this->getName();
 
-    }
+        // Current action
+        $this->template->currentAction = $this->getAction();
+
+        // Roles
+        $highestRole = 0;
+        foreach ($this->getUser()->getIdentity()->getRoles() as $role) {
+            $this->template->$role = true;
+            switch ($role) {
+                case "registered":
+                    if (self::REGISTERED > $highestRole) {
+                        $highestRole = 1;
+                    }
+                    break;
+                case "manager":
+                    if (self::MANAGER > $highestRole) {
+                        $highestRole = 2;
+                    }
+                    break;
+                case "admin":
+                    if (self::ADMIN > $highestRole) {
+                        $highestRole = 3;
+                    }
+                    break;
+            }
+        }
+
+
+        // Helper for permissions hierarchy
+        $this->template->permission = $this->databaseService->getUserPermission($userData["email"]);
+}
 
     /**
      * Update current identity with updated data from database.
      * @param array $data New data.
      */
-    protected function updateUserIdentity($data)
+    protected
+    function updateUserIdentity($data)
     {
 
         $decodedRoles = "";
@@ -131,14 +181,12 @@ class MainPresenter extends BasePresenter
 
         }
 
-        $newIdentity=new Nette\Security\Identity ($data["idUser"],$decodedRoles,$data);
+        $newIdentity = new Nette\Security\Identity ($data["idUser"], $decodedRoles, $data);
 
 
-        if($newIdentity !== $this->user->identity)
-        {
-            foreach($data as $key => $item)
-            {
-                if($key=="roles")
+        if ($newIdentity !== $this->user->identity) {
+            foreach ($data as $key => $item) {
+                if ($key == "roles")
                     continue;
                 $this->getUser()->getIdentity()->$key = $item;
             }

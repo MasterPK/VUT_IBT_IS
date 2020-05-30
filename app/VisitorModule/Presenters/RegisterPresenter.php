@@ -102,7 +102,8 @@ class RegisterPresenter extends BasePresenter
             "surName" => $values->surName,
             "registration" => 0,
             "registrationDate" => new Nette\Utils\DateTime(),
-            "password" => password_hash($values->password,PASSWORD_BCRYPT)
+            "password" => password_hash($values->password,PASSWORD_BCRYPT),
+            "roles" => "{\"registered\""
         ]);
 
         $this->emailService->sendEmail($values->email,

@@ -14,8 +14,8 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
     /** @persistent */
     public $locale;
 
-    /** @var Nette\Localization\ITranslator @inject */
-    public $translator;
+    /** @var Contributte\Translation\Translator */
+    protected $translator;
 
     /** @var Contributte\Translation\LocalesResolvers\Router @inject */
     public $translatorSessionResolver;
@@ -27,6 +27,11 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
     /** @var String Text in alert. */
     public $alertText;
 
+    public function __construct(Nette\Localization\ITranslator $translator)
+    {
+        parent::__construct();
+        $this->translator=$translator;
+    }
 
 
     /**
@@ -94,7 +99,7 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
     {
         parent::startup();
 
-        $this->setDefaultSnippets(['all']);
+        //$this->setDefaultSnippets(['all']);
     }
 
     protected function translate($value): string

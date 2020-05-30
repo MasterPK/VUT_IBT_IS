@@ -5,6 +5,7 @@ namespace App\MainModule\Presenters;
 
 use Nette;
 use App\Models;
+use App\Models\Database\EntityManager;
 
 final class HomepagePresenter extends Models\MainPresenter
 {
@@ -19,5 +20,6 @@ final class HomepagePresenter extends Models\MainPresenter
     {
         $this->showToast(["color" => "green", "title" => "Test", "message" => "Zprava"]);
     }
+
 
 }
