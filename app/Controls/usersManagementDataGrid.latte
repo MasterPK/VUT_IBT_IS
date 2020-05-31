@@ -32,6 +32,7 @@
 
 {define row-actions}
     <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm">{_edit}</a>
+    <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-sm">{_assignRfid}</a>
 {/define}
 
 {define global-actions}
@@ -47,4 +48,15 @@
             </div>
         </div>
     </div>
+{/define}
+
+{define col-registration}
+    <td class="grid-col-registration">
+        {if $cell==0}
+            {_noB}
+        {else}
+            {_yesB}
+        {/if}
+    </td>
+
 {/define}

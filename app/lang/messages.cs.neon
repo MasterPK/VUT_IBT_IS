@@ -68,4 +68,5 @@ main:
         registration: "Schválený účet?"
 datagrid:
     "- select action -": "- Vybrat akci -"
-
+assignRfid:
+    title: "Přiřadit osobní RFID uživateli"

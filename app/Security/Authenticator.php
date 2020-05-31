@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use App\Models\Orm\Orm;
 use Nette;
 use Nette\Utils\Json;
 
 class Authenticator implements Nette\Security\IAuthenticator
 {
 
-    private $database;
+    /** @var Orm  */
+    private $orm;
 
-    public function __construct(Nette\Database\Context $database)
+    public function __construct(Orm $orm)
     {
-        $this->database = $database;
+        $this->orm=$orm;
     }
 
     /**
@@ -24,30 +26,20 @@ class Authenticator implements Nette\Security\IAuthenticator
     {
         [$email, $password] = $credentials;
 
-        $row = $this->database->table("users")->where("email", $email)->fetch();
-
-        if (!$row) {
+        $user = $this->orm->users->getBy(["email"=>$email]);
+        if (!$user) {
             throw new Nette\Security\AuthenticationException('Email not found.');
         }
 
-        if (!password_verify($password, $row->password)) {
+        if (!password_verify($password, $user->password)) {
             throw new Nette\Security\AuthenticationException('Password not match.');
         }
 
-        if($row->registration!=1)
+        if($user->registration!=1)
         {
             throw new Nette\Security\AuthenticationException('Account is not active!');
         }
-        $decodedRoles = "";
-        try {
-            $decodedRoles = Json::decode((string)$row->roles, Json::FORCE_ARRAY);
-        } catch (\Nette\Utils\JsonException $e) {
 
-        }
-
-        $array=$row->toArray();
-        unset($array["roles"]);
-
-        return new \Nette\Security\Identity($row->idUser, $decodedRoles, $array);
+        return new \Nette\Security\Identity($user->id, $user->roles);
     }
 }

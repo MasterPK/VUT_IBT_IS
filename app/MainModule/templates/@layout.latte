@@ -187,7 +187,7 @@
                                 </p>
                             </a>
                         </li>
-                        {if isset($manager) || isset($admin)}
+                        {if $permission>1}
                             <li class="nav-item has-treeview {$activeMenuItem=="Main:Manager" ? "menu-open" : ""}">
                                 <a href="javascript:void(0);" class="nav-link {$activeMenuItem=="Main:Manager" ? "active" : ""}">
                                     <i class="nav-icon fas fa-user-tie"></i>
@@ -198,7 +198,8 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a n:href="Manager:usersManagement" class="nav-link {$activeMenuItem=="Main:Manager" && $currentAction=="usersManagement" ? "active" : ""}">
+                                        <a n:href="Manager:usersManagement"
+                                                class="nav-link {$activeMenuItem=="Main:Manager" && $currentAction=="usersManagement" ? "active" : ""}">
                                             <i class="nav-icon fas fa-users-cog"></i>
                                             <p>
                                                 {_messages.main.menu.usersManagement}
@@ -208,7 +209,7 @@
                                 </ul>
                             </li>
                         {/if}
-                        {ifset $admin}
+                        {if $permission>2}
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fas fa-th"></i>
@@ -227,7 +228,7 @@
                                     </li>
                                 </ul>
                             </li>
-                        {/ifset}
+                        {/if}
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -289,6 +290,11 @@
 <!-- iziToast script -->
 <script src="{$basePath}/dist/js/iziToast.min.js" type="text/javascript"></script>
 
+{snippet scripts}
+    {ifset #scripts}
+        {include scripts}
+    {/ifset}
+{/snippet}
 
 {snippet toastSnippet}
     <script>

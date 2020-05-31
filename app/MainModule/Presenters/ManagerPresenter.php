@@ -4,32 +4,22 @@ declare(strict_types=1);
 namespace App\MainModule\Presenters;
 
 
-use App\Models\DatabaseService;
+use App\Models\DataSourceFactory;
 use App\Models\MainPresenter;
-use App\Models\Orm\Orm;
+use App\Models\Orm\Users\User;
+use App\Security\Permissions;
 use Nette\Application\UI\Form;
-use Nette\Database\Context;
 use Nette;
 use Nextras\Datagrid\Datagrid;
-use Tracy\Debugger;
-use Kdyby\Translation;
 
 class ManagerPresenter extends MainPresenter
 {
-    /** @var DatabaseService @inject */
-    public $databaseService;
-
-    /** @var Context @inject */
-    public $database;
-
-    /** @var Orm @inject*/
-    public $orm;
-
 
     public function startup()
     {
         parent::startup();
         $this->checkPermission(self::EDIT);
+        $this->isAllowed(Permissions::REGISTERED);
     }
 
     public function renderUsersManagement()
@@ -64,35 +54,15 @@ class ManagerPresenter extends MainPresenter
                 unset($filter["registration"]);
             }
 
-            $filters = [];
-            foreach ($filter as $k => $v) {
-                if ($k == 'id' || is_array($v)) {
-                    $filters[$k] = $v;
-                } else {
-                    $filters[$k . ' LIKE ?'] = "%$v%";
-                }
-            }
+            $factory=new DataSourceFactory($this->orm);
+            $factory->setFilters($filter);
+            $factory->addFilter(["permission<="=>1]);
+            return $factory->getData("users",$order);
 
-            $filters["permission<="]=1;
-            if (isset($order[0])) {
-                $data = $this->orm->users->findBy($filters)->orderBy($order[0],$order[1])->fetchAll();
-                //$dataDeprecated = $this->database->table("users")->where($filters)->where("permission <=", "1")->order(implode(" ", $order))->fetchAssoc("id");
-            } else {
-                $data = $this->orm->users->findBy($filters)->fetchAll();
-                //$dataDeprecated = $this->database->table("users")->where($filters)->where("permission <=", "1")->fetchAssoc("id");
-            }
-            foreach ($data as $key => $row) {
-                if ($row->registration == 0) {
-                    $data[$key]->registration = $this->translate("messages.main.global.noB");
-                } elseif ($row->registration == 1) {
-                    $data[$key]->registration = $this->translate("messages.main.global.yesB");
-                }
-            }
-
-            return $data;
         });
 
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/usersManagementDataGrid.latte');
+
 
         $grid->setFilterFormFactory(function () {
             $form = new Nette\Forms\Container();
@@ -120,8 +90,8 @@ class ManagerPresenter extends MainPresenter
             // set other fileds, inputs
 
             // these buttons are not compulsory
-            $form->addSubmit('filter',"filter")->getControlPrototype()->class = 'btn btn-sm btn-primary';
-            $form->addSubmit('cancel',"cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger';
+            $form->addSubmit('filter', "filter")->getControlPrototype()->class = 'btn btn-sm btn-primary';
+            $form->addSubmit('cancel', "cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger';
 
             return $form;
         });
@@ -130,9 +100,12 @@ class ManagerPresenter extends MainPresenter
 
             $form = new Nette\Forms\Container();
 
+            $form->addText("rfid")
+                ->setHtmlAttribute("class", "form-control");
+
             $form->addSelect("registration", null, [
-                0 => $this->translate("messages.main.global.noB"),
-                1 => $this->translate("messages.main.global.yesB")
+                0 => $this->translate("noB"),
+                1 => $this->translate("yesB")
             ])
                 ->setHtmlAttribute("class", "form-control");
 
@@ -140,50 +113,44 @@ class ManagerPresenter extends MainPresenter
             $form->addSubmit('save', "save")->getControlPrototype()->class = 'btn btn-sm btn-success';
             $form->addSubmit('cancel', "cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger';
 
-
-            if ($row["registration"] == $this->translate("messages.main.global.yesB")) {
-                $row["registration"] = 1;
-            } else {
-                $row["registration"] = 0;
-            }
-
             if ($row) {
-                $form->setDefaults($row);
+                $form->setDefaults($row->toArray());
             }
+
             return $form;
         });
 
         $grid->setEditFormCallback(function (Nette\Forms\Container $row) {
             $values = $row->getValues();
-            if (($this->database->table("users")->where("id", $values->id)->select("permission")->fetch())->permission > 1) {
+            if ($this->orm->users->getById($values->id)->getValue("permission") > Permissions::MANAGER) {
                 return;
             }
-            $this->database->table("users")->where("id", $values->id)->update($values);
+            $this->orm->users->updateUser((int)$values->id, $values);
         });
 
         $grid->addGlobalAction('activateUsers', "activateUsers", function (array $userIds, Datagrid $grid) {
 
-            foreach ($userIds as $id)
-            {
-                if (($this->database->table("users")->where("id", $id)->select("permission")->fetch())->permission > 1) {
-                    return;
+            foreach ($userIds as $id) {
+                if ($this->orm->users->getById($id)->getValue("permission") > Permissions::MANAGER) {
+                    continue;
                 }
-                $this->database->table("users")->where("id", $id)->update(["registration"=>1]);
+                $this->orm->users->updateUser($id, ["registration" => 1]);
             }
             $grid->redrawControl('rows');
         });
 
         $grid->addGlobalAction('deactivateUsers', "deactivateUsers", function (array $userIds, Datagrid $grid) {
 
-            foreach ($userIds as $id)
-            {
-                if (($this->database->table("users")->where("id", $id)->select("permission")->fetch())->permission > 1) {
-                    return;
+            foreach ($userIds as $id) {
+                // Protection from editing user with higher role then current user
+                if ($this->orm->users->getById($id)->getValue("permission") > Permissions::MANAGER) {
+                    continue;
                 }
-                $this->database->table("users")->where("id", $id)->update(["registration"=>0]);
+                $this->orm->users->updateUser($id, ["registration" => 0]);
             }
             $grid->redrawControl('rows');
         });
+
 
         $grid->setTranslator($this->translator->createPrefixedTranslator("datagrid"));
 
@@ -192,9 +159,45 @@ class ManagerPresenter extends MainPresenter
 
     }
 
-    public function handleDelete($id)
+    public function renderAssignRfidToUser($id)
     {
+        if ($id == null) {
+            $this->redirect("Manager:usersManagement");
+        }
 
+        // Protection from editing user with higher role then current user
+        $user = $this->orm->users->getById($id);
+        if ($user->permission > Permissions::MANAGER) {
+            $this->redirect("Manager:usersManagement");
+        }
+    }
+
+    public function createComponentNewRfidsGrid()
+    {
+        $grid = new Datagrid();
+
+        $grid->setDatasourceCallback(function ($filter, $order) {
+            $factory=new DataSourceFactory($this->orm);
+            $factory->setFilters($filter);
+            return $factory->getData("newRfids",$order);
+        });
+
+        $grid->addColumn("id", "ID")
+            ->enableSort();
+
+        $grid->addColumn("rfid", $this->translate("messages.main.profile.rfid"))
+            ->enableSort();
+
+        $grid->addColumn("createdAt", $this->translateAll("createdAt"))
+            ->enableSort();
+
+
+        return $grid;
+    }
+
+    public function handleRedirectAssignRfidToUser($id)
+    {
+        $this->redirect("Manager:assignRfidToUser");
     }
 
 }

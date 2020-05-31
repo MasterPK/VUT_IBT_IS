@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Orm\Orm;
+use App\Models\Orm\Users\User;
 use Exception;
 use Nette;
 use Nette\Security\Permission;
@@ -31,21 +33,15 @@ class MainPresenter extends BasePresenter
     public const EXTENDED_VIEW = 2;
     public const EDIT = 3;
 
-
-    /**
-     * Roles
-     */
-    public const VISITOR = 0;
-    public const REGISTERED = 1;
-    public const MANAGER = 2;
-    public const ADMIN = 3;
-
     /** @var Nette\Security\Permission */
     protected $acl;
 
 
     /** @var DatabaseService @inject */
     public $databaseService;
+
+    /** @var User */
+    protected $user;
 
     /**
      * Check if user is logged in. If not redirect to login page.
@@ -59,6 +55,8 @@ class MainPresenter extends BasePresenter
             $this->payload->allowAjax = FALSE;
             $this->redirect(':Visitor:Login:');
         }
+
+        $this->user = $this->orm->getRepositoryByName("users")->getById($this->getUser()->getId());
         $this->setUpPermissions();
     }
 
@@ -124,13 +122,23 @@ class MainPresenter extends BasePresenter
         throw new Nette\Security\AuthenticationException();
     }
 
+    /**
+     * Check if user has sufficient permission.
+     * @param int $requiredPermission Required level of permission.
+     * @return bool
+     */
+    public function isAllowed($requiredPermission): bool
+    {
+        return $this->user->permission >= $requiredPermission;
+    }
+
     protected function beforeRender()
     {
         parent::beforeRender();
         $userData = $this->getUser()->getIdentity()->data;
 
         // User full name
-        $this->template->userName = $userData["firstName"] . " " . $userData["surName"];
+        $this->template->userName = $this->user->firstName . " " . $this->user->surName;
 
         // Active menu item
         $this->template->activeMenuItem = $this->getName();
@@ -139,7 +147,7 @@ class MainPresenter extends BasePresenter
         $this->template->currentAction = $this->getAction();
 
         // Roles
-        $highestRole = 0;
+        /*$highestRole = 0;
         foreach ($this->getUser()->getIdentity()->getRoles() as $role) {
             $this->template->$role = true;
             switch ($role) {
@@ -159,19 +167,18 @@ class MainPresenter extends BasePresenter
                     }
                     break;
             }
-        }
+        }*/
 
 
         // Helper for permissions hierarchy
-        $this->template->permission = $this->databaseService->getUserPermission($userData["email"]);
-}
+        $this->template->permission = $this->user->permission;
+    }
 
     /**
      * Update current identity with updated data from database.
      * @param array $data New data.
      */
-    protected
-    function updateUserIdentity($data)
+    protected function updateUserIdentity($data)
     {
 
         $decodedRoles = "";
@@ -193,6 +200,5 @@ class MainPresenter extends BasePresenter
         }
 
     }
-
 
 }

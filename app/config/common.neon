@@ -7,7 +7,7 @@ application:
 		*: App\*Module\Presenters\*Presenter
 
 session:
-	expiration: 14 days
+	expiration: 30 days
 
 services:
     router: App\Router\RouterFactory::createRouter

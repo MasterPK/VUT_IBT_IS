@@ -16,8 +16,6 @@ final class ForgotPasswordPresenter extends App\Models\BasePresenter
     /** @var App\Models\EmailService @inject */
     public $emailService;
 
-    /** @var App\Models\DatabaseService @inject */
-    public $databaseService;
 
     public function renderDefault()
     {
@@ -44,7 +42,7 @@ final class ForgotPasswordPresenter extends App\Models\BasePresenter
     {
         try{
             $newPassword=Nette\Utils\Random::generate();
-            $this->databaseService->changePassword($values->email,$newPassword);
+            $this->orm->users->changePassword($values->email,$newPassword);
 
             $this->emailService->sendEmail($values->email,"Obnovení hesla","Dobrý den
             \n\n u účtu $values->email byla vyžádána změna hesla. Systém Vám vygeneroval dočasné heslo pro přihlášení. Přihlašte se, prosím, pomocí něj a heslo si poté změňte.\n

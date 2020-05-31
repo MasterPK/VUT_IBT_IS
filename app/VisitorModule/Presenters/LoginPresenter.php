@@ -33,7 +33,7 @@ final class LoginPresenter extends App\Models\BasePresenter
     }
 
 
-    public function afterRender()
+    public function beforeRender()
     {
 
         $user = $this->getUser();
@@ -48,8 +48,9 @@ final class LoginPresenter extends App\Models\BasePresenter
         $this->getUser()->logout();
         $this->alertState = "Success";
         $this->alertText = $this->translate("messages.visitor.signOutSuccess");
-        $this->postGet(":Visitor:Login:");
-        $this->redrawDefault(true);
+        $this->disallowAjax();
+        $this->redirect(":Visitor:Login:");
+        //$this->redrawDefault(true);
     }
 
     public function signInFormSucceeded(Form $form, \stdClass $values)
@@ -57,16 +58,11 @@ final class LoginPresenter extends App\Models\BasePresenter
         //$values = $form->getValues();
         $user = $this->getUser();
         try {
-            if ($values->permanent == true) {
-                $user->setExpiration(null);
-            } else {
-                $user->setExpiration('30 minutes');
-            }
             $user->login($values->email, $values->password);
             if ($values->permanent == true) {
-                $user->setExpiration(null);
+                $user->setExpiration("30 days");
             } else {
-                $user->setExpiration('30 minutes');
+                $user->setExpiration('30 days');
             }
 
             $this->payload->allowAjax = FALSE;

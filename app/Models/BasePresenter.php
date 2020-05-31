@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Orm\Orm;
 use Nette;
 use Contributte;
 use Nette\Security\Permission;
@@ -26,6 +27,9 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
 
     /** @var String Text in alert. */
     public $alertText;
+
+    /** @var Orm @inject */
+    public $orm;
 
     public function __construct(Nette\Localization\ITranslator $translator)
     {
@@ -99,12 +103,27 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
     {
         parent::startup();
 
-        //$this->setDefaultSnippets(['all']);
+        if($this->alertState==null)
+        {
+            $this->alertState=$this->getParameter("alertState");
+        }
+
+        if($this->alertText==null)
+        {
+            $this->alertText=$this->getParameter("alertText");
+        }
+
+        $this->setDefaultSnippets(['all']);
     }
 
     protected function translate($value): string
     {
         return $this->translator->translate($value);
+    }
+
+    protected function translateAll($value): string
+    {
+        return $this->translator->setPrefix(["all"])->translate($value);;
     }
 
     protected function afterRender()
