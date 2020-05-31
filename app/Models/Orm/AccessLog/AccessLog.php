@@ -10,7 +10,7 @@ use Nextras\Dbal\Utils\DateTimeImmutable;
 use Nextras\Orm\Entity\Entity;
 
 /**
- * @property int                $id {primary}
+ * @property-read int                $id {primary}
  * @property DateTimeImmutable  $datetime {default NOW}
  * @property string             $rfid
  * @property int                $status {default 0}

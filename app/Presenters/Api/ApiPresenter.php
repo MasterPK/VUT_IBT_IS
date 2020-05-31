@@ -16,30 +16,60 @@ final class ApiPresenter implements IPresenter
 {
     private $database;
     private $request;
-    private $response;
     private $databaseModel;
     private $mailer;
+    private $orm;
 
     /** @var App\Models\EmailService @inject */
     public $emailService;
 
-    public function __construct(Nette\Mail\IMailer $mailer, Nette\Database\Context $database, App\Models\DatabaseService $databaseModel)
+    public function __construct(Nette\Mail\IMailer $mailer, Nette\Database\Context $database, App\Models\DatabaseService $databaseModel, App\Models\Orm\Orm $orm)
     {
         $this->database = $database;
         $this->databaseModel = $databaseModel;
         $this->mailer = $mailer;
+        $this->orm = $orm;
     }
 
     private function checkToken()
     {
         $apiToken = $this->request->getParameter("token");
         $idStation = $this->request->getParameter('id_station');
-        if ($this->database->table("stations")->where("id_station", $idStation)->where("api_token", $apiToken)->count() != 1) {
+        if ($this->database->table("stations")->where("id", $idStation)->where("api_token", $apiToken)->count() != 1) {
             return ["s" => "err", "error" => "Id of station doesn't match with token!"];
 
         }
         return null;
     }
+
+    private function addNewRfid(Request $request)
+    {
+        $response = $this->checkToken();
+        if ($response != null) {
+            return $response;
+        }
+
+        $entity = new App\Models\Orm\NewRfid\NewRfid();
+
+        $entity->rfid = $request->getParameter("rfid");
+
+        if(!$this->notEmpty($entity->rfid))
+        {
+            return ["s" => "err", "error" => "Empty or invalid request!"];
+        }
+
+        if($this->orm->users->getBy(["rfid"=>$entity->rfid]) || $this->orm->newRfids->getBy(["rfid"=>$entity->rfid]))
+        {
+            return ["s" => "ok", "m" => "RFID already exists. Nothing changed."];
+        }
+
+        $entity->createdAt=new DateTime();
+
+        $this->orm->newRfids->persistAndFlush($entity);
+
+        return ["s" => "ok"];
+    }
+
 
     public function run(Request $request): Nette\Application\IResponse
     {
@@ -47,6 +77,9 @@ final class ApiPresenter implements IPresenter
 
         $action = $request->getParameter('action');
         switch ($action) {
+            case "addNewRfid":
+                $response = $this->addNewRfid($request);
+                break;
             case "emailHandle":
                 $response = $this->emailHandle($request);
                 break;
@@ -70,6 +103,23 @@ final class ApiPresenter implements IPresenter
     {
         $err_count = $this->emailService->handle();
         return ["s" => "ok", "email_err" => $err_count];
+    }
+
+    /**
+     * Check all specified variables that they are not empty
+     * @param mixed ...$var
+     * @return bool
+     */
+    private function notEmpty(...$var):bool
+    {
+        foreach ($var as $item)
+        {
+            if(empty($item))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     private function saveTemp(Request $request)
@@ -141,17 +191,20 @@ final class ApiPresenter implements IPresenter
             return ["s" => "err", "error" => "Empty or invalid request!"];
         }
         //check existing station and user
-        $row = $this->database->table('stations')->where("id_station = ?", $id_station)->fetch();
+        $row = $this->database->table('stations')->where("id", $id_station)->fetch();
 
         if (!$row) {
             return ["s" => "err", "error" => "ApiPresenter doesnt exist!"];
         }
 
+        $user=$this->orm->users->getBy(["rfid"=>$user_rfid]);
+
         $result = $this->database->table('access_log')->insert([
             "datetime" => new DateTime,
-            "user_rfid" => $user_rfid,
+            "rfid" => $user_rfid,
             "status" => $status,
-            "id_station" => $id_station
+            "id_station" => $id_station,
+            "id_user" => $user ? $user->id : null
         ]);
         if (!$result) {
             return ["s" => "err", "error" => "Error while saving in database!"];
@@ -173,13 +226,13 @@ final class ApiPresenter implements IPresenter
             return ["s" => "err", "error" => "Id of station not specified or in bad format!"];
         }
         $stations = $this->database->table('stations');
-        $row = $stations->where("id_station = ?", $id_station)->fetch();
+        $row = $stations->where("id", $id_station)->fetch();
 
         if (!$row) {
             return ["s" => "err", "error" => "Id of station not exists!"];
         }
 
-        $row = $this->database->table('stations_users')->where("id_station = ?", $id_station);
+        $row = $this->database->table('stations_x_users')->where("id_station = ?", $id_station);
 
         if (!$row) {
             return ["s" => "ok", "u" => ""];
@@ -187,15 +240,15 @@ final class ApiPresenter implements IPresenter
         $response = ["s" => "ok", "u" => array()];
         $count = 0;
         foreach ($row as $value) {
-            $user = $this->database->table('users')->where("id_user = ?", $value["id_user"])->fetch();
+            $user = $this->database->table('users')->where("id", $value["id_user"])->fetch();
             if (!$user) {
                 continue;
             }
             if (($value["perm"] == 2 || $value["perm"] == 3) && $user["pin"] != "") {
-                array_push($response["u"], ["r" => $user["user_rfid"], "p" => $value["perm"], "i" => $user["pin"]]);
+                array_push($response["u"], ["r" => $user["rfid"], "p" => $value["perm"], "i" => $user["pin"]]);
                 $count++;
             } else if ($value["perm"] == 1) {
-                array_push($response["u"], ["r" => $user["user_rfid"], "p" => $value["perm"]]);
+                array_push($response["u"], ["r" => $user["rfid"], "p" => $value["perm"]]);
                 $count++;
             }
 
@@ -205,7 +258,7 @@ final class ApiPresenter implements IPresenter
 
 
         //$response["d"] = (string) json_encode($response);
-        $this->database->table('stations')->where("id_station = ?", $id_station)->update(["last_update" => new Datetime]);
+        $this->database->table('stations')->where("id", $id_station)->update(["last_update" => new Datetime]);
         //Tracy\Debugger::dump($response);
         //return new Responses\TextResponse("");
 

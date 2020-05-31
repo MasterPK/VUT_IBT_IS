@@ -40,6 +40,9 @@ class Authenticator implements Nette\Security\IAuthenticator
             throw new Nette\Security\AuthenticationException('Account is not active!');
         }
 
+        $user->lastLogin=new Nette\Utils\DateTime();
+        $this->orm->persistAndFlush($user);
+
         return new \Nette\Security\Identity($user->id, $user->roles);
     }
 }

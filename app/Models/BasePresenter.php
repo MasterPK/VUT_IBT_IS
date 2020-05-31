@@ -58,8 +58,9 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
      *  });
      * @param array $options Holds toast options. Array has to has same syntax like original library. See documentation at https://izitoast.marcelodolza.com/.
      * Implicitly sets position of toast at top right. You cannot change this because this position is best for template.
+     * @param bool $refreshAll If true, whole page will be refreshed. Useful for refresh data on page.
      */
-    public function showToast(array $options)
+    public function showToast(array $options, bool $refreshAll=false)
     {
         if (!$this->isAjax() || $options == null || empty($options)) {
             return;
@@ -73,7 +74,14 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
         $html .= "});";
 
         $this->template->toastHTML = $html;
-        $this->redrawControl("toastSnippet");
+        if($refreshAll)
+        {
+            $this->redrawControl("all");
+        }else
+        {
+            $this->redrawControl("toastSnippet");
+        }
+
 
     }
 
@@ -81,22 +89,32 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
      * Helper function to easily show toast notification.
      * You can only specify message.
      * For full options use function showToast.
-     * @param string $message Message to be displayed.
+     * @param string $message Message to be displayed. If not specified, use generic message.
+     * @param bool $refreshAll If true, whole page will be refreshed. Useful for refresh data on page.
      */
-    public function showDangerToast(string $message)
+    public function showDangerToast(string $message=null, bool $refreshAll=false)
     {
-        $this->showToast(["color"=>"red","message"=>$message]);
+        if($message==null)
+        {
+            $message=$this->translate("all.error");
+        }
+        $this->showToast(["color"=>"red","message"=>$message],$refreshAll);
     }
 
     /**
      * Helper function to easily show toast notification.
      * You can only specify message.
      * For full options use function showToast.
-     * @param string $message Message to be displayed.
+     * @param string $message Message to be displayed. If not specified, use generic message.
+     * @param bool $refreshAll If true, whole page will be refreshed. Useful for refresh data on page.
      */
-    public function showSuccessToast(string $message)
+    public function showSuccessToast(string $message=null, bool $refreshAll=false)
     {
-        $this->showToast(["color"=>"green","message"=>$message]);
+        if($message==null)
+        {
+            $message=$this->translate("all.success");
+        }
+        $this->showToast(["color"=>"green","message"=>$message],$refreshAll);
     }
 
     protected function startup()
@@ -146,6 +164,7 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
         $this->showToast(["message"=>$this->translate("messages.main.global.localeChanged"),"color"=>"green"]);
         $this->redrawControl("all");
     }
+
 
 
 }

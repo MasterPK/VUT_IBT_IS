@@ -27,16 +27,7 @@
     </div>
 {/define}
 
-{define col-createdAt}
-    <td class="grid-col-createdAt">
-        {date_format($row->createdAt,"d.m.Y H:i:s")}
-    </td>
-{/define}
 
-{define row-actions}
-    <!--$_args["presenter"]->selectedUser-->
-    <a href="{plink assignRfidToUser! $primary, $row->rfid, $selectedUser}" class="btn btn-primary btn-sm">{_assignRfid}</a>
-{/define}
 
 
 

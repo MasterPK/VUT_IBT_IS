@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Models\Orm\Users;
 
 
+use App\Models\Orm\LikeFilterFunction;
+use Nextras\Orm\Collection\ICollection;
 use Nextras\Orm\Entity\IEntity;
 use Nextras\Orm\Repository\Repository;
 
@@ -78,5 +80,10 @@ class UsersRepository extends Repository
         }
         $this->persistAndFlush($user);
     }
+
+
+
+
+
 
 }

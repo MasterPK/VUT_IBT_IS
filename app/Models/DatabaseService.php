@@ -7,6 +7,11 @@ use Exception;
 use Nette;
 use Throwable;
 
+/**
+ * Class DatabaseService
+ * @package App\Models
+ * @deprecated
+ */
 class DatabaseService
 {
     private $database;

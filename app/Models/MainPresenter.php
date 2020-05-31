@@ -63,6 +63,7 @@ class MainPresenter extends BasePresenter
     /**
      * Set up static roles and permission ACL list.
      * You need to manually create resources and
+     * @deprecated
      */
     private function setUpPermissions(): void
     {
@@ -100,6 +101,7 @@ class MainPresenter extends BasePresenter
      * @throws Nette\InvalidArgumentException If $permission is outside of specific bounds.
      * @throws Nette\Security\AuthenticationException If user has no access to resource.
      * @throws Exception When fatal error.
+     * @deprecated
      */
     protected function checkPermission(int $permission, string $resource = null): bool
     {
@@ -135,7 +137,6 @@ class MainPresenter extends BasePresenter
     protected function beforeRender()
     {
         parent::beforeRender();
-        $userData = $this->getUser()->getIdentity()->data;
 
         // User full name
         $this->template->userName = $this->user->firstName . " " . $this->user->surName;
@@ -177,6 +178,7 @@ class MainPresenter extends BasePresenter
     /**
      * Update current identity with updated data from database.
      * @param array $data New data.
+     * @deprecated
      */
     protected function updateUserIdentity($data)
     {

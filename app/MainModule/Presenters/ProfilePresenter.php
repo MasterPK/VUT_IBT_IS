@@ -17,10 +17,20 @@ final class ProfilePresenter extends MainPresenter
     /** @var DatabaseService @inject */
     public $databaseService;
 
+    /** @var @persistent */
+    public $tabSettings;
+
     public function startup()
     {
         parent::startup();
         $this->checkPermission(self::EDIT);
+    }
+
+    public function beforeRender()
+    {
+        parent::beforeRender();
+        if($this->tabSettings!=null)
+            $this->template->tab=$this->tabSettings;
     }
 
     public function renderDefault()
@@ -35,7 +45,6 @@ final class ProfilePresenter extends MainPresenter
     public function createComponentNewPasswordForm()
     {
         $form = new Form();
-        $userData = $this->getUser()->getIdentity()->data;
 
         $form->addPassword("oldPassword")
             ->setRequired($this->translate("messages.main.global.missing"))
@@ -80,9 +89,9 @@ final class ProfilePresenter extends MainPresenter
     {
         try {
             $this->databaseService->updatePassword($this->getUser()->getIdentity()->data["email"], $values->newPassword);
-            $this->showSuccessToast($this->translate("messages.main.profile.passwordChangedSuccessfully"));
+            $this->showSuccessToast($this->translate("messages.main.profile.passwordChangedSuccessfully"),true);
         } catch (UserNotFoundException $e) {
-            $this->showDangerToast($e->getMessage());
+            $this->showDangerToast($e->getMessage(),true);
         }
     }
 
@@ -90,15 +99,15 @@ final class ProfilePresenter extends MainPresenter
     {
         $form = new Form();
 
-        $userData = $this->getUser()->getIdentity()->data;
+        $userData = $this->user;
 
-        $form->addText("firstName")
-            ->setDefaultValue($userData["firstName"])
+        $form->addText("first_name")
+            ->setDefaultValue($userData->firstName)
             ->setRequired($this->translate("messages.main.global.missing"))
             ->setHtmlAttribute("class", "form-control");
 
-        $form->addText("surName")
-            ->setDefaultValue($userData["surName"])
+        $form->addText("sur_name")
+            ->setDefaultValue($userData->surName)
             ->setRequired($this->translate("messages.main.global.missing"))
             ->setHtmlAttribute("class", "form-control");
 
@@ -106,21 +115,21 @@ final class ProfilePresenter extends MainPresenter
             ->setRequired($this->translate("messages.main.global.missing"))
             ->setHtmlAttribute("class", "form-control")
             ->setDisabled()
-            ->setDefaultValue($userData["email"]);
+            ->setDefaultValue($userData->email);
 
         $form->addHidden("email")
-            ->setDefaultValue($userData["email"]);
+            ->setDefaultValue($userData->email);
 
         $form->addText("rfid")
             ->setRequired($this->translate("messages.main.global.missing"))
             ->setHtmlAttribute("class", "form-control")
             ->setDisabled()
-            ->setDefaultValue($userData["rfid"]);
+            ->setDefaultValue($userData->rfid);
 
         $form->addText("pin")
             ->setRequired($this->translate("messages.main.global.missing"))
             ->setHtmlAttribute("class", "form-control")
-            ->setDefaultValue($userData["pin"]);
+            ->setDefaultValue($userData->pin);
 
         $form->addSubmit("submit", $this->translate("messages.main.profile.submit"))
             ->setHtmlAttribute("class", "btn btn-primary float-right");
@@ -132,14 +141,14 @@ final class ProfilePresenter extends MainPresenter
 
     public function editProfileFormSuccess($form, ArrayHash $values)
     {
-        $row = $this->databaseService->profileUpdate((array)$values);
-        $this->updateUserIdentity($row);
-        $this->redrawControl("all");
+        $this->databaseService->profileUpdate((array)$values);
+        $this->showSuccessToast($message=$this->translate("all.success"),true);
     }
 
     public function handleTab($tab)
     {
         $this->template->tab = $tab;
+        $this->tabSettings=$tab;
         $this->redrawControl("content");
     }
 

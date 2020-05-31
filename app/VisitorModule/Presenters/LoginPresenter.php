@@ -12,6 +12,7 @@ use App\Controls;
 final class LoginPresenter extends App\Models\BasePresenter
 {
 
+
     protected function createComponentSignInForm(): Form
     {
         $form = new Form;
@@ -33,7 +34,7 @@ final class LoginPresenter extends App\Models\BasePresenter
     }
 
 
-    public function beforeRender()
+    public function renderDefault()
     {
 
         $user = $this->getUser();
@@ -50,20 +51,19 @@ final class LoginPresenter extends App\Models\BasePresenter
         $this->alertText = $this->translate("messages.visitor.signOutSuccess");
         $this->disallowAjax();
         $this->redirect(":Visitor:Login:");
-        //$this->redrawDefault(true);
     }
 
     public function signInFormSucceeded(Form $form, \stdClass $values)
     {
-        //$values = $form->getValues();
         $user = $this->getUser();
+        if ($values->permanent == true) {
+            $this->user->setExpiration("14 days",Nette\Security\IUserStorage::CLEAR_IDENTITY);
+        } else {
+            $this->user->setExpiration('30 minutes',Nette\Security\IUserStorage::CLEAR_IDENTITY);
+        }
+
         try {
             $user->login($values->email, $values->password);
-            if ($values->permanent == true) {
-                $user->setExpiration("30 days");
-            } else {
-                $user->setExpiration('30 days');
-            }
 
             $this->payload->allowAjax = FALSE;
             $this->redirect(':Main:Homepage:default');
@@ -76,9 +76,5 @@ final class LoginPresenter extends App\Models\BasePresenter
         }
     }
 
-    public function renderDefault()
-    {
-
-    }
 
 }

@@ -8,7 +8,7 @@ use Nextras\Dbal\Utils\DateTimeImmutable;
 use Nextras\Orm\Entity\Entity;
 
 /**
- * @property int                $id {primary}
+ * @property-read int           $id {primary}
  * @property string             $rfid
  * @property DateTimeImmutable  $createdAt
  */

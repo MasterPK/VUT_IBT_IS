@@ -20,9 +20,43 @@
             <div class="card">
                 <div class="card-header">
                     <p class="card-title">Nápověda</p>
+                    {if $locale==false}<span class="ml-1 right badge badge-warning">Documentation is available only in Czech!</span>{/if}
                 </div>
                 <div class="card-body">
-                    Registrace <a href="{link :Main:Manager:assignRfidToUser 1}" class="btn btn-primary btn-sm">{_all.assignRfid}</a>
+                    Registraci uživatele může provádět manažer a správce, Nicméně přidat RFID do systému na terminálu může z technických důvodů pouze
+                    správce.<br><br>
+
+                    Přidání nového RFID do systému pomocí terminálu:
+                    <ul>
+                        <li>Přiložte čip správce k terminálu a zadejte osobní PIN kód.</li>
+                        <li>Klikněte na tlačítko "Registrace RFID".</li>
+                        <li>Přilože čip ke čtečce a vyčkejte na zobrazení identifikátoru.</li>
+                        <li>Klikněte na tlačítko "Potvrdit". Popřípadě můžete opraci zrušit tlačítkem "Zrušit".</li>
+                        <li>Čip je nyní přidá do systému a může být přiřazen k uživateli.</li>
+                    </ul>
+                    <br>
+                    Přiřazení RFID uživateli:<br>
+                    <ul>
+                        <li>Přejděte na stránku Modul manažera -> Správa uživatelů.</li>
+                        <li>Klikněte na tlačítko "Přiřadit RFID" u daného uživatele.</li>
+                        <li>Vyberte RFID ze seznamu kliknutím na tlačítko "Přiřadit" u daného řádku.</li>
+                        <li>Čip je nyní přiřazen k uživateli.</li>
+                    </ul>
+
+                    Poznámka: Pro přístup uživatele do systému nestačí, aby měl přiřazené RFID, jeho účet musí být také schválený.
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-title">{_all.currentSettings}</p>
+                </div>
+                <div class="card-body">
+                    {_all.user}: {$selectedUser->firstName} {$selectedUser->surName}<br>
+                    RFID: {$selectedUser->rfid}
                 </div>
             </div>
         </div>
@@ -39,5 +73,6 @@
 {/block}
 
 {block scripts}
+
 
 {/block}

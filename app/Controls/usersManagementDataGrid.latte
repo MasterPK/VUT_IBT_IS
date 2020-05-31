@@ -29,10 +29,19 @@
 
 {/define}
 
+{define col-registrationDate}
+    <td class="grid-col-registrationDate">
+        {date_format($row->registrationDate,"d.m.Y H:i:s")}
+    </td>
+{/define}
+
+
+
 
 {define row-actions}
-    <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm">{_edit}</a>
-    <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-sm">{_assignRfid}</a>
+    <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_edit}</a>
+    <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-sm m-1">{_assignRfid}</a>
+    <a href="{plink :Main:Manager:userStationsPerms $primary}" class="btn btn-primary btn-sm m-1">{_detail}</a>
 {/define}
 
 {define global-actions}
