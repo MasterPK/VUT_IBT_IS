@@ -10,8 +10,8 @@ use Nextras\Orm\Entity\Entity;
 
 /**
  * @property-read int $id {primary}
- * @property Station $idStation {m:1 Station, oneSided=true}
- * @property User $idUser {m:1 User, oneSided=true}
+ * @property Station $idStation {m:1 Station, oneSided=true, cascade=[persist]}
+ * @property User $idUser {m:1 User, oneSided=true, cascade=[persist]}
  * @property int $perm {enum self::PERM_*}
  */
 class StationsUsers extends Entity

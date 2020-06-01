@@ -1,0 +1,62 @@
+{block header}
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0 text-dark">{_all.newPerm}</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a n:href="Homepage:">{_messages.main.global.home}</a></li>
+                <li class="breadcrumb-item"><a n:href="userStationsPerms">{_all.stationsPerms}</a></li>
+                <li class="breadcrumb-item active">{_all.newPerm}</li>
+            </ol>
+        </div>
+    </div>
+{/block}
+
+{block content}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        vybrat stanici
+                    </h3>
+                </div>
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {_all.summary}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form n:name="newPerm">
+                        <div class="form-group">
+                            <label>{_all.stationName}</label>
+                            {input station}
+                        </div>
+                        <div class="form-group">
+                            <label>{_all.accessMode}</label>
+                            {input mode}
+                        </div>
+                        <div class="form-group">
+                            <label>{_all.user}</label>
+                            {input userPlaceholder}
+                        </div>
+                        {input submit}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block scripts}
+
+{/block}

@@ -35,6 +35,14 @@
     </td>
 {/define}
 
+{define col-lastLogin}
+    <td class="grid-col-lastLogin">
+        {ifset $row->lastLogin}
+            {date_format($row->lastLogin,"d.m.Y H:i:s")}
+        {/ifset}
+    </td>
+{/define}
+
 
 
 

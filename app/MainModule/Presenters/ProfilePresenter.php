@@ -29,8 +29,8 @@ final class ProfilePresenter extends MainPresenter
     public function beforeRender()
     {
         parent::beforeRender();
-        if($this->tabSettings!=null)
-            $this->template->tab=$this->tabSettings;
+        if ($this->tabSettings != null)
+            $this->template->tab = $this->tabSettings;
     }
 
     public function renderDefault()
@@ -89,9 +89,9 @@ final class ProfilePresenter extends MainPresenter
     {
         try {
             $this->databaseService->updatePassword($this->getUser()->getIdentity()->data["email"], $values->newPassword);
-            $this->showSuccessToast($this->translate("messages.main.profile.passwordChangedSuccessfully"),true);
+            $this->showSuccessToast($this->translate("messages.main.profile.passwordChangedSuccessfully"), true);
         } catch (UserNotFoundException $e) {
-            $this->showDangerToast($e->getMessage(),true);
+            $this->showDangerToast($e->getMessage(), true);
         }
     }
 
@@ -129,7 +129,9 @@ final class ProfilePresenter extends MainPresenter
         $form->addText("pin")
             ->setRequired($this->translate("messages.main.global.missing"))
             ->setHtmlAttribute("class", "form-control")
-            ->setDefaultValue($userData->pin);
+            ->setDefaultValue($userData->pin)
+            ->setMaxLength(4)
+            ->addRule(Form::PATTERN, 'Pouze číslice / Numbers only', '^[0-9]*$');
 
         $form->addSubmit("submit", $this->translate("messages.main.profile.submit"))
             ->setHtmlAttribute("class", "btn btn-primary float-right");
@@ -142,13 +144,13 @@ final class ProfilePresenter extends MainPresenter
     public function editProfileFormSuccess($form, ArrayHash $values)
     {
         $this->databaseService->profileUpdate((array)$values);
-        $this->showSuccessToast($message=$this->translate("all.success"),true);
+        $this->showSuccessToast($message = $this->translate("all.success"), true);
     }
 
     public function handleTab($tab)
     {
         $this->template->tab = $tab;
-        $this->tabSettings=$tab;
+        $this->tabSettings = $tab;
         $this->redrawControl("content");
     }
 

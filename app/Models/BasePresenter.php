@@ -31,6 +31,9 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
     /** @var Orm @inject */
     public $orm;
 
+    /** @var Nette\Database\Context @inject */
+    public $database;
+
     public function __construct(Nette\Localization\ITranslator $translator)
     {
         parent::__construct();
@@ -90,7 +93,7 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
      * You can only specify message.
      * For full options use function showToast.
      * @param string $message Message to be displayed. If not specified, use generic message.
-     * @param bool $refreshAll If true, whole page will be refreshed. Useful for refresh data on page.
+     * @param bool $refreshAll @deprecated If true, whole page will be refreshed. Useful for refresh data on page.
      */
     public function showDangerToast(string $message=null, bool $refreshAll=false)
     {
@@ -106,7 +109,37 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
      * You can only specify message.
      * For full options use function showToast.
      * @param string $message Message to be displayed. If not specified, use generic message.
-     * @param bool $refreshAll If true, whole page will be refreshed. Useful for refresh data on page.
+     */
+    public function showSuccessToastAndRefresh(string $message=null)
+    {
+        if($message==null)
+        {
+            $message=$this->translate("all.success");
+        }
+        $this->showToast(["color"=>"green","message"=>$message],true);
+    }
+
+    /**
+     * Helper function to easily show toast notification.
+     * You can only specify message.
+     * For full options use function showToast.
+     * @param string $message Message to be displayed. If not specified, use generic message.
+     */
+    public function showDangerToastAndRefresh(string $message=null)
+    {
+        if($message==null)
+        {
+            $message=$this->translate("all.error");
+        }
+        $this->showToast(["color"=>"red","message"=>$message],true);
+    }
+
+    /**
+     * Helper function to easily show toast notification.
+     * You can only specify message.
+     * For full options use function showToast.
+     * @param string $message Message to be displayed. If not specified, use generic message.
+     * @param bool $refreshAll @deprecated If true, whole page will be refreshed. Useful for refresh data on page.
      */
     public function showSuccessToast(string $message=null, bool $refreshAll=false)
     {
