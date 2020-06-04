@@ -17,6 +17,7 @@ use Nette\ComponentModel\IComponent;
 use Nextras\Datagrid\Datagrid;
 use Nextras\Dbal\UniqueConstraintViolationException;
 use Nextras\Orm\Collection\ICollection;
+use Tracy\Debugger;
 
 class ManagerPresenter extends MainPresenter
 {
@@ -28,14 +29,15 @@ class ManagerPresenter extends MainPresenter
     {
         parent::startup();
         $this->checkPermission(self::EDIT);
-        $this->isAllowed(Permissions::MANAGER);
+        if (!$this->isAllowed(Permissions::MANAGER)) {
+            $this->redirect(":Main:Homepage:default");
+        }
     }
 
     public function renderUsersManagement()
     {
         $this->selectedUser = null;
     }
-
 
     public function createComponentUsersDataGrid()
     {
@@ -66,23 +68,29 @@ class ManagerPresenter extends MainPresenter
         $grid->addColumn("lastLogin", $this->translate("datagrid.lastLogin"))
             ->enableSort();
 
-        $grid->setDatasourceCallback(function ($filter, $order) {
-            if (isset($filter["registration"]) && $filter["registration"] == -1) {
-                unset($filter["registration"]);
-            }
+        $grid->setDatasourceCallback(function ($filter, $order, $paginator) {
 
-            $filter["permission<="] = 1;
-
-            if (isset($order[0])) {
-                $data = $this->orm->users->findBy($filter)->orderBy($order[0], $order[1])->fetchAll();
+            if ($this->user->permission == Permissions::ADMIN) {
+                $customFilter = ["permission<=" => 3];
             } else {
-                $data = $this->orm->users->findBy($filter)->fetchAll();
+                $customFilter = ["permission<=" => 1];
             }
 
-            return $data;
+            return $this->dataGridFactory->createDataSource("users", $filter, $order, ["registration"], [], $paginator);
 
         });
 
+        $grid->setPagination(10, function ($filter, $order) {
+
+            if ($this->user->permission == Permissions::ADMIN) {
+                $customFilter = ["permission<=" => 3];
+            } else {
+                $customFilter = ["permission<=" => 1];
+            }
+            return count($this->dataGridFactory->createDataSource("users", $filter, $order, ["registration"], []));
+        });
+
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/usersManagementDataGrid.latte');
 
 
@@ -116,11 +124,10 @@ class ManagerPresenter extends MainPresenter
             ])
                 ->setHtmlAttribute("class", "form-control");
 
-            // set other fileds, inputs
 
             // these buttons are not compulsory
-            $form->addSubmit('filter', "filter")->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
-            $form->addSubmit('cancel', "cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
+            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
 
             return $form;
         });
@@ -151,13 +158,14 @@ class ManagerPresenter extends MainPresenter
 
         $grid->setEditFormCallback(function (Nette\Forms\Container $row) {
             $values = $row->getValues();
-            if ($this->orm->users->getById($values->id)->getValue("permission") > Permissions::MANAGER) {
+            if (!(($this->user->permission == Permissions::MANAGER && $this->orm->users->getById($values->id)->getValue("permission") < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
                 return;
             }
             $this->orm->users->updateUser((int)$values->id, $values);
+
         });
 
-        $grid->addGlobalAction('activateUsers', "activateUsers", function (array $userIds, Datagrid $grid) {
+        $grid->addGlobalAction('activateUsers', $this->translate("all.activateUsers"), function (array $userIds, Datagrid $grid) {
 
             foreach ($userIds as $id) {
                 if ($this->orm->users->getById($id)->getValue("permission") > Permissions::MANAGER) {
@@ -168,11 +176,11 @@ class ManagerPresenter extends MainPresenter
             $grid->redrawControl('rows');
         });
 
-        $grid->addGlobalAction('deactivateUsers', "deactivateUsers", function (array $userIds, Datagrid $grid) {
+        $grid->addGlobalAction('deactivateUsers', $this->translate("all.deactivateUsers"), function (array $userIds, Datagrid $grid) {
 
             foreach ($userIds as $id) {
                 // Protection from editing user with higher role then current user
-                if ($this->orm->users->getById($id)->getValue("permission") > Permissions::MANAGER) {
+                if (!(($this->user->permission == Permissions::MANAGER && $this->orm->users->getById($id)->getValue("permission") < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
                     continue;
                 }
                 $this->orm->users->updateUser($id, ["registration" => 0]);
@@ -181,8 +189,7 @@ class ManagerPresenter extends MainPresenter
         });
 
 
-        $grid->setTranslator($this->translator->createPrefixedTranslator("datagrid"));
-
+        $grid->setTranslator($this->translator);
 
         return $grid;
 
@@ -190,7 +197,7 @@ class ManagerPresenter extends MainPresenter
 
     public function renderAssignRfidToUser($id)
     {
-        if ($id == null & $this->selectedUser == null) {
+        if ($id == null && $this->selectedUser == null) {
             $this->redirect("Manager:usersManagement");
         }
 
@@ -200,7 +207,7 @@ class ManagerPresenter extends MainPresenter
 
         // Protection from editing user with higher role than current user
         $user = $this->orm->users->getById($this->selectedUser);
-        if ($user->permission > Permissions::MANAGER) {
+        if (!(($this->user->permission == Permissions::MANAGER && $user->permission < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
             $this->redirect("Manager:usersManagement");
         }
 
@@ -218,7 +225,7 @@ class ManagerPresenter extends MainPresenter
         }
         // Protection from editing user with higher role than current user
         $user = $this->orm->users->getById($selectedUser);
-        if ($user->permission > Permissions::MANAGER) {
+        if (!(($this->user->permission == Permissions::MANAGER && $user->permission < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
             $this->redirect("Manager:usersManagement");
         }
         $newRfid = $this->orm->newRfids->getById($newRfidId);
@@ -239,7 +246,7 @@ class ManagerPresenter extends MainPresenter
 
     public function renderUserStationsPerms($idUser)
     {
-        if ($idUser == null & $this->selectedUser == null) {
+        if ($idUser == null && $this->selectedUser == null) {
             $this->redirect("Manager:usersManagement");
         }
 
@@ -249,11 +256,12 @@ class ManagerPresenter extends MainPresenter
 
         // Protection from editing user with higher role than current user
         $user = $this->orm->users->getById($this->selectedUser);
-        if ($user->permission > Permissions::MANAGER) {
+        if (!(($this->user->permission == Permissions::MANAGER && $user->permission < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
             $this->redirect("Manager:usersManagement");
         }
 
         $this->template->selectedUser = $user;
+
 
         $this->selectedUser = $user->id;
 
@@ -271,7 +279,7 @@ class ManagerPresenter extends MainPresenter
             $this->redirect("Manager:usersManagement");
         }
 
-        if ($user->permission > Permissions::MANAGER) {
+        if (!(($this->user->permission == Permissions::MANAGER && $user->permission < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
             $this->redirect("Manager:usersManagement");
         }
 
@@ -283,7 +291,7 @@ class ManagerPresenter extends MainPresenter
     public function createComponentNewRfidsGrid()
     {
 
-        $grid = new \Nextras\Datagrid\Datagrid($this);
+        $grid = new Datagrid();
 
         $grid->setDatasourceCallback(function ($filter, $order) {
             $filters = [ICollection:: AND];
@@ -315,7 +323,25 @@ class ManagerPresenter extends MainPresenter
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/assignRfidToUserDataGrid.latte');
 
         $grid->setTranslator($this->translator);
-        //$grid->template->setParameters(["selectedUser"=>$this->selectedUser->id]);
+
+        $grid->setFilterFormFactory(function () {
+            $form = new Nette\Forms\Container();
+            $form->addText('id')
+                ->setHtmlAttribute("class", "form-control")
+                ->addCondition(Form::INTEGER);
+
+
+            $form->addText('rfid')
+                ->setHtmlAttribute("class", "form-control");
+
+            $form->addText('createdAt')
+                ->setHtmlAttribute("class", "form-control");
+
+            $form->addSubmit('filter', "filter")->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
+            $form->addSubmit('cancel', "cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+
+            return $form;
+        });
 
         $grid->onRender[] = function (Datagrid $datagrid) {
             $datagrid->template->selectedUser = $this->selectedUser;
@@ -323,7 +349,6 @@ class ManagerPresenter extends MainPresenter
 
         return $grid;
     }
-
 
     public function createComponentUserStationsPerms()
     {
@@ -354,6 +379,10 @@ class ManagerPresenter extends MainPresenter
             return $result;
         });
 
+        $grid->onRender[] = function (Datagrid $datagrid) {
+            $datagrid->template->user = $this->user;
+        };
+
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/userStationPermsDataGrid.latte');
 
         $grid->addColumn("id", "ID");
@@ -371,10 +400,20 @@ class ManagerPresenter extends MainPresenter
 
             $form = new Nette\Forms\Container();
 
-            $form->addSelect("perm", null, [
-                StationsUsers::PERM_BASIC => $this->translate("all.basic"),
-                StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase")
-            ])
+            if ($this->user->permission == Permissions::ADMIN) {
+                $stationPerms = [
+                    StationsUsers::PERM_BASIC => $this->translate("all.basic"),
+                    StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
+                    StationsUsers::PERM_ADMIN => $this->translate("all.admin"),
+                ];
+            } else {
+                $stationPerms = [
+                    StationsUsers::PERM_BASIC => $this->translate("all.basic"),
+                    StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
+                ];
+            }
+
+            $form->addSelect("perm", null, $stationPerms)
                 ->setHtmlAttribute("class", "form-control");
 
 
@@ -392,9 +431,9 @@ class ManagerPresenter extends MainPresenter
         $grid->setEditFormCallback(function (Nette\Forms\Container $row) {
             $values = $row->getValues();
 
-            $perm=$this->orm->stationsUsers->getById($values->id);
+            $perm = $this->orm->stationsUsers->getById($values->id);
 
-            if ($perm->idStation->mode == Station::MODE_CHECK_ONLY && $values->perm > StationsUsers::PERM_BASIC) {
+            if ($perm->idStation->mode == Station::MODE_CHECK_ONLY && $values->perm == StationsUsers::PERM_TWO_PHASE) {
                 $this->showDangerToastAndRefresh($this->translate("all.badAccessMode"));
                 return;
             }
@@ -419,8 +458,30 @@ class ManagerPresenter extends MainPresenter
         if (!$row)
             return;
 
-        if ($row->idUser->permission > Permissions::MANAGER) {
+        if (!(($this->user->permission == Permissions::MANAGER && $row->permission < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
             $this->redirect("Manager:usersManagement");
+        }
+
+        $this->orm->stationsUsers->removeAndFlush($row);
+
+        $this->showSuccessToast($this->translate("all.success"), true);
+    }
+
+    public function handleDeleteStationPerm($id)
+    {
+
+        if ($id == null) {
+            $this->redirect("Manager:stations");
+        }
+        // Protection from editing user with higher role than current user
+
+        $row = $this->orm->stationsUsers->getById($id);
+
+        if (!$row)
+            return;
+
+        if (!$this->user->permission == Permissions::ADMIN) {
+            $this->redirect("Manager:stations");
         }
 
         $this->orm->stationsUsers->removeAndFlush($row);
@@ -446,10 +507,22 @@ class ManagerPresenter extends MainPresenter
         $form->addSelect("station", null, $stations)
             ->setHtmlAttribute("class", "form-control");
 
-        $form->addSelect("mode", null, [
-            StationsUsers::PERM_BASIC => $this->translate("all.basic"),
-            StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase")
-        ])
+
+        if ($this->user->permission == Permissions::ADMIN) {
+            $stationPerms = [
+                StationsUsers::PERM_BASIC => $this->translate("all.basic"),
+                StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
+                StationsUsers::PERM_ADMIN => $this->translate("all.admin"),
+            ];
+        } else {
+            $stationPerms = [
+                StationsUsers::PERM_BASIC => $this->translate("all.basic"),
+                StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
+            ];
+        }
+
+
+        $form->addSelect("mode", null, $stationPerms)
             ->setHtmlAttribute("class", "form-control");
 
         $form->addText("userPlaceholder")
@@ -469,6 +542,19 @@ class ManagerPresenter extends MainPresenter
     public function newPermSave(Form $form)
     {
         $values = $form->getValues();
+        // Protection from editing user with higher role than current user
+
+        $row = $this->orm->users->getBy(["id" => $values->userId]);
+
+        if (!$row)
+            return;
+
+        if (!(($this->user->permission == Permissions::MANAGER && $row->permission < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
+            $this->redirect("Manager:usersManagement");
+        }
+
+        // end of protection
+
 
         $station = $this->orm->stations->getById($values->station);
 
@@ -477,7 +563,7 @@ class ManagerPresenter extends MainPresenter
             return;
         }
 
-        if ($station->mode == Station::MODE_CHECK_ONLY && ($values->mode == StationsUsers::PERM_TWO_PHASE || $values->mode == StationsUsers::PERM_ADMIN)) {
+        if ($station->mode == Station::MODE_CHECK_ONLY && ($values->mode == StationsUsers::PERM_TWO_PHASE)) {
             $this->showDangerToastAndRefresh($this->translate("all.badAccessMode"));
             return;
         }
@@ -494,14 +580,167 @@ class ManagerPresenter extends MainPresenter
             return;
         }
 
+
         try {
-            $this->orm->stationsUsers->persistAndFlush($perm);
-            $this->redirect("userStationsPerms");
+            $row = $this->orm->stationsUsers->persistAndFlush($perm);
         } catch (Exception $e) {
-            $this->showDangerToast();
+            $this->showDangerToastAndRefresh();
+        }
+        if (!$row) {
+            $this->showDangerToastAndRefresh();
+        }
+        $this->redirect("userStationsPerms");
+
+
+    }
+
+    public function handleRemoveUserRfid()
+    {
+        if ($this->selectedUser == null) {
+            return;
+        }
+
+        $row = $this->orm->users->getById($this->selectedUser);
+
+        // Security check
+        if (!(($this->user->permission == Permissions::MANAGER && $row->permission < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
+            $this->redirect("Manager:usersManagement");
+        }
+
+        $newRfid = new NewRfid();
+        $newRfid->rfid = $row->rfid;
+        $newRfid->createdAt = new Nette\Utils\DateTime();
+
+        $row->rfid = "";
+
+        if ($this->orm->users->persistAndFlush($row) && $this->orm->newRfids->persistAndFlush($newRfid)) {
+            $this->showSuccessToastAndRefresh();
+        } else {
+            $this->showDangerToastAndRefresh();
         }
 
 
+    }
+
+    public function createComponentStationsDataGrid()
+    {
+        $grid = new Datagrid();
+
+
+        $grid->addColumn("id", "ID")
+            ->enableSort();
+        $grid->addColumn("name", $this->translate("all.name"))
+            ->enableSort();
+        $grid->addColumn("description", $this->translate("all.description"))
+            ->enableSort();
+        $grid->addColumn("lastUpdate", $this->translate("all.lastUpdate"))
+            ->enableSort();
+        $grid->addColumn("mode", $this->translate("all.stationMode"))
+            ->enableSort();
+
+        $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
+            return $this->dataGridFactory->createDataSource("stations", $filter, $order, ["mode"], [], $paginator);
+        });
+
+        $grid->setPagination(10, function ($filter, $order) {
+            return count($this->dataGridFactory->createDataSource("stations", $filter, $order, ["mode"], []));
+        });
+
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/stationsDataGrid.latte');
+
+        $grid->setFilterFormFactory(function () {
+            $form = new Nette\Forms\Container();
+            $form->addText('id')
+                ->addCondition(Form::INTEGER); // your custom input type
+
+            $form->addText('name')
+                ->setHtmlAttribute("class", "form-control");
+
+            $form->addSelect("mode", null, [
+                -1 => $this->translate("all.all"),
+                Station::MODE_NORMAL => $this->translate("all.normalMode"),
+                Station::MODE_CHECK_ONLY => $this->translate("all.checkOnlyMode")
+            ])
+                ->setHtmlAttribute("class", "form-control");
+
+
+            // these buttons are not compulsory
+            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
+            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+
+            return $form;
+        });
+
+
+        return $grid;
+    }
+
+    /** @var @persistent */
+    public $selectedStation;
+
+    public function renderStationPerms($idStation)
+    {
+        if ($idStation == null && $this->selectedStation == null) {
+            $this->redirect("Manager:usersManagement");
+        }
+
+        if ($idStation != null) {
+            $this->selectedStation = $idStation;
+        }
+
+    }
+
+    public function createComponentStationPermsDataGrid()
+    {
+        $grid = new Datagrid();
+
+        $grid->addColumn("id", "ID")
+            ->enableSort();
+        $grid->addColumn("idUser", $this->translate("all.user"))
+            ->enableSort();
+        $grid->addColumn("perm", $this->translate("all.permission"))
+            ->enableSort();
+
+        $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
+            return $this->dataGridFactory->createDataSource("stationsUsers", $filter, $order, ["perm"], ["idStation" => $station = $this->orm->stations->getById($this->selectedStation)], $paginator);
+        });
+
+        $grid->setPagination(10, function ($filter, $order) {
+            return count($this->dataGridFactory->createDataSource("stationsUsers", $filter, $order, ["perm"], ["idStation" => $station = $this->orm->stations->getById($this->selectedStation)]));
+        });
+
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/stationPermsDataGrid.latte');
+
+        $grid->setFilterFormFactory(function () {
+            $form = new Nette\Forms\Container();
+            $form->addText('id')
+                ->addCondition(Form::INTEGER); // your custom input type
+
+
+            $form->addSelect("perm", null, [
+                -1 => $this->translate("all.all"),
+                StationsUsers::PERM_BASIC => $this->translate("all.basic"),
+                StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
+                StationsUsers::PERM_ADMIN => $this->translate("all.admin")
+            ])
+                ->setHtmlAttribute("class", "form-control");
+
+
+            // these buttons are not compulsory
+            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
+            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+
+            return $form;
+        });
+
+        $grid->onRender[] = function (Datagrid $datagrid) {
+            $datagrid->template->user = $this->user;
+        };
+
+
+        return $grid;
     }
 
 

@@ -22,7 +22,7 @@ use Nextras\Orm\Relationships\ManyHasMany;
  * @property int                $registration
  * @property DateTimeImmutable  $registrationDate
  * @property DateTimeImmutable  $lastLogin {default NULL}
- * @property string             $emailToken {default ""}
+ * @property string             $token {default ""}
  * @property string             $pin {default ""}
  * @property string             $password
  * @property ManyHasMany|Station[] $stations {m:m Station::$users}

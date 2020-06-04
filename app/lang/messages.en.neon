@@ -1,6 +1,16 @@
 prefix:
     for: "message" #
 
+"- select action -": "- Select action -"
+Do: "Do"
+yesB: "YES"
+yes: "Yes"
+no: "No"
+noB: "NO"
+all: "All"
+save: "Save"
+cancel: "Cancel"
+
 visitor:
     name: "Attendance system"
     signin: "Sign in"
@@ -12,7 +22,7 @@ visitor:
     passwordMissing: "You need to specify password!"
     email: "Email address"
     sigInSuccess: "Sign in was succesful!"
-    signInError: "Email or password are incorrect!"
+    signInError: "Sign in was unsuccessful. Entered credentials are wrong or your account is disabled."
     signOutSuccess: "Sign out was successful!"
     permanentLogin: "Keep me logged in"
     registerNewUser: "Registration"
@@ -67,6 +77,6 @@ main:
     manager:
         registration: "Approved account?"
 datagrid:
-    "- select action -": "- Select action -"
+
 assignRfid:
     title: "Přiřadit osobní RFID uživateli"

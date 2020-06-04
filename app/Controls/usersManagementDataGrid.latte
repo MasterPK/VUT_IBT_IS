@@ -1,33 +1,4 @@
-{define table-open-tag}
-    <table class="table table-bordered table-hover dataTable dtr-inline">
-{/define}
 
-{define col-filter}
-    <div class="row">
-        {input $column->name class => "input-sm form-control"}
-    </div>
-{/define}
-
-{define global-filter-actions}
-    <div class="row">
-        <div class="col-lg-12 col-md-12 ">
-            {input filter}
-            {input cancel}
-        </div>
-    </div>
-{/define}
-
-{define empty-result}
-    <div class="row">
-        <div class="col-md-12">
-            <p class="text-center bg-warning color-palette">
-            {_nodata}
-            </p>
-        </div>
-    </div>
-
-
-{/define}
 
 {define col-registrationDate}
     <td class="grid-col-registrationDate">
@@ -47,33 +18,18 @@
 
 
 {define row-actions}
-    <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_edit}</a>
-    <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-sm m-1">{_assignRfid}</a>
-    <a href="{plink :Main:Manager:userStationsPerms $primary}" class="btn btn-primary btn-sm m-1">{_detail}</a>
+    <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_all.edit}</a>
+    <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-sm m-1">{_all.assignRfid}</a>
+    <a href="{plink :Main:Manager:userStationsPerms $primary}" class="btn btn-primary btn-sm m-1">{_all.detail}</a>
 {/define}
 
-{define global-actions}
-    <div class="row">
-        <div class="col-sm-2 col-xs-12">
-            <div class="form-group">
-            {input $form[actions][action] class => "form-control custom-select"}
-            </div>
-        </div>
-        <div class="col-sm-1 col-xs-12">
-            <div class="form-group">
-            {input $form[actions][process] class => 'form-control btn btn-primary btn-sm'}
-            </div>
-        </div>
-    </div>
-{/define}
 
 {define col-registration}
     <td class="grid-col-registration">
         {if $cell==0}
-            {_noB}
+            {_all.noB}
         {else}
-            {_yesB}
+            {_all.yesB}
         {/if}
     </td>
-
 {/define}

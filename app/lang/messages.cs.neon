@@ -1,6 +1,16 @@
 prefix:
     for: "zprava" # messages.prefix.for
 
+"- select action -": "- Vybrat akci -"
+Do: "Provést"
+yesB: "ANO"
+yes: "Ano"
+no: "Ne"
+noB: "NE"
+all: "Vše"
+save: "Uložit"
+cancel: "Zrušit"
+
 visitor:
     name: "Docházkový systém"
     signin: "Přihlásit se"
@@ -12,7 +22,7 @@ visitor:
     passwordMissing: "Musíte vyplnit heslo!"
     email: "Emailová adresa"
     sigInSuccess: "Přihlášení bylo úspěšné!"
-    signInError: "Email nebo heslo jsou nesprávné!"
+    signInError: "Přihlášení se nezdařilo. zadané údaje jsou chybné nebo nemáte aktivovaný účet."
     signOutSuccess: "Odhlášení proběhlo úspěšně!"
     permanentLogin: "Trvalé přihlášení"
     registerNewUser: "Registrace"
@@ -34,7 +44,7 @@ main:
     roles:
         visitor: "Návštěvník"
         registered: "Registrovaný uživatel"
-        manager: "Správce"
+        manager: "Manažer"
         admin: "Administrátor"
     global:
         title: "Docházkový systém"
@@ -67,6 +77,6 @@ main:
     manager:
         registration: "Schválený účet?"
 datagrid:
-    "- select action -": "- Vybrat akci -"
+
 assignRfid:
     title: "Přiřadit osobní RFID uživateli"

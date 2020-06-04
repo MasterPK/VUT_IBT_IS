@@ -1,0 +1,83 @@
+{define table-open-tag}
+<table class="table table-bordered table-hover dataTable dtr-inline">
+{/define}
+
+{define col-filter}
+    <div class="row">
+        {input $column->name class => "input-sm form-control"}
+    </div>
+{/define}
+
+{define global-filter-actions}
+    <div class="row">
+        <div class="col-lg-12 col-md-12 ">
+            {input filter}
+            {input cancel}
+        </div>
+    </div>
+{/define}
+
+{define empty-result}
+    <div class="row">
+        <div class="col-md-12">
+            <p class="text-center bg-warning color-palette">
+                {_all.nodata}
+            </p>
+        </div>
+    </div>
+{/define}
+
+{define global-actions}
+    <div class="row">
+        <div class="col-sm-2 col-xs-12">
+            <div class="form-group">
+                {input $form[actions][action] class => "form-control custom-select"}
+            </div>
+        </div>
+        <div class="col-sm-1 col-xs-12">
+            <div class="form-group">
+                {input $form[actions][process] class => 'form-control btn btn-primary btn-sm'}
+            </div>
+        </div>
+    </div>
+{/define}
+
+{define pagination}
+    {*******************************}
+    {php $page = $paginator->getPage()}
+    {if $paginator->pageCount < 2}
+        {php $steps = [$page]}
+    {else}
+        {php $arr = range(max($paginator->firstPage, $page - 3), min($paginator->lastPage, $page + 3))}
+        {php $count = 4}
+        {php $quotient = ($paginator->pageCount - 1) / $count}
+        {for $i = 0; $i <= $count; $i++}
+            {php $arr[] = round($quotient * $i) + $paginator->firstPage}
+        {/for}
+        {php sort($arr)}
+        {php $steps = array_values(array_unique($arr))}
+    {/if}
+    {*******************************}
+    <ul class="pagination">
+        {if $paginator->isFirst()}
+        <li class="disabled page-item"><a class="page-link">« {_all.previous}</a></li>
+        {else}
+        <li class="page-item"><a href="{link paginate!, 'page' => $paginator->page - 1}" rel="prev" class="ajax page-link">« {_all.previous}</a><li>
+            {/if}
+
+            {foreach $steps as $step}
+            {if $step == $paginator->page}
+        <li class="active page-item"><a class="page-link" href="">{$step}</a></li>
+        {else}
+        <li  class="page-item"><a href="{link paginate!, 'page' => $step}" class="ajax page-link">{$step}</a></li>
+        {/if}
+        {if $iterator->nextValue > $step + 1}<li class="disabled page-item"><a class="page-link">…</a></li>{/if}
+        {/foreach}
+
+        {if $paginator->isLast()}
+            <li class="disabled page-item"><a class="page-link">{_all.next} »</a></li>
+        {else}
+            <li class="page-item"><a href="{link paginate!, 'page' => $paginator->page + 1}" rel="next" class="ajax page-link">{_all.next} »</a></li>
+        {/if}
+    </ul>
+{/define}

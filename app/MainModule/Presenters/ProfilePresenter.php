@@ -7,6 +7,7 @@ namespace App\MainModule\Presenters;
 use App\Models\DatabaseService;
 use App\Models\MainPresenter;
 use App\Models\UserNotFoundException;
+use Exception;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 use Nette\Utils\Json;
@@ -117,6 +118,11 @@ final class ProfilePresenter extends MainPresenter
             ->setDisabled()
             ->setDefaultValue($userData->email);
 
+        $form->addText("token")
+            ->setHtmlAttribute("class", "form-control")
+            ->setDisabled()
+            ->setDefaultValue($userData->token);
+
         $form->addHidden("email")
             ->setDefaultValue($userData->email);
 
@@ -134,7 +140,7 @@ final class ProfilePresenter extends MainPresenter
             ->addRule(Form::PATTERN, 'Pouze číslice / Numbers only', '^[0-9]*$');
 
         $form->addSubmit("submit", $this->translate("messages.main.profile.submit"))
-            ->setHtmlAttribute("class", "btn btn-primary float-right");
+            ->setHtmlAttribute("class", "btn btn-primary ml-1");
 
         $form->onSuccess[] = [$this, "editProfileFormSuccess"];
 
@@ -152,6 +158,17 @@ final class ProfilePresenter extends MainPresenter
         $this->template->tab = $tab;
         $this->tabSettings = $tab;
         $this->redrawControl("content");
+    }
+
+    public function handleNewUserApiToken()
+    {
+        try {
+            $this->orm->users->newToken($this->user->id);
+            $this->showSuccessToastAndRefresh();
+        } catch (Exception $e) {
+            $this->showDangerToastAndRefresh();
+        }
+
     }
 
 }

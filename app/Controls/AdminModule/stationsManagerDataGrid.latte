@@ -1,0 +1,34 @@
+
+
+{define row-actions}
+    <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_all.edit}</a>
+    <a href="{plink Manager:stationPerms $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_all.users}</a>
+    <a href="{plink newApiToken! $primary}" onclick="return confirm({_all.really});" data-history="false" data-datagrid-edit class="ajax btn btn-outline-primary btn-sm m-1">{_all.generateApi}</a>
+{/define}
+
+
+{define col-mode}
+    <td class="grid-col-mode">
+        {switch $cell}
+            {case 0}
+            {_all.normalMode}
+            {case 1}
+            {_all.checkOnlyMode}
+            {default}
+            {_all.none}
+        {/switch}
+    </td>
+{/define}
+
+
+{define col-lastUpdate}
+    <td class="grid-col-lastLogin">
+        {ifset $row->lastUpdate}
+            {date_format($row->lastUpdate,"d.m.Y H:i:s")}
+        {/ifset}
+    </td>
+{/define}
+
+
+
+

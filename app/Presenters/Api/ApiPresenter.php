@@ -244,15 +244,16 @@ final class ApiPresenter implements IPresenter
             if (!$user) {
                 continue;
             }
-            if (($value["perm"] == 2 || $value["perm"] == 3) && $user["pin"] != "") {
-                array_push($response["u"], ["r" => $user["rfid"], "p" => $value["perm"], "i" => $user["pin"]]);
-                $count++;
-            } else if ($value["perm"] == 1) {
-                array_push($response["u"], ["r" => $user["rfid"], "p" => $value["perm"]]);
-                $count++;
+            if($user["registration"]==1 && !empty($user["rfid"]))
+            {
+                if (($value["perm"] == 2 || $value["perm"] == 3) && $user["pin"] != "") {
+                    array_push($response["u"], ["r" => $user["rfid"], "p" => $value["perm"], "i" => $user["pin"]]);
+                    $count++;
+                } else if ($value["perm"] == 1) {
+                    array_push($response["u"], ["r" => $user["rfid"], "p" => $value["perm"]]);
+                    $count++;
+                }
             }
-
-
         }
         $response["c"] = (string)$count;
 

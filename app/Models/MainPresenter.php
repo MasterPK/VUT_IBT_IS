@@ -43,6 +43,9 @@ class MainPresenter extends BasePresenter
     /** @var User */
     protected $user;
 
+    /** @var DataGridFactory @inject */
+    public $dataGridFactory;
+
     /**
      * Check if user is logged in. If not redirect to login page.
      * Set up static ACL list.

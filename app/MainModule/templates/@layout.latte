@@ -148,10 +148,10 @@
                         <i class="flag-icon flag-icon-{if $locale==false}gb{else}cz{/if}"></i>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right p-0" style="left: inherit; right: 0px;">
-                        <a n:href="changeLocale! en" class="dropdown-item {if $locale==false}active{/if}">
+                        <a n:href="changeLocale! en" data-history="false" class="dropdown-item {if $locale==false}active{/if}">
                             <i class="flag-icon flag-icon-gb mr-2"></i> English
                         </a>
-                        <a n:href="changeLocale! cs" class="dropdown-item {if $locale==true}active{/if}">
+                        <a n:href="changeLocale! cs" data-history="false" class="dropdown-item {if $locale==true}active{/if}">
                             <i class="flag-icon flag-icon-cz mr-2"></i> Čeština
                         </a>
                     </div>
@@ -226,23 +226,57 @@
                                             </p>
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a n:href="Manager:stations"
+                                                class="nav-link {$activeMenuItem=="Main:Manager" && $currentAction=="stations" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-warehouse"></i>
+                                            <p>
+                                                {_all.stations}
+                                            </p>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         {/if}
                         {if $permission>2}
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-th"></i>
+                            <li class="nav-item has-treeview {$activeMenuItem=="Main:Admin" ? "menu-open" : ""}">
+                                <a href="#" class="nav-link {$activeMenuItem=="Main:Admin" ? "active" : ""}">
+                                    <i class="nav-icon fas fa-user-secret"></i>
                                     <p>
                                         {_messages.main.menu.adminModule}
                                     </p>
+                                    <i class="fas fa-angle-left right"></i>
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            <i class="nav-icon fas fa-th"></i>
+                                        <a n:href=":Main:Admin:stationsManager" class="nav-link {$activeMenuItem=="Main:Admin" && $currentAction=="stationsManager" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-warehouse"></i>
                                             <p>
-                                                Test
+                                                {_all.stationManager}
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a n:href=":Main:Admin:usersManager" class="nav-link {$activeMenuItem=="Main:Admin" && $currentAction=="usersManager" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-users-cog"></i>
+                                            <p>
+                                                {_messages.main.menu.usersManagement}
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a n:href=":Main:Admin:newRfidManager" class="nav-link {$activeMenuItem=="Main:Admin" && $currentAction=="newRfidManager" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-sd-card"></i>
+                                            <p>
+                                                {_all.newRfidManager}
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a n:href=":Main:Admin:accessLog" class="nav-link {$activeMenuItem=="Main:Admin" && $currentAction=="accessLog" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-align-left"></i>
+                                            <p>
+                                                {_all.accessLog}
                                             </p>
                                         </a>
                                     </li>
@@ -307,11 +341,11 @@
 
     <!-- Toast notif snippet -->
 
-    {snippet toastSnippet}
-        <script>
-            {ifset $toastHTML}{$toastHTML|noescape}{/ifset}
-        </script>
-    {/snippet}
+{snippet toastSnippet}
+    <script>
+        {ifset $toastHTML}{$toastHTML|noescape}{/ifset}
+    </script>
+{/snippet}
 
 
 

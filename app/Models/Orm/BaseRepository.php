@@ -28,4 +28,18 @@ abstract class BaseRepository extends Repository
 
         $this->persistAndFlush($user);
     }
+
+    /**
+     * Delete row with id;
+     * @param $id
+     */
+    public function delete($id)
+    {
+        $row=$this->getById($id);
+        if(!$row)
+        {
+            return;
+        }
+        $this->removeAndFlush($row);
+    }
 }

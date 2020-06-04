@@ -35,7 +35,7 @@
 
 {define row-actions}
     <!--$_args["presenter"]->selectedUser-->
-    <a href="{plink assignRfidToUser! $primary, $row->rfid, $selectedUser}" class="btn btn-primary btn-sm">{_assignRfid}</a>
+    <a href="{plink assignRfidToUser! $primary, $row->rfid, $selectedUser}" data-history="false" class="btn btn-primary btn-sm">{_assignRfid}</a>
 {/define}
 
 

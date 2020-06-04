@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace App\Models\Orm\Users;
 
-
 use App\Models\Orm\LikeFilterFunction;
-use Nextras\Orm\Collection\ICollection;
+use Exception;
+use Nette;
+use App\Models\Orm\BaseRepository;
 use Nextras\Orm\Entity\IEntity;
-use Nextras\Orm\Repository\Repository;
 
-class UsersRepository extends Repository
+class UsersRepository extends BaseRepository
 {
 
     /**
@@ -18,6 +18,20 @@ class UsersRepository extends Repository
     public static function getEntityClassNames(): array
     {
         return [User::class];
+    }
+
+    public function getCollectionFunction(string $name)
+    {
+        return parent::getCollectionFunction($name);
+    }
+
+    public function createCollectionFunction(string $name)
+    {
+        if ($name === LikeFilterFunction::class) {
+            return new LikeFilterFunction();
+        } else {
+            return parent::createCollectionFunction($name);
+        }
     }
 
     /**
@@ -79,6 +93,30 @@ class UsersRepository extends Repository
             $user->$key=$value;
         }
         $this->persistAndFlush($user);
+    }
+
+    /**
+     * Generate for user new token.
+     * @param string $idUser Id of user.
+     * @throws Exception When some error.
+     */
+    public function newToken($idUser)
+    {
+        if($idUser==null)
+        {
+            throw new Exception();
+        }
+
+        $user = $this->getById($idUser);
+
+        if(!$user)
+        {
+            throw new Exception();
+        }
+
+        $user->token=Nette\Utils\Random::generate(16);
+        $this->persistAndFlush($user);
+
     }
 
 

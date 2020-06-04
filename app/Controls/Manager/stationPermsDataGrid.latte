@@ -1,0 +1,30 @@
+{define row-actions}
+    {if $user->permission==3}<a href="{plink deleteStationPerm! $primary}" onclick="return confirm({_all.really})" class="ajax btn btn-danger btn-sm m-1">{_all.delete}</a>{/if}
+{/define}
+
+{define col-perm}
+    <td class="grid-col-perm">
+        {switch $cell}
+            {case 1}
+            {_all.basic}
+            {case 2}
+            {_all.twoPhase}
+            {case 3}
+            {_all.admin}
+            {default}
+            {_all.none}
+        {/switch}
+    </td>
+{/define}
+
+{define col-idUser}
+    <td class="grid-col-idStation">
+        {$row->idUser->firstName}&nbsp;{$row->idUser->surName}
+    </td>
+{/define}
+
+
+
+
+
+

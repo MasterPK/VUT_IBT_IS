@@ -56,23 +56,23 @@ final class LoginPresenter extends App\Models\BasePresenter
     public function signInFormSucceeded(Form $form, \stdClass $values)
     {
         $user = $this->getUser();
-        if ($values->permanent == true) {
-            $this->user->setExpiration("14 days",Nette\Security\IUserStorage::CLEAR_IDENTITY);
-        } else {
-            $this->user->setExpiration('30 minutes',Nette\Security\IUserStorage::CLEAR_IDENTITY);
-        }
+
 
         try {
             $user->login($values->email, $values->password);
 
+            if ($values->permanent == true) {
+                $this->user->setExpiration("14 days");
+            } else {
+                $this->user->setExpiration('30 minutes',Nette\Security\IUserStorage::CLEAR_IDENTITY);
+            }
             $this->payload->allowAjax = FALSE;
             $this->redirect(':Main:Homepage:default');
 
         } catch (Nette\Security\AuthenticationException $e) {
             $this->alertState = "Danger";
             $this->alertText = $this->translate("messages.visitor.signInError");
-            //$this->redrawDefault(true);
-            $this->redrawControl("alertS"); //TODO redraw only one control
+            $this->redrawControl("alertS");
         }
     }
 

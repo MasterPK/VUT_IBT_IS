@@ -13,7 +13,39 @@
 {/block}
 
 {block content}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <p class="card-title">Přiřazení RFID uživateli</p>
+                    {if $locale==false}<span class="ml-1 right badge badge-warning">Documentation is available only in Czech!</span>{/if}
+                </div>
+                <div class="card-body">
+                    Přiřazení RFID může provádět manažer a správce, nicméně přidat RFID do systému na terminálu může pouze
+                    správce.<br><br>
 
+                    Přidání nového RFID do systému pomocí terminálu:
+                    <ul>
+                        <li>Přiložte čip správce k terminálu a zadejte osobní PIN kód.</li>
+                        <li>Klikněte na tlačítko "Registrace RFID".</li>
+                        <li>Přilože čip ke čtečce a vyčkejte na zobrazení identifikátoru.</li>
+                        <li>Klikněte na tlačítko "Potvrdit". Popřípadě můžete opraci zrušit tlačítkem "Zrušit".</li>
+                        <li>Čip je nyní přidá do systému a může být přiřazen k uživateli. Pokud se čip do systému nepřidal, tak již v systému je registrovaný.</li>
+                    </ul>
+                    <br>
+                    Přiřazení RFID uživateli:<br>
+                    <ul>
+                        <li>Přejděte na stránku Modul manažera -> Správa uživatelů.</li>
+                        <li>Klikněte na tlačítko "Přiřadit RFID" u daného uživatele.</li>
+                        <li>Vyberte RFID ze seznamu kliknutím na tlačítko "Přiřadit" u daného řádku.</li>
+                        <li>Čip je nyní přiřazen k uživateli.</li>
+                    </ul>
+
+                    Poznámka: Pro přístup uživatele do systému nestačí, aby měl přiřazené RFID, jeho účet musí být také schválený.
+                </div>
+            </div>
+        </div>
+    </div>
 {/block}
 
 {block scripts}

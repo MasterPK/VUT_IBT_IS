@@ -1,0 +1,32 @@
+
+{define row-actions}
+    <a href="{plink stationPerms $primary}" class="ajax btn btn-primary btn-sm m-1">{_all.users}</a>
+{/define}
+
+{define col-mode}
+    <td class="grid-col-mode">
+        {switch $cell}
+            {case 0}
+            {_all.normalMode}
+            {case 1}
+            {_all.checkOnlyMode}
+            {default}
+            {_all.none}
+        {/switch}
+    </td>
+{/define}
+
+
+{define col-lastUpdate}
+    <td class="grid-col-lastLogin">
+        {ifset $row->lastUpdate}
+            {date_format($row->lastUpdate,"d.m.Y H:i:s")}
+        {/ifset}
+    </td>
+{/define}
+
+
+
+
+
+
