@@ -207,6 +207,15 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a n:href=":Main:Homepage:myShifts"
+                                    class="nav-link {$activeMenuItem=="Main:Homepage" && $currentAction=="myShifts" ? "active" : ""}">
+                                <i class="nav-icon fas fa-briefcase"></i>
+                                <p>
+                                    {_all.myShifts}
+                                </p>
+                            </a>
+                        </li>
                         {if $permission>1}
                             <li class="nav-item has-treeview {$activeMenuItem=="Main:Manager" ? "menu-open" : ""}">
                                 <a href="javascript:void(0);" class="nav-link {$activeMenuItem=="Main:Manager" ? "active" : ""}">

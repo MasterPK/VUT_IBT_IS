@@ -97,4 +97,41 @@ final class HomepagePresenter extends Models\MainPresenter
         return $grid;
     }
 
+    public function createComponentMyShiftsDataGrid()
+    {
+        $grid = new Datagrid();
+
+        $grid->setDataSourceCallback(function ($filter, $order) {
+            $shifts = $this->user->shifts;
+
+            $result = [];
+            foreach ($shifts as $shift) {
+                array_push($result, $shift);
+            }
+
+            usort($result, function ($a, $b) {
+                return $a->start > $b->start;
+            });
+
+            return $result;
+        });
+
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Homepage/myShiftsDataGrid.latte');
+
+        $grid->addColumn("start", $perm = $this->translateAll("start"));
+
+        $grid->addColumn("end", $perm = $this->translateAll("end"));
+
+        $grid->addColumn("note", $perm = $this->translateAll("note"));
+
+
+        return $grid;
+    }
+
+
+    public function renderMyShifts()
+    {
+    }
+
 }

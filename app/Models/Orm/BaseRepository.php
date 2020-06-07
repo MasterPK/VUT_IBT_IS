@@ -42,4 +42,18 @@ abstract class BaseRepository extends Repository
         }
         $this->removeAndFlush($row);
     }
+
+    /**
+     * Create collection. If LIKE found use LikeFilterFunction.
+     * @param string $name
+     * @return LikeFilterFunction|\Nextras\Orm\Repository\Functions\ConjunctionOperatorFunction|\Nextras\Orm\Repository\Functions\DisjunctionOperatorFunction|\Nextras\Orm\Repository\Functions\ValueOperatorFunction
+     */
+    public function createCollectionFunction(string $name)
+    {
+        if ($name === LikeFilterFunction::class) {
+            return new LikeFilterFunction();
+        } else {
+            return parent::createCollectionFunction($name);
+        }
+    }
 }

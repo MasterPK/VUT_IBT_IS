@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Models\Orm\Users;
 
 
+use App\Models\Orm\Shifts\Shift;
 use App\Models\Orm\Station\Station;
 use Nette\Utils\ArrayHash;
 use Nextras\Dbal\Utils\DateTimeImmutable;
@@ -25,7 +26,9 @@ use Nextras\Orm\Relationships\ManyHasMany;
  * @property string             $token {default ""}
  * @property string             $pin {default ""}
  * @property string             $password
- * @property ManyHasMany|Station[] $stations {m:m Station::$users}
+ * @property ManyHasMany|Station[]  $stations {m:m Station::$users}
+ * @property ManyHasMany|Shift[]    $shifts  {m:m Shift::$users}
+ * @property bool               $present {default b'0'}
  */
 class User extends Entity
 {
