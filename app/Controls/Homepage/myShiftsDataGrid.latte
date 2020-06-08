@@ -1,11 +1,27 @@
 {define col-start}
     <td class="grid-col-start">
-        {date_format($row->start,"d.m.Y H:i:s")}
+        {date_format($row["start"],"d.m.Y H:i:s")}
     </td>
 {/define}
 
 {define col-end}
     <td class="grid-col-end">
-        {date_format($row->end,"d.m.Y H:i:s")}
+        {date_format($row["end"],"d.m.Y H:i:s")}
+    </td>
+{/define}
+
+{define col-actualArrival}
+    <td class="grid-col-actualArrival">
+        {ifset $row["actualArrival"]}
+        {date_format($row["actualArrival"],"d.m.Y H:i:s")}
+        {/ifset}
+    </td>
+{/define}
+
+{define col-actualDeparture}
+    <td class="grid-col-actualDeparture">
+        {ifset $row["actualDeparture"]}
+        {date_format($row["actualDeparture"],"d.m.Y H:i:s")}
+        {/ifset}
     </td>
 {/define}

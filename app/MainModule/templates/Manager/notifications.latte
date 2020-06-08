@@ -1,0 +1,59 @@
+{block header}
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0 text-dark">{_all.notifications}</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a n:href="Homepage:">{_messages.main.global.home}</a></li>
+                <li class="breadcrumb-item active">{_all.notifications}</li>
+            </ol>
+        </div>
+    </div>
+{/block}
+
+{block content}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    <table class="table table-bordered table-hover dataTable dtr-inline">
+                        <tbody>
+                        {foreach $notifications as $row}
+                            <tr class='clickable-row' data-href='{link readOneNotification! $row->id}' data-history="false">
+                                    <td>
+                                    {if $row->read==0}
+                                        <b>{_all.$row->subject}</b>
+                                    {else}
+                                        {_all.$row->subject}
+                                    {/if}
+                                    </td>
+                                    <td>
+                                    <small n:ifcontent>{$row->description}</small>
+                                    </td>
+                                    {do $time=abs((new \DateTime())->setTimeStamp(0)->add((new Nette\Utils\DateTime())->diff($row->createdAt))->getTimeStamp())/60}
+                                    {do $unit="minutes"}
+                                    {if $time>=60}{do $time=$time/60}{do $unit="hours"}{/if}
+                                    {if $time>=24}{do $time=$time/24}{do $unit="days"}{/if}
+                                    <td>
+                                    <span class="float-right text-muted text-sm">{(int)$time}&nbsp;{_all.$unit}</span>
+                                    </td>
+                            </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block scripts}
+<script>
+    jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+{/block}

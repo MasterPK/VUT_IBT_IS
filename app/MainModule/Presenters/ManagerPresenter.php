@@ -28,10 +28,7 @@ class ManagerPresenter extends MainPresenter
     public function startup()
     {
         parent::startup();
-        $this->checkPermission(self::EDIT);
-        if (!$this->isAllowed(Permissions::MANAGER)) {
-            $this->redirect(":Main:Homepage:default");
-        }
+        $this->isAllowed(Permissions::MANAGER);
     }
 
     public function renderUsersManagement()
@@ -742,6 +739,50 @@ class ManagerPresenter extends MainPresenter
 
         return $grid;
     }
+
+    public function createComponentPresentUsersDataGrid()
+    {
+        $grid = new Datagrid();
+
+
+        $grid->addColumn("firstName", $this->translate("all.firstName"))
+            ->enableSort();
+        $grid->addColumn("surName", $this->translate("all.surName"))
+            ->enableSort();
+
+        $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
+            return $this->dataGridFactory->createDataSource("users", $filter, $order, [], ["present" => 1], $paginator);
+        });
+
+        $grid->setPagination(10, function ($filter, $order) {
+            return count($this->dataGridFactory->createDataSource("users", $filter, $order, [], ["present" => 1]));
+        });
+
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
+
+        $grid->setFilterFormFactory(function () {
+            $form = new Nette\Forms\Container();
+            $form->addText('firstName');
+            $form->addText('surName');
+
+            // these buttons are not compulsory
+            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
+            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+
+            return $form;
+        });
+
+
+
+
+        return $grid;
+    }
+
+    public function renderNotifications(){
+
+    }
+
+
 
 
 }

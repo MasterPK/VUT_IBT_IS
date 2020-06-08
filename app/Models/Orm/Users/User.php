@@ -28,7 +28,7 @@ use Nextras\Orm\Relationships\ManyHasMany;
  * @property string             $password
  * @property ManyHasMany|Station[]  $stations {m:m Station::$users}
  * @property ManyHasMany|Shift[]    $shifts  {m:m Shift::$users}
- * @property bool               $present {default b'0'}
+ * @property bool               $present {default 0}
  */
 class User extends Entity
 {

@@ -8,6 +8,7 @@ use App\Models\Orm\StationsUsers\StationsUsers;
 use Nette;
 use App\Models;
 use Nextras\Datagrid\Datagrid;
+use Nextras\Dbal\Utils\DateTimeImmutable;
 
 final class HomepagePresenter extends Models\MainPresenter
 {
@@ -15,7 +16,6 @@ final class HomepagePresenter extends Models\MainPresenter
     public function startup()
     {
         parent::startup();
-        $this->checkPermission(self::VIEW);
     }
 
     public function handleToastTest()
@@ -101,29 +101,53 @@ final class HomepagePresenter extends Models\MainPresenter
     {
         $grid = new Datagrid();
 
-        $grid->setDataSourceCallback(function ($filter, $order) {
-            $shifts = $this->user->shifts;
+        $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
+            $data = $this->dataGridFactory->createDataSource("shiftsUsers", $filter, [], [], [], $paginator);
 
             $result = [];
-            foreach ($shifts as $shift) {
-                array_push($result, $shift);
+
+            foreach ($data as $row) {
+                $tmp = [];
+                $tmp["start"] = $row->idShift->start;
+                $tmp["end"] = $row->idShift->end;
+                $tmp["note"] = $row->idShift->note;
+                $tmp["actualArrival"] = isset($row->arrival) ? $row->arrival : null;
+                $tmp["actualDeparture"] = isset($row->departure) ? $row->departure : null;
+
+                array_push($result, $tmp);
             }
 
-            usort($result, function ($a, $b) {
-                return $a->start > $b->start;
-            });
+            if (!isset($order[0])) {
+                $order[0] = "start";
+                $order[1] = "ASC";
+            }
+            if ($order[1] == "ASC") {
+                usort($result, function ($a, $b) use (&$order) {
+                    return $a[$order[0]] > $b[$order[0]];
+                });
+            } else {
+                usort($result, function ($a, $b) use (&$order) {
+                    return $a[$order[0]] < $b[$order[0]];
+                });
+            }
+
 
             return $result;
         });
 
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
+
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/Homepage/myShiftsDataGrid.latte');
 
-        $grid->addColumn("start", $perm = $this->translateAll("start"));
+        $grid->addColumn("start", $perm = $this->translateAll("start"))->enableSort();
 
-        $grid->addColumn("end", $perm = $this->translateAll("end"));
+        $grid->addColumn("end", $perm = $this->translateAll("end"))->enableSort();
 
-        $grid->addColumn("note", $perm = $this->translateAll("note"));
+        $grid->addColumn("actualArrival", $perm = $this->translateAll("actualArrival"))->enableSort();
+
+        $grid->addColumn("actualDeparture", $perm = $this->translateAll("actualDeparture"))->enableSort();
+
+        $grid->addColumn("note", $perm = $this->translateAll("note"))->enableSort();
 
 
         return $grid;

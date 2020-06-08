@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Models\Orm\Orm;
+
 use App\Models\Orm\Users\User;
+use App\Security\Permissions;
+use Doctrine\Common\Collections\Collection;
 use Exception;
 use Nette;
 use Nette\Security\Permission;
 use Nette\Utils\Json;
-use Tracy\Debugger;
 
 /**
  * Class MainPresenter
@@ -104,7 +105,7 @@ class MainPresenter extends BasePresenter
      * @throws Nette\InvalidArgumentException If $permission is outside of specific bounds.
      * @throws Nette\Security\AuthenticationException If user has no access to resource.
      * @throws Exception When fatal error.
-     * @deprecated
+     * @deprecated Roles are deprecated. Use integer permissions function isAllowed.
      */
     protected function checkPermission(int $permission, string $resource = null): bool
     {
@@ -130,11 +131,20 @@ class MainPresenter extends BasePresenter
     /**
      * Check if user has sufficient permission.
      * @param int $requiredPermission Required level of permission.
-     * @return bool
+     * @param bool $redirect If true, redirect immediately to homepage when not allowed. If false and not allowed return false.
+     * @return bool If user is allowed. If not, redirect to homepage.
      */
-    public function isAllowed($requiredPermission): bool
+    public function isAllowed($requiredPermission, $redirect = true): bool
     {
-        return $this->user->permission >= $requiredPermission;
+        if ($this->user->permission >= $requiredPermission) {
+            return true;
+        } else {
+            if ($redirect) {
+                $this->redirect(":Main:Homepage:default");
+            } else {
+                return false;
+            }
+        }
     }
 
     protected function beforeRender()
@@ -150,32 +160,14 @@ class MainPresenter extends BasePresenter
         // Current action
         $this->template->currentAction = $this->getAction();
 
-        // Roles
-        /*$highestRole = 0;
-        foreach ($this->getUser()->getIdentity()->getRoles() as $role) {
-            $this->template->$role = true;
-            switch ($role) {
-                case "registered":
-                    if (self::REGISTERED > $highestRole) {
-                        $highestRole = 1;
-                    }
-                    break;
-                case "manager":
-                    if (self::MANAGER > $highestRole) {
-                        $highestRole = 2;
-                    }
-                    break;
-                case "admin":
-                    if (self::ADMIN > $highestRole) {
-                        $highestRole = 3;
-                    }
-                    break;
-            }
-        }*/
-
-
         // Helper for permissions hierarchy
         $this->template->permission = $this->user->permission;
+
+        // Set notifications
+        if ($this->isAllowed(Permissions::MANAGER)) {
+            $this->template->notifications = $this->orm->notifications->findAll()->orderBy("id", \Nextras\Orm\Collection\Collection::DESC)->fetchAll();
+            $this->template->unreadNotificationsCount = $this->orm->notifications->findBy(["read"=>0])->countStored();
+        }
     }
 
     /**
@@ -204,6 +196,36 @@ class MainPresenter extends BasePresenter
             }
         }
 
+    }
+
+    public function handleReadAllNotifications()
+    {
+        if(!$this->isAllowed(Permissions::MANAGER,false)){
+            return;
+        }
+
+        $notifications=$this->orm->notifications->findAll()->fetchAll();
+        foreach ($notifications as $row)
+        {
+            $row->read=1;
+            $this->orm->notifications->persist($row);
+        }
+        $this->orm->notifications->flush();
+
+        $this->showSuccessToastAndRefresh();
+    }
+
+    public function handleReadOneNotification($id)
+    {
+        if(!$this->isAllowed(Permissions::MANAGER,false)){
+            return;
+        }
+
+        $notification=$this->orm->notifications->getById($id);
+        $notification->read=1;
+        $this->orm->notifications->persistAndFlush($notification);
+
+        $this->showSuccessToastAndRefresh();
     }
 
 }

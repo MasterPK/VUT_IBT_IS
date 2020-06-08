@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Models\Orm\LikeFilterFunction;
 use App\Models\Orm\Orm;
 use Nette\Utils\Paginator;
+use Nextras\Datagrid\Datagrid;
 use Nextras\Orm\Collection\ICollection;
 use Nextras\Orm\Entity\IEntity;
 
@@ -28,9 +29,10 @@ class DataGridFactory
      * @param array $resetFilter Array in simple format. Items to be ignored if they are -1 in filter. Used for filtering select option ALL.
      * @param array $customFilter Add custom filter that will not be converted to LIKE search. Default operator is =.
      * @param Paginator|null $paginator Paginator instance.
+     * @param array $customOrder Array of 2 elements of order. If $order is empty than use this. If size is not 2, or $order is not empty, than this is ignored.
      * @return IEntity[] Return collection of result data.
      */
-    public function createDataSource(string $repository, $filter, $order, array $resetFilter = [], array $customFilter = [], Paginator $paginator = null)
+    public function createDataSource(string $repository, $filter, $order, array $resetFilter = [], array $customFilter = [], Paginator $paginator = null, array $customOrder = [])
     {
 
         foreach ($resetFilter as $value) {
@@ -52,6 +54,13 @@ class DataGridFactory
             $filters[$key] = $value;
         }
 
+        if(count($customOrder)==2 && !isset($order[0]))
+        {
+            $order[0]=$customOrder[0];
+            $order[1]=$customOrder[1];
+        }
+
+
         if (isset($order[0])) {
             $data = $this->orm->getRepositoryByName($repository)->findBy($filters)->orderBy($order[0], $order[1]);
         } else {
@@ -66,6 +75,5 @@ class DataGridFactory
         return $data->fetchAll();
 
     }
-
 
 }
