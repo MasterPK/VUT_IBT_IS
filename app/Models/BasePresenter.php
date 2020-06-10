@@ -164,7 +164,7 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
             $this->alertText=$this->getParameter("alertText");
         }
 
-        $this->setDefaultSnippets(['all']);
+        $this->setDefaultSnippets(['all',"scripts"]);
     }
 
     protected function translate($value): string

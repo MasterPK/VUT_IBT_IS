@@ -1,0 +1,31 @@
+{define row-actions}
+    <a href="{plink deleteUserFromShift! $primary}" onclick="return confirm({_all.really});" class="ajax btn btn-danger btn-sm m-1">{_all.delete}</a>
+{/define}
+
+{define col-name}
+    <td class="grid-col-name">
+        {$row->idUser->firstName . " " . $row->idUser->surName}
+    </td>
+{/define}
+
+{define col-email}
+    <td class="grid-col-email">
+        {$row->idUser->email}
+    </td>
+{/define}
+
+{define col-arrival}
+    <td class="grid-col-arrival">
+        {ifset $row->arrival}
+            {date_format($row->arrival,"d.m.Y H:i:s")}
+        {/ifset}
+    </td>
+{/define}
+
+{define col-departure}
+    <td class="grid-col-departure">
+        {ifset $row->departure}
+            {date_format($row->departure,"d.m.Y H:i:s")}
+        {/ifset}
+    </td>
+{/define}

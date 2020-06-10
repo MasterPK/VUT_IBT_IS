@@ -16,28 +16,50 @@
 
 {block content}
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form n:name="newShiftForm">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>{_all.start}<label class="text-danger">*</label></label>
+                                    {input start}
+                                </div>
+                                <div class="form-group">
+                                    <label>{_all.end}<label class="text-danger">*</label></label>
+                                    {input end}
+                                </div>
+                                <div class="form-group">
+                                    <label>{_all.note}</label>
+                                    {input note}
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-12">
+                                <div class="form-group">
+                                    <label>{_all.users}</label>
+                                    {input users}
+                                </div>
+                                {input submit}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
+                        {_all.allShifts}
                     </h3>
                 </div>
                 <div class="card-body">
-                    <form n:name="newShiftForm">
-                        <div class="form-group">
-                            <label>{_all.start}<label class="text-danger">*</label></label>
-                            {input start}
-                        </div>
-                        <div class="form-group">
-                            <label>{_all.end}<label class="text-danger">*</label></label>
-                            {input end}
-                        </div>
-                        <div class="form-group">
-                            <label>{_all.note}</label>
-                            {input note}
-                        </div>
-                        {input submit}
-                    </form>
+                    <div id="calendar">
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -45,5 +67,51 @@
 {/block}
 
 {block scripts}
+    <style>
+        .fc-today {
+            background: #F4F6F9 !important;
+            border: none !important;
+            border-top: 1px solid #ddd !important;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        $(function () {
 
+
+            /* initialize the calendar
+             -----------------------------------------------------------------*/
+
+            var Calendar = FullCalendar.Calendar;
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new Calendar(calendarEl, {
+                height: "auto",
+                locale: '{if $locale}cs{else}en{/if}',
+                plugins: ['bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                'themeSystem': 'bootstrap',
+                events: [
+                    {foreach $shifts as $shift}
+                    {
+                        /*title: "{$shift->start->format("h:i")|noescape} - {$shift->end->format("h:i")|noescape}",*/
+                        start: Date.parse("{$shift->start->format("m/d/y h:i")|noescape}"),
+                        end: Date.parse("{$shift->end->format("m/d/y h:i")|noescape}"),
+                        backgroundColor: '#0069d9', //red
+                        borderColor: '#0069d9', //red
+                    },
+                    {/foreach}
+                ],
+
+            });
+
+            calendar.render();
+        })
+
+
+    </script>
 {/block}

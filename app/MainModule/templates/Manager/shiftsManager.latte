@@ -7,7 +7,7 @@
             <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a n:href="Homepage:">{_messages.main.global.home}</a></li>
                 <li class="breadcrumb-item">{_messages.main.menu.managerModule}</li>
-                <li class="breadcrumb-item active">{_all.stationsPerms}</li>
+                <li class="breadcrumb-item active">{_all.shiftsManager}</li>
             </ol>
         </div>
     </div>
@@ -25,7 +25,26 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="card card-primary">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {_all.calendar}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {_all.management}
+                    </h3>
+                </div>
                 <div class="card-body">
                     {control shiftsDataGrid}
                 </div>
@@ -35,5 +54,52 @@
 {/block}
 
 {block scripts}
+    <style>
+        .fc-today {
+            background: #646464 !important;
+            border: none !important;
+            border-top: 1px solid #ddd !important;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        $(function () {
 
+
+            /* initialize the calendar
+             -----------------------------------------------------------------*/
+
+            var Calendar = FullCalendar.Calendar;
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new Calendar(calendarEl, {
+                height: "auto",
+                locale: '{if $locale}cs{else}en{/if}',
+                plugins: ['bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                'themeSystem': 'bootstrap',
+                events: [
+                    {foreach $shifts as $shift}
+                    {
+                        /*title: "{$shift->start->format("h:i")|noescape} - {$shift->end->format("h:i")|noescape}",*/
+                        start: Date.parse({$shift->start->format("m/d/y h:i")}),
+                        end: Date.parse({$shift->end->format("m/d/y h:i")}),
+                        backgroundColor: '#0069d9', //red
+                        borderColor: '#0069d9', //red
+                        url: {link shiftUsers $shift->id}
+                    },
+                    {/foreach}
+                ],
+
+            });
+
+            calendar.render();
+        })
+
+
+    </script>
 {/block}

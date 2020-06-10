@@ -9,16 +9,19 @@ use App\Models\MainPresenter;
 use App\Models\Orm\LikeFilterFunction;
 use App\Models\Orm\NewRfid\NewRfid;
 use App\Models\Orm\Shifts\Shift;
+use App\Models\Orm\ShiftsUsers\ShiftUser;
 use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
 use App\Security\Permissions;
 use DateTimeImmutable;
+use DateTimeZone;
 use Exception;
 use Nette\Application\UI\Form;
 use Nette;
 use Nette\ComponentModel\IComponent;
 use Nextras\Datagrid\Datagrid;
 use Nextras\Dbal\UniqueConstraintViolationException;
+use Nextras\Orm\Collection\Collection;
 use Nextras\Orm\Collection\ICollection;
 use Tracy\Debugger;
 use Vodacek\Forms\Controls\DateInput;
@@ -28,6 +31,11 @@ class ManagerPresenter extends MainPresenter
 
     /** @var @persistent */
     public $selectedUser;
+
+    /** @var @persistent */
+    public $selectedStation;
+
+    private $idShift;
 
     public function startup()
     {
@@ -677,9 +685,6 @@ class ManagerPresenter extends MainPresenter
         return $grid;
     }
 
-    /** @var @persistent */
-    public $selectedStation;
-
     public function renderStationPerms($idStation)
     {
         if ($idStation == null && $this->selectedStation == null) {
@@ -785,7 +790,6 @@ class ManagerPresenter extends MainPresenter
 
     }
 
-
     public function createComponentShiftsDataGrid()
     {
 
@@ -806,13 +810,13 @@ class ManagerPresenter extends MainPresenter
 
         $grid->setDatasourceCallback(function ($filter, $order, $paginator) {
 
-            return $this->dataGridFactory->createDataSource("shifts", $filter, $order, [], [], $paginator);
+            return $this->dataGridFactory->createDataSource("shifts", $filter, $order, [], [], $paginator, ["start", Collection::ASC]);
 
         });
 
         $grid->setPagination(10, function ($filter, $order) {
 
-            return count($this->dataGridFactory->createDataSource("shifts", $filter, $order, [], []));
+            return count($this->dataGridFactory->createDataSource("shifts", $filter, $order, [], [], null, ["start", Collection::ASC]));
         });
 
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
@@ -873,6 +877,8 @@ class ManagerPresenter extends MainPresenter
 
             $this->orm->shifts->update((int)$values->id, $values);
 
+            $this->showSuccessToastAndRefresh();
+
         });
 
         $grid->addGlobalAction('delete', $this->translate("all.delete"), function (array $ids, Datagrid $grid) {
@@ -880,7 +886,8 @@ class ManagerPresenter extends MainPresenter
             foreach ($ids as $id) {
                 $this->orm->shifts->delete($id);
             }
-            $grid->redrawControl('rows');
+
+            $this->showSuccessToastAndRefresh();
         });
 
 
@@ -894,21 +901,36 @@ class ManagerPresenter extends MainPresenter
     {
         $form = new ExtendedForm();
 
+        $defaultTime = new DateTimeImmutable();
+        $defaultTime->setTime(0, 0);
+
         $form->addDate('start')
             ->setRequired()
-            ->setDefaultValue(new Nette\Utils\DateTime())
+            ->setDefaultValue($defaultTime)
             ->setHtmlAttribute("class", "form-control");
 
         $form->addDate('end')
             ->setRequired()
-            ->setDefaultValue(new Nette\Utils\DateTime())
+            ->setDefaultValue($defaultTime)
             ->setHtmlAttribute("class", "form-control");
 
         $form->addTextArea('note')
             ->setHtmlAttribute("class", "form-control");
 
+
+        $users = $this->orm->users->findAll()->orderBy("surName", Collection::ASC)->fetchAll();
+
+        $resultUsers = [];
+        foreach ($users as $user) {
+            $resultUsers[$user->id] = $user->surName . " " . $user->firstName . " (" . $user->email . ") ";
+        }
+
+        $form->addMultiSelect("users", null, $resultUsers)
+            ->setHtmlAttribute("class", "form-control");
+
         $form->addSubmit("submit")
             ->setHtmlAttribute("class", "btn btn-primary");
+
 
         $form->onValidate[] = [$this, "newShiftFormValidate"];
         $form->onSuccess[] = [$this, "newShiftFormSuccess"];
@@ -918,33 +940,227 @@ class ManagerPresenter extends MainPresenter
 
     public function newShiftFormValidate(Form $form)
     {
-        $values=$form->getValues();
+        $values = $form->getValues();
 
-        if($values->start >= $values->end)
-        {
-            $form->addError("",false);
+        if ($values->start >= $values->end) {
+            $form->addError("", false);
             $this->showDangerToastAndRefresh($this->translate("all.badShiftTime"));
         }
 
-        //TODO testovat jestli se nepřekrývá
+        $allShifts = $this->orm->shifts->findAll()->orderBy("start", Collection::ASC)->fetchAll();
+
+        foreach ($allShifts as $shift) {
+
+            if ($shift->end < $shift->start)
+                $form->addError("", false);
+            $this->showDangerToastAndRefresh($this->translate("all.badShiftTime"));
+
+
+            if ($values->end < $values->start)
+                $form->addError("", false);
+            $this->showDangerToastAndRefresh($this->translate("all.badShiftTime"));
+
+            if (!(($shift->end < $values->start) || ($values->end < $shift->start))) {
+                $form->addError("", false);
+                $this->showDangerToastAndRefresh($this->translate("all.shiftTimeOverlap"));
+                break;
+            }
+
+        }
     }
 
     public function newShiftFormSuccess(Form $form)
     {
-        $values=$form->getValues();
+        $values = $form->getValues();
 
-        $shift=new Shift();
-        $shift->start=$values->start;
-        $shift->end=$values->end;
-        $shift->note=$values->note;
+        $shift = new Shift();
+        $shift->start = $values->start;
+        $shift->end = $values->end;
+        $shift->note = $values->note;
 
         $this->orm->shifts->persistAndFlush($shift);
 
-        $form->reset();
+        foreach ($values->users as $user) {
+            $row = $this->orm->users->getById($user);
+
+            if (!$row)
+                continue;
+
+            $newShiftUser = new ShiftUser();
+            $newShiftUser->idUser = $row;
+            $newShiftUser->idShift = $shift;
+
+            $this->orm->shiftsUsers->persistAndFlush($newShiftUser);
+        }
 
         $this->showSuccessToastAndRefresh();
 
     }
 
+    public function renderNewShift()
+    {
+        $this->template->shifts = $this->orm->shifts->findAll()->fetchAll();
+    }
 
+    public function renderShiftUsers($idShift)
+    {
+        if ($idShift == null)
+            return;
+
+        $this->idShift = $idShift;
+    }
+
+    public function handleDeleteShift($idShift)
+    {
+        $this->orm->shifts->delete($idShift);
+        $this->showSuccessToastAndRefresh();
+    }
+
+    public function createComponentShiftUsersDataGrid()
+    {
+
+        $grid = new Datagrid();
+
+        $grid->addColumn('id', "ID");
+
+        $grid->addColumn('name', $this->translate("all.name"));
+
+        $grid->addColumn('email', "Email");
+
+        $grid->addColumn('arrival', $this->translate("all.actualArrival"));
+
+        $grid->addColumn('departure', $this->translate("all.actualDeparture"));
+
+
+        $grid->setDatasourceCallback(function ($filter, $order, $paginator) {
+            return $this->dataGridFactory->createDataSource("shiftsUsers", $filter, $order, [], ["idShift" => $this->idShift], $paginator);
+        });
+
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/shiftUsers.latte');
+
+        $grid->setPagination(10, function ($filter, $order) {
+
+            return count($this->dataGridFactory->createDataSource("shiftsUsers", $filter, $order, [], ["idShift" => $this->idShift]));
+        });
+
+        $grid->addGlobalAction('delete', $this->translate("all.delete"), function (array $ids, Datagrid $grid) {
+
+            foreach ($ids as $id) {
+                $this->orm->shiftsUsers->delete($id);
+            }
+            $grid->redrawControl('rows');
+            $this->showSuccessToastAndRefresh();
+        });
+
+        $grid->setTranslator($this->translator);
+
+        return $grid;
+
+    }
+
+    public function handleDeleteUserFromShift($id)
+    {
+        if ($id == null)
+            return;
+
+        $shiftUser = $this->orm->shiftsUsers->getById($id);
+
+        if (!$shiftUser)
+            return;
+
+        $this->orm->shiftsUsers->removeAndFlush($shiftUser);
+
+        $this->showSuccessToastAndRefresh();
+    }
+
+    /**
+     * Add relationship between user and shift i.e. user is assigned to shift.
+     * @param int $idShift Id of shift.
+     * @param int $idUser Id of user.
+     */
+    public function handleAddUserToShift($idShift,$idUser)
+    {
+        if($idShift == null || $idUser == null)
+            return;
+
+        $shiftUser= new ShiftUser();
+        $shiftUser->idShift=$idShift;
+        $shiftUser->idUser=$idUser;
+
+        $this->orm->shiftsUsers->persistAndFlush($shiftUser);
+
+        $this->showSuccessToastAndRefresh();
+    }
+
+    public function createComponentAddUserToShiftForm(){
+        $form = new ExtendedForm();
+
+        $users = $this->orm->users->findAll()->orderBy("surName", Collection::ASC)->fetchAll();
+        $shiftUsers=$this->orm->shiftsUsers->findBy(["idShift"=>$this->idShift])->fetchAll();
+        $resultUsers = [];
+        foreach ($users as $user) {
+
+            $found=false;
+            foreach ($shiftUsers as $row)
+            {
+                if($row->idUser->id==$user->id)
+                {
+                    $found=true;
+                }
+            }
+
+            if($found){
+                continue;
+            }
+            $resultUsers[$user->id] = $user->surName . " " . $user->firstName . " (" . $user->email . ") ";
+        }
+
+        $form->addHidden("idShift")
+            ->setDefaultValue($this->idShift);
+
+        $form->addMultiSelect("users", null, $resultUsers)
+            ->setHtmlAttribute("class", "form-control");
+
+        $form->addSubmit("submit");
+
+        $form->onSuccess[]=[$this,"addUserToShiftFormSuccess"];
+
+        return $form;
+    }
+
+    public function addUserToShiftFormSuccess(ExtendedForm $form){
+        $values=$form->getValues();
+
+        $shiftUsers=$this->orm->shiftsUsers->findBy(["idShift"=>$values->idShift])->fetchAll();
+        foreach ($values->users as $user)
+        {
+            $found=false;
+            foreach ($shiftUsers as $row)
+            {
+                if($row->idUser->id==$user)
+                {
+                    $found=true;
+                }
+            }
+
+            if($found){
+                $this->showDangerToastAndRefresh($this->translate("all.alreadyExists"));
+                return;
+            }
+
+            $newShiftUser = new ShiftUser();
+            $newShiftUser->idShift=$this->orm->shifts->getById($values->idShift);
+            $newShiftUser->idUser=$user;
+            $this->orm->shiftsUsers->persist($newShiftUser);
+        }
+        $this->orm->shiftsUsers->flush();
+
+        $this->showSuccessToastAndRefresh();
+    }
+
+    public function renderShiftsManager()
+    {
+        $this->template->shifts = $this->orm->shifts->findAll()->fetchAll();
+    }
 }

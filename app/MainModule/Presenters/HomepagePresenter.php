@@ -97,12 +97,17 @@ final class HomepagePresenter extends Models\MainPresenter
         return $grid;
     }
 
+
+    /**
+     * Create DataGrid that shows shifts of currently logged in user.
+     * @return Datagrid
+     */
     public function createComponentMyShiftsDataGrid()
     {
         $grid = new Datagrid();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
-            $data = $this->dataGridFactory->createDataSource("shiftsUsers", $filter, [], [], [], $paginator);
+            $data = $this->dataGridFactory->createDataSource("shiftsUsers", $filter, [], [],["idUser"=>$this->user->id], $paginator);
 
             $result = [];
 
