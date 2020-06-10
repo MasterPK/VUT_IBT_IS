@@ -65,6 +65,7 @@
       <path value="$PROJECT_DIR$/vendor/nette/tokenizer" />
       <path value="$PROJECT_DIR$/vendor/nextras/dbal" />
       <path value="$PROJECT_DIR$/vendor/nextras/orm" />
+      <path value="$PROJECT_DIR$/vendor/voda/date-input" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3" />

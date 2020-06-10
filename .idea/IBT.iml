@@ -67,6 +67,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/translation-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/tracy/tracy" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ublaboo/datagrid" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/voda/date-input" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

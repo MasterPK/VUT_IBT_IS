@@ -1,0 +1,20 @@
+{define col-start}
+    <td class="grid-col-start">
+        {ifset $row->start}
+            {date_format($row->start,"d.m.Y H:i:s")}
+        {/ifset}
+    </td>
+{/define}
+
+{define col-end}
+    <td class="grid-col-end">
+        {ifset $row->end}
+            {date_format($row->end,"d.m.Y H:i:s")}
+        {/ifset}
+    </td>
+{/define}
+
+
+{define row-actions}
+    <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_all.edit}</a>
+{/define}

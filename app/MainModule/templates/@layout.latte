@@ -244,6 +244,15 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
+                                        <a n:href="Manager:stations"
+                                                class="nav-link {$activeMenuItem=="Main:Manager" && $currentAction=="stations" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-warehouse"></i>
+                                            <p>
+                                                {_all.stations}
+                                            </p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a n:href="Manager:usersManagement"
                                                 class="nav-link {$activeMenuItem=="Main:Manager" && $currentAction=="usersManagement" ? "active" : ""}">
                                             <i class="nav-icon fas fa-users-cog"></i>
@@ -253,11 +262,11 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a n:href="Manager:stations"
-                                                class="nav-link {$activeMenuItem=="Main:Manager" && $currentAction=="stations" ? "active" : ""}">
-                                            <i class="nav-icon fas fa-warehouse"></i>
+                                        <a n:href="Manager:shiftsManager"
+                                                class="nav-link {$activeMenuItem=="Main:Manager" && $currentAction=="shiftsManager" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-business-time"></i>
                                             <p>
-                                                {_all.stations}
+                                                {_all.shiftsManager}
                                             </p>
                                         </a>
                                     </li>
@@ -274,6 +283,15 @@
                                     <i class="fas fa-angle-left right"></i>
                                 </a>
                                 <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a n:href=":Main:Admin:accessLog"
+                                                class="nav-link {$activeMenuItem=="Main:Admin" && $currentAction=="accessLog" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-align-left"></i>
+                                            <p>
+                                                {_all.accessLog}
+                                            </p>
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a n:href=":Main:Admin:stationsManager"
                                                 class="nav-link {$activeMenuItem=="Main:Admin" && $currentAction=="stationsManager" ? "active" : ""}">
@@ -302,11 +320,11 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a n:href=":Main:Admin:accessLog"
-                                                class="nav-link {$activeMenuItem=="Main:Admin" && $currentAction=="accessLog" ? "active" : ""}">
-                                            <i class="nav-icon fas fa-align-left"></i>
+                                        <a n:href=":Main:Admin:settings"
+                                                class="nav-link {$activeMenuItem=="Main:Admin" && $currentAction=="settings" ? "active" : ""}">
+                                            <i class="nav-icon fas fa-cogs"></i>
                                             <p>
-                                                {_all.accessLog}
+                                                {_all.settings}
                                             </p>
                                         </a>
                                     </li>

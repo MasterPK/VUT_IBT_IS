@@ -1,0 +1,39 @@
+{block header}
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0 text-dark">{_all.shiftsManager}</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a n:href="Homepage:">{_messages.main.global.home}</a></li>
+                <li class="breadcrumb-item">{_messages.main.menu.managerModule}</li>
+                <li class="breadcrumb-item active">{_all.stationsPerms}</li>
+            </ol>
+        </div>
+    </div>
+{/block}
+
+{block content}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    <a n:href="newShift" class="btn btn-primary">{_all.newShift}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card card-primary">
+                <div class="card-body">
+                    {control shiftsDataGrid}
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block scripts}
+
+{/block}

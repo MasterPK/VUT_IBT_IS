@@ -4,12 +4,15 @@ declare(strict_types=1);
 namespace App\MainModule\Presenters;
 
 
+use App\Controls\ExtendedForm;
 use App\Models\MainPresenter;
 use App\Models\Orm\LikeFilterFunction;
 use App\Models\Orm\NewRfid\NewRfid;
+use App\Models\Orm\Shifts\Shift;
 use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
 use App\Security\Permissions;
+use DateTimeImmutable;
 use Exception;
 use Nette\Application\UI\Form;
 use Nette;
@@ -18,6 +21,7 @@ use Nextras\Datagrid\Datagrid;
 use Nextras\Dbal\UniqueConstraintViolationException;
 use Nextras\Orm\Collection\ICollection;
 use Tracy\Debugger;
+use Vodacek\Forms\Controls\DateInput;
 
 class ManagerPresenter extends MainPresenter
 {
@@ -773,16 +777,174 @@ class ManagerPresenter extends MainPresenter
         });
 
 
-
-
         return $grid;
     }
 
-    public function renderNotifications(){
+    public function renderNotifications()
+    {
 
     }
 
 
+    public function createComponentShiftsDataGrid()
+    {
+
+        $grid = new Datagrid();
+
+        $grid->addColumn('id', "ID")
+            ->enableSort();
+
+        $grid->addColumn('start', $this->translate("all.start"))
+            ->enableSort();
+
+        $grid->addColumn('end', $this->translate("all.end"))
+            ->enableSort();
+
+        $grid->addColumn('note', $this->translate("all.note"))
+            ->enableSort();
+
+
+        $grid->setDatasourceCallback(function ($filter, $order, $paginator) {
+
+            return $this->dataGridFactory->createDataSource("shifts", $filter, $order, [], [], $paginator);
+
+        });
+
+        $grid->setPagination(10, function ($filter, $order) {
+
+            return count($this->dataGridFactory->createDataSource("shifts", $filter, $order, [], []));
+        });
+
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/shiftsManagerDataGrid.latte');
+
+
+        $grid->setFilterFormFactory(function () {
+            $form = new Nette\Forms\Container();
+            $form->addText('id')
+                ->addCondition(Form::INTEGER); // your custom input type
+
+            $form->addText('start')
+                ->setHtmlAttribute("class", "form-control");
+
+            $form->addText('end')
+                ->setHtmlAttribute("class", "form-control");
+
+            $form->addText('note')
+                ->setHtmlAttribute("class", "form-control");
+
+            // these buttons are not compulsory
+            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
+            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+
+            return $form;
+        });
+
+        $grid->setEditFormFactory(function ($row) {
+
+            $form = new Nette\Forms\Container();
+
+            $form->addText('start')
+                ->setHtmlAttribute("class", "form-control");
+
+            $form->addText('end')
+                ->setHtmlAttribute("class", "form-control");
+
+            $form->addTextArea('note')
+                ->setHtmlAttribute("class", "form-control");
+
+
+            $form->addSubmit('save', "save")->getControlPrototype()->class = 'btn btn-sm btn-success m-1';
+            $form->addSubmit('cancel', "cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+
+            if ($row) {
+                $form->setDefaults($row->toArray());
+            }
+
+            return $form;
+        });
+
+        $grid->setEditFormCallback(function (Nette\Forms\Container $row) {
+            $values = $row->getValues();
+            $row = $this->orm->shifts->getById($values->id);
+
+            if (!$row)
+                return;
+
+            $this->orm->shifts->update((int)$values->id, $values);
+
+        });
+
+        $grid->addGlobalAction('delete', $this->translate("all.delete"), function (array $ids, Datagrid $grid) {
+
+            foreach ($ids as $id) {
+                $this->orm->shifts->delete($id);
+            }
+            $grid->redrawControl('rows');
+        });
+
+
+        $grid->setTranslator($this->translator);
+
+        return $grid;
+
+    }
+
+    public function createComponentNewShiftForm()
+    {
+        $form = new ExtendedForm();
+
+        $form->addDate('start')
+            ->setRequired()
+            ->setDefaultValue(new Nette\Utils\DateTime())
+            ->setHtmlAttribute("class", "form-control");
+
+        $form->addDate('end')
+            ->setRequired()
+            ->setDefaultValue(new Nette\Utils\DateTime())
+            ->setHtmlAttribute("class", "form-control");
+
+        $form->addTextArea('note')
+            ->setHtmlAttribute("class", "form-control");
+
+        $form->addSubmit("submit")
+            ->setHtmlAttribute("class", "btn btn-primary");
+
+        $form->onValidate[] = [$this, "newShiftFormValidate"];
+        $form->onSuccess[] = [$this, "newShiftFormSuccess"];
+
+        return $form;
+    }
+
+    public function newShiftFormValidate(Form $form)
+    {
+        $values=$form->getValues();
+
+        if($values->start >= $values->end)
+        {
+            $form->addError("",false);
+            $this->showDangerToastAndRefresh($this->translate("all.badShiftTime"));
+        }
+
+        //TODO testovat jestli se nepřekrývá
+    }
+
+    public function newShiftFormSuccess(Form $form)
+    {
+        $values=$form->getValues();
+
+        $shift=new Shift();
+        $shift->start=$values->start;
+        $shift->end=$values->end;
+        $shift->note=$values->note;
+
+        $this->orm->shifts->persistAndFlush($shift);
+
+        $form->reset();
+
+        $this->showSuccessToastAndRefresh();
+
+    }
 
 
 }
