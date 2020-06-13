@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\VisitorModule\Presenters;
 
 use App;
+use App\MainModule\CorePresenters\BasePresenter;
 use Nette;
 use Nette\Application\UI\Form;
 use App\Controls\AlertControl;
 
 
-final class ForgotPasswordPresenter extends App\Models\BasePresenter
+final class ForgotPasswordPresenter extends BasePresenter
 {
 
     /** @var App\Models\EmailService @inject */

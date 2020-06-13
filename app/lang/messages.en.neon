@@ -1,7 +1,8 @@
 prefix:
-    for: "message" #
+    for: "message"
 
 "- select action -": "- Select action -"
+"This field is required.": "This field is required."
 Do: "Do"
 yesB: "YES"
 yes: "Yes"

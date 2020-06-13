@@ -7,9 +7,8 @@ namespace App\VisitorModule\Presenters;
 use App;
 use Nette;
 use Nette\Application\UI\Form;
-use App\Controls;
 
-final class LoginPresenter extends App\Models\BasePresenter
+final class LoginPresenter extends App\MainModule\CorePresenters\BasePresenter
 {
 
 

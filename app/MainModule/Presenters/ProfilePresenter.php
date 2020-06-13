@@ -4,14 +4,12 @@
 namespace App\MainModule\Presenters;
 
 
+use App\MainModule\CorePresenters\MainPresenter;
 use App\Models\DatabaseService;
-use App\Models\MainPresenter;
 use App\Models\UserNotFoundException;
 use Exception;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
-use Nette\Utils\Json;
-use Nette\Utils\JsonException;
 
 final class ProfilePresenter extends MainPresenter
 {

@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace App\Presenters;
 
 use App;
-use Cassandra\Date;
 use Nette;
 use Nette\Application\IPresenter;
 use Nette\Application\Responses;
 use Nette\Application\Request;
-use Nette\Mail\Message;
 use Nette\Utils\DateTime;
-use Nextras\Orm\Collection\ICollection;
 
 final class ApiPresenter implements IPresenter
 {
@@ -25,7 +22,7 @@ final class ApiPresenter implements IPresenter
     /** @var App\Models\EmailService @inject */
     public $emailService;
 
-    public function __construct(Nette\Mail\IMailer $mailer, Nette\Database\Context $database, App\Models\DatabaseService $databaseModel, App\Models\Orm\Orm $orm)
+    public function __construct(Nette\Mail\Mailer $mailer, Nette\Database\Context $database, App\Models\DatabaseService $databaseModel, App\Models\Orm\Orm $orm)
     {
         $this->database = $database;
         $this->databaseModel = $databaseModel;
@@ -211,22 +208,20 @@ final class ApiPresenter implements IPresenter
         $settings = $this->orm->settings->findAll()->fetchPairs("key", "value");
 
         if ($row->mode == 1 && $userShifts) {
-
             foreach ($userShifts as $item) {
                 $now = new DateTime();
-                // User shift is running
+                // Shift is running
                 if ($item->idShift->start <= $now && $item->idShift->end >= $now) {
                     // User arrival
                     if (!isset($item->arrival) && !$user->present) {
                         $item->arrival = $now;
-                        $user->present = true;
                         $intervalInSeconds = (new DateTime())->setTimeStamp(0)->add($item->idShift->start->diff($now))->getTimeStamp();
                         $intervalInMinutes = $intervalInSeconds / 60;
                         if ($intervalInMinutes > $settings["max_start_deviation"]) {
                             $newNotification = new App\Models\Orm\Notifications\Notification();
                             $newNotification->subject = "LATE_ARRIVAL";
                             $newNotification->description = $user->email;
-                            $newNotification->createdAt=new DateTime();
+                            $newNotification->createdAt = new DateTime();
                             $this->orm->notifications->persistAndFlush($newNotification);
                         }
                         $this->orm->shiftsUsers->persistAndFlush($item);
@@ -234,21 +229,19 @@ final class ApiPresenter implements IPresenter
                         // User departure
                     } else if ($user->present && isset($item->arrival)) {
                         $item->departure = $now;
-                        $user->present = false;
                         $intervalInSeconds = (new DateTime())->setTimeStamp(0)->add($now->diff($item->idShift->end))->getTimeStamp();
                         $intervalInMinutes = $intervalInSeconds / 60;
                         if ($intervalInMinutes > $settings["max_end_deviation"]) {
                             $newNotification = new App\Models\Orm\Notifications\Notification();
                             $newNotification->subject = "EARLY_DEPARTURE";
                             $newNotification->description = $user->email;
-                            $newNotification->createdAt=new DateTime();
+                            $newNotification->createdAt = new DateTime();
                             $this->orm->notifications->persistAndFlush($newNotification);
                         }
                         $this->orm->shiftsUsers->persistAndFlush($item);
                         break;
                     } else if (!$user->present && isset($item->arrival) && isset($item->departure)) {
                         $item->departure = null;
-                        $user->present = true;
                         $this->orm->shiftsUsers->persistAndFlush($item);
                         break;
                     }
@@ -256,7 +249,6 @@ final class ApiPresenter implements IPresenter
                 } else if ($item->idShift->start >= $now) {
                     if (!$user->present && !isset($item->arrival) && !isset($item->departure)) {
                         $item->arrival = $now;
-                        $user->present = true;
                         $this->orm->shiftsUsers->persistAndFlush($item);
                         break;
                     }
@@ -264,7 +256,6 @@ final class ApiPresenter implements IPresenter
                 } else if ($item->idShift->end <= $now) {
                     if ($user->present && isset($item->arrival) && !isset($item->departure)) {
                         $item->departure = $now;
-                        $user->present = false;
                         $this->orm->shiftsUsers->persistAndFlush($item);
                         break;
                     }
@@ -272,8 +263,6 @@ final class ApiPresenter implements IPresenter
                 }
 
             }
-
-        } else {
             $user->present = !$user->present;
         }
 
@@ -281,7 +270,7 @@ final class ApiPresenter implements IPresenter
 
         $result = $this->database->table('access_log')->insert([
             "datetime" => new DateTime,
-            "rfid" => $user_rfid,
+            "log_rfid" => $user_rfid,
             "status" => $status,
             "id_station" => $id_station,
             "id_user" => $user ? $user->id : null

@@ -4,7 +4,7 @@
 namespace App\MainModule\Presenters;
 
 
-use App\Models\MainPresenter;
+use App\MainModule\CorePresenters\MainPresenter;
 
 class UserPresenter extends MainPresenter
 {

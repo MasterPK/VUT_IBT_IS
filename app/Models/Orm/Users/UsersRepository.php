@@ -7,6 +7,7 @@ use App\Models\Orm\LikeFilterFunction;
 use Exception;
 use Nette;
 use App\Models\Orm\BaseRepository;
+use Nextras\Orm\Collection\ICollection;
 use Nextras\Orm\Entity\IEntity;
 
 class UsersRepository extends BaseRepository
@@ -116,6 +117,21 @@ class UsersRepository extends BaseRepository
 
         $user->token=Nette\Utils\Random::generate(16);
         $this->persistAndFlush($user);
+
+    }
+
+    /**
+     * Search users by specified name. Return array of all found users. Search based on first name and surname.
+     * @param string $name Name to be found.
+     * @return IEntity[] Array of found users. Null if none found.
+     */
+    public function getUsersIdsByAnyName($name)
+    {
+        $filters = [ICollection:: OR];
+        array_push($filters, [LikeFilterFunction::class, "firstName", $name]);
+        array_push($filters, [LikeFilterFunction::class, "surName", $name]);
+
+       return $this->findBy($filters)->fetchPairs("id","email");
 
     }
 

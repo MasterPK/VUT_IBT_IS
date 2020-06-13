@@ -14,17 +14,75 @@
 {/block}
 
 {block content}
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                {control stationsDataGrid}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseNewStationForm" role="button" aria-expanded="false"
+                       aria-controls="collapseNewStationForm">
+                        {_all.createNew}
+                    </a>
+                </div>
+                <div class="collapse card-body" id="collapseNewStationForm">
+                    <form n:name="newStationForm" data-reset="false">
+                        <div class="form-group">
+                            <label>{_all.name}&nbsp;<span class="text-red">*</span></label>
+                            {input name}
+                        </div>
+                        <div class="form-group">
+                            <label>{_all.description}</label>
+                            {input description}
+                        </div>
+                        <div class="form-group">
+                            <label>{_all.stationMode}&nbsp;<span class="text-red">*</span></label>
+                            {input mode}
+                        </div>
+                        <div class="form-group">
+                            <label>{_all.apiToken}&nbsp;<span class="text-red">*</span></label>
+                            {input apiToken}
+                            {input apiTokenPlaceholder}
+                        </div>
+                        <div class="form-group">
+                            <span id="newApiToken" class="btn btn-primary">{_all.generateApi}</span>
+                        </div>
+                        <div class="form-group">
+                            {input submit}
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    {control stationsDataGrid}
+                </div>
+            </div>
+        </div>
+    </div>
 {/block}
 
 {block scripts}
+    <script>
+        $("#newApiToken").click(function () {
+            let generateRandomString = stringGen(16);
+            console.log(generateRandomString);
+            $("[name ='apiToken']").val(generateRandomString);
+            $("#frm-newStationForm-apiTokenPlaceholder").val(generateRandomString);
+        });
+
+        function stringGen(len) {
+            var text = "";
+
+            var charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+            for (var i = 0; i < len; i++)
+                text += charset.charAt(Math.floor(Math.random() * charset.length));
+
+            return text;
+        }
+    </script>
 
 {/block}

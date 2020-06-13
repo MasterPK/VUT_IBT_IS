@@ -2,6 +2,7 @@ prefix:
     for: "zprava" # messages.prefix.for
 
 "- select action -": "- Vybrat akci -"
+"This field is required.": "Toto pole je povinné."
 Do: "Provést"
 yesB: "ANO"
 yes: "Ano"

@@ -16,4 +16,14 @@ class SettingsRepository extends BaseRepository
     {
         return [Setting::class];
     }
+
+    /**
+     * Get setting as Setting entity.
+     * @param int $id Id of setting.
+     * @return Setting Found setting.
+     */
+    public function getSetting($id):Setting
+    {
+        return $this->getById($id);
+    }
 }

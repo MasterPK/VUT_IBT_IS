@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Models;
+namespace App\MainModule\CorePresenters;
 
 use App\Models\Orm\Orm;
 use Nette;

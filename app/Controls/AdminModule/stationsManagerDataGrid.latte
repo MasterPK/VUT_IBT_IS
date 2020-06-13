@@ -4,6 +4,7 @@
     <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_all.edit}</a>
     <a href="{plink Manager:stationPerms $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_all.users}</a>
     <a href="{plink newApiToken! $primary}" onclick="return confirm({_all.really});" data-history="false" data-datagrid-edit class="ajax btn btn-outline-primary btn-sm m-1">{_all.generateApi}</a>
+    <a href="{plink deleteStation! $primary}" onclick="return confirm({_all.really});" class="ajax btn btn-danger btn-sm m-1">{_all.delete}</a>
 {/define}
 
 

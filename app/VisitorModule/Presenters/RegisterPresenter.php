@@ -4,11 +4,8 @@ declare(strict_types=1);
 
 namespace App\VisitorModule\Presenters;
 
+use App\MainModule\CorePresenters\BasePresenter;
 use Nette;
-use App\Models\BasePresenter;
-use App\Controls;
-use Nette\Mail\Message;
-use Nette\Mail\SendmailMailer;
 use App;
 
 class RegisterPresenter extends BasePresenter

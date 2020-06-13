@@ -1,0 +1,61 @@
+{block header}
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0 text-dark">{_all.settings}</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a n:href="Homepage:">{_messages.main.global.home}</a></li>
+                <li class="breadcrumb-item">{_messages.main.menu.adminModule}</li>
+                <li class="breadcrumb-item active">{_all.settings}</li>
+            </ol>
+        </div>
+    </div>
+{/block}
+
+{block content}
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseNewSettingForm" role="button" aria-expanded="false"
+                       aria-controls="collapseNewSettingForm">
+                        {_all.createNew}
+                    </a>
+                </div>
+                <div class="collapse card-body" id="collapseNewSettingForm">
+                    <form n:name="newSettingForm">
+                        <div class="form-group">
+                            <label>{_all.key}&nbsp;<span class="text-red">*</span></label>
+                            {input key}
+                        </div>
+                        <div class="form-group">
+                            <label>{_all.value}&nbsp;<span class="text-red">*</span></label>
+                            {input value}
+                        </div>
+                        <div class="form-group">
+                            <label>{_all.note}</label>
+                            {input note}
+                        </div>
+                        <div class="form-group">
+                            {input submit}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    {control settingsDataGrid}
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block scripts}
+
+{/block}

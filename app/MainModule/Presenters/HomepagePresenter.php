@@ -3,14 +3,13 @@ declare(strict_types=1);
 
 namespace App\MainModule\Presenters;
 
+use App\MainModule\CorePresenters\MainPresenter;
 use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
 use Nette;
-use App\Models;
 use Nextras\Datagrid\Datagrid;
-use Nextras\Dbal\Utils\DateTimeImmutable;
 
-final class HomepagePresenter extends Models\MainPresenter
+final class HomepagePresenter extends MainPresenter
 {
 
     public function startup()

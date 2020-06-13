@@ -5,7 +5,7 @@ namespace App\MainModule\Presenters;
 
 
 use App\Controls\ExtendedForm;
-use App\Models\MainPresenter;
+use App\MainModule\CorePresenters\MainPresenter;
 use App\Models\Orm\LikeFilterFunction;
 use App\Models\Orm\NewRfid\NewRfid;
 use App\Models\Orm\Shifts\Shift;
@@ -14,17 +14,12 @@ use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
 use App\Security\Permissions;
 use DateTimeImmutable;
-use DateTimeZone;
 use Exception;
 use Nette\Application\UI\Form;
 use Nette;
-use Nette\ComponentModel\IComponent;
 use Nextras\Datagrid\Datagrid;
-use Nextras\Dbal\UniqueConstraintViolationException;
 use Nextras\Orm\Collection\Collection;
 use Nextras\Orm\Collection\ICollection;
-use Tracy\Debugger;
-use Vodacek\Forms\Controls\DateInput;
 
 class ManagerPresenter extends MainPresenter
 {
@@ -1044,14 +1039,6 @@ class ManagerPresenter extends MainPresenter
             return count($this->dataGridFactory->createDataSource("shiftsUsers", $filter, $order, [], ["idShift" => $this->idShift]));
         });
 
-        $grid->addGlobalAction('delete', $this->translate("all.delete"), function (array $ids, Datagrid $grid) {
-
-            foreach ($ids as $id) {
-                $this->orm->shiftsUsers->delete($id);
-            }
-            $grid->redrawControl('rows');
-            $this->showSuccessToastAndRefresh();
-        });
 
         $grid->setTranslator($this->translator);
 
@@ -1079,38 +1066,37 @@ class ManagerPresenter extends MainPresenter
      * @param int $idShift Id of shift.
      * @param int $idUser Id of user.
      */
-    public function handleAddUserToShift($idShift,$idUser)
+    public function handleAddUserToShift($idShift, $idUser)
     {
-        if($idShift == null || $idUser == null)
+        if ($idShift == null || $idUser == null)
             return;
 
-        $shiftUser= new ShiftUser();
-        $shiftUser->idShift=$idShift;
-        $shiftUser->idUser=$idUser;
+        $shiftUser = new ShiftUser();
+        $shiftUser->idShift = $idShift;
+        $shiftUser->idUser = $idUser;
 
         $this->orm->shiftsUsers->persistAndFlush($shiftUser);
 
         $this->showSuccessToastAndRefresh();
     }
 
-    public function createComponentAddUserToShiftForm(){
+    public function createComponentAddUserToShiftForm()
+    {
         $form = new ExtendedForm();
 
         $users = $this->orm->users->findAll()->orderBy("surName", Collection::ASC)->fetchAll();
-        $shiftUsers=$this->orm->shiftsUsers->findBy(["idShift"=>$this->idShift])->fetchAll();
+        $shiftUsers = $this->orm->shiftsUsers->findBy(["idShift" => $this->idShift])->fetchAll();
         $resultUsers = [];
         foreach ($users as $user) {
 
-            $found=false;
-            foreach ($shiftUsers as $row)
-            {
-                if($row->idUser->id==$user->id)
-                {
-                    $found=true;
+            $found = false;
+            foreach ($shiftUsers as $row) {
+                if ($row->idUser->id == $user->id) {
+                    $found = true;
                 }
             }
 
-            if($found){
+            if ($found) {
                 continue;
             }
             $resultUsers[$user->id] = $user->surName . " " . $user->firstName . " (" . $user->email . ") ";
@@ -1124,34 +1110,32 @@ class ManagerPresenter extends MainPresenter
 
         $form->addSubmit("submit");
 
-        $form->onSuccess[]=[$this,"addUserToShiftFormSuccess"];
+        $form->onSuccess[] = [$this, "addUserToShiftFormSuccess"];
 
         return $form;
     }
 
-    public function addUserToShiftFormSuccess(ExtendedForm $form){
-        $values=$form->getValues();
+    public function addUserToShiftFormSuccess(ExtendedForm $form)
+    {
+        $values = $form->getValues();
 
-        $shiftUsers=$this->orm->shiftsUsers->findBy(["idShift"=>$values->idShift])->fetchAll();
-        foreach ($values->users as $user)
-        {
-            $found=false;
-            foreach ($shiftUsers as $row)
-            {
-                if($row->idUser->id==$user)
-                {
-                    $found=true;
+        $shiftUsers = $this->orm->shiftsUsers->findBy(["idShift" => $values->idShift])->fetchAll();
+        foreach ($values->users as $user) {
+            $found = false;
+            foreach ($shiftUsers as $row) {
+                if ($row->idUser->id == $user) {
+                    $found = true;
                 }
             }
 
-            if($found){
+            if ($found) {
                 $this->showDangerToastAndRefresh($this->translate("all.alreadyExists"));
                 return;
             }
 
             $newShiftUser = new ShiftUser();
-            $newShiftUser->idShift=$this->orm->shifts->getById($values->idShift);
-            $newShiftUser->idUser=$user;
+            $newShiftUser->idShift = $this->orm->shifts->getById($values->idShift);
+            $newShiftUser->idUser = $user;
             $this->orm->shiftsUsers->persist($newShiftUser);
         }
         $this->orm->shiftsUsers->flush();
@@ -1163,4 +1147,6 @@ class ManagerPresenter extends MainPresenter
     {
         $this->template->shifts = $this->orm->shifts->findAll()->fetchAll();
     }
+
+
 }

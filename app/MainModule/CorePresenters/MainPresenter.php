@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Models;
+namespace App\MainModule\CorePresenters;
 
 
+use App\Models\DatabaseService;
+use App\Models\DataGridFactory;
 use App\Models\Orm\Users\User;
 use App\Security\Permissions;
-use Doctrine\Common\Collections\Collection;
 use Exception;
 use Nette;
 use Nette\Security\Permission;
@@ -19,6 +20,7 @@ use Nette\Utils\Json;
  * Layer between BasePresenter and other presenters in MainModule
  * Main purpose of class is to authenticate and authorize users based on privileges.
  * Presenters that extends this class can in function startup check permission after calling parent.
+ * Class sets some useful services.
  */
 class MainPresenter extends BasePresenter
 {
@@ -36,7 +38,6 @@ class MainPresenter extends BasePresenter
 
     /** @var Nette\Security\Permission */
     protected $acl;
-
 
     /** @var DatabaseService @inject */
     public $databaseService;
@@ -173,7 +174,6 @@ class MainPresenter extends BasePresenter
     /**
      * Update current identity with updated data from database.
      * @param array $data New data.
-     * @deprecated
      */
     protected function updateUserIdentity($data)
     {

@@ -15,7 +15,7 @@ abstract class BaseRepository extends Repository
      */
     public function update(int $id, $newValues)
     {
-        $user = $this->getById($id);
+        $user = $this->getById((int)$id);
 
         if(!$user)
             return;
@@ -35,7 +35,7 @@ abstract class BaseRepository extends Repository
      */
     public function delete($id)
     {
-        $row=$this->getById($id);
+        $row=$this->getById((int)$id);
         if(!$row)
         {
             return;
