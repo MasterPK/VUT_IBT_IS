@@ -1,0 +1,32 @@
+{define col-perm}
+    <td class="grid-col-perm">
+        {switch $cell}
+            {case 1}
+            {_all.basic}
+            {case 2}
+            {_all.twoPhase}
+            {case 3}
+            {_all.admin}
+            {default}
+            {_all.none}
+        {/switch}
+    </td>
+{/define}
+
+{define col-mode}
+    <td class="grid-col-mode">
+        {switch $cell}
+            {case 0}
+            {_all.normalMode}
+            {case 1}
+            {_all.checkOnlyMode}
+            {default}
+            {_all.none}
+        {/switch}
+    </td>
+{/define}
+
+
+
+
+

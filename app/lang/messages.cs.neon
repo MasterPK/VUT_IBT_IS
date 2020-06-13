@@ -3,6 +3,7 @@ prefix:
 
 "- select action -": "- Vybrat akci -"
 "This field is required.": "Toto pole je povinné."
+"Please enter a valid integer.": "Zadejte, prosím, platné celé číslo!"
 Do: "Provést"
 yesB: "ANO"
 yes: "Ano"

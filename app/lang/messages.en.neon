@@ -3,6 +3,7 @@ prefix:
 
 "- select action -": "- Select action -"
 "This field is required.": "This field is required."
+"Please enter a valid integer.": "Please enter a valid integer!"
 Do: "Do"
 yesB: "YES"
 yes: "Yes"

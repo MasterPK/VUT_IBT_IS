@@ -3,11 +3,14 @@ declare(strict_types=1);
 
 namespace App\MainModule\Presenters;
 
+use App\Controls\ExtendedFormContainer;
 use App\MainModule\CorePresenters\MainPresenter;
 use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
+use Cassandra\Date;
 use Nette;
 use Nextras\Datagrid\Datagrid;
+use Vodacek\Forms\Controls\DateInput;
 
 final class HomepagePresenter extends MainPresenter
 {
@@ -22,75 +25,52 @@ final class HomepagePresenter extends MainPresenter
         $this->showToast(["color" => "green", "title" => "Test", "message" => "Zprava"]);
     }
 
-    public function renderStationsPerms()
-    {
-        $tmp = $this->orm->stations->findAll()->fetchAll();
-    }
-
-
     public function createComponentMyStationsPerms()
     {
-        $grid = new Datagrid();
+        $grid = $this->dataGridFactory->createDataGrid();
 
-        $grid->setDataSourceCallback(function ($filter, $order) {
-            $filter["idUser"] = $this->user->id;
-
-            if (isset($order[0])) {
-                $data = $this->orm->stationsUsers->findBy($filter)->orderBy($order[0], $order[1])->fetchAll();
-            } else {
-                $data = $this->orm->stationsUsers->findBy($filter)->fetchAll();
-            }
-
-            $result = [];
-            foreach ($data as $row) {
-
-                switch ($row->perm) {
-                    case StationsUsers::PERM_BASIC:
-                        $perm = $this->translateAll("basic");
-                        break;
-                    case StationsUsers::PERM_TWO_PHASE:
-                        $perm = $this->translateAll("twoPhase");
-                        break;
-                    case StationsUsers::PERM_ADMIN:
-                        $perm = $this->translateAll("admin");
-                        break;
-                    default:
-                        $perm = $this->translateAll("none");
-                        break;
-                }
-
-                $station = $row->idStation;
-                switch ($station->mode) {
-                    case Station::MODE_NORMAL:
-                        $stationMode = $this->translateAll("normalMode");
-                        break;
-                    case Station::MODE_CHECK_ONLY:
-                        $stationMode = $this->translateAll("checkOnlyMode");
-                        break;
-                    default:
-                        $stationMode = $this->translateAll("none");
-                        break;
-                }
-
-                array_push($result, ["id" => $row->id, "stationName" => $station->name, "perm" => $perm, "stationMode" => $stationMode]);
-            }
-
-            return $result;
+        $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
+            return $this->dataGridFactory->createDataSourceNotORM("stations_x_users",
+                "stations_x_users.id, id_station.name AS station_name, id_station.mode, perm",$filter,$order,["mode","perm"],["id_user.id"=>$this->user->id],$paginator,["id","DESC"],["station_name"=>"id_station.name"]);
         });
 
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/stationPermsDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Homepage/stationPermsDataGrid.latte');
 
-        /*$grid->addColumn("id","ID")
-            ->enableSort();*/
-
-        $grid->addColumn("stationName", $perm = $this->translateAll("stationName"))
+        $grid->addColumn("id","ID")
             ->enableSort();
 
-        $grid->addColumn("perm", $perm = $this->translateAll("permission"))
+        $grid->addColumn("station_name", "all.stationName")
             ->enableSort();
 
-        $grid->addColumn("stationMode", $perm = $this->translateAll("stationMode"))
+        $grid->addColumn("mode", "all.stationMode")
             ->enableSort();
+
+        $grid->addColumn("perm", "all.permission")
+            ->enableSort();
+
+
+
+        $grid->setFilterFormFactory(function () {
+            $form = $this->dataGridFactory->createFilterForm();
+
+            $form->addId();
+            $form->addText('station_name');
+
+            $form->addSelect("perm", null, [
+                -1 => "all.all",
+                StationsUsers::PERM_BASIC => "all.basic",
+                StationsUsers::PERM_TWO_PHASE => "all.twoPhase",
+                StationsUsers::PERM_ADMIN => "all.admin"
+            ]);
+
+            $form->addSelect("mode", null, [
+                -1 => "all.all",
+                Station::MODE_NORMAL => "all.normalMode",
+                Station::MODE_CHECK_ONLY => "all.checkOnlyMode"
+            ]);
+
+            return $form;
+        });
 
 
         return $grid;
@@ -103,56 +83,46 @@ final class HomepagePresenter extends MainPresenter
      */
     public function createComponentMyShiftsDataGrid()
     {
-        $grid = new Datagrid();
+        $grid = $this->dataGridFactory->createDataGrid();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
-            $data = $this->dataGridFactory->createDataSource("shiftsUsers", $filter, [], [],["idUser"=>$this->user->id], $paginator);
 
-            $result = [];
-
-            foreach ($data as $row) {
-                $tmp = [];
-                $tmp["start"] = $row->idShift->start;
-                $tmp["end"] = $row->idShift->end;
-                $tmp["note"] = $row->idShift->note;
-                $tmp["actualArrival"] = isset($row->arrival) ? $row->arrival : null;
-                $tmp["actualDeparture"] = isset($row->departure) ? $row->departure : null;
-
-                array_push($result, $tmp);
-            }
-
-            if (!isset($order[0])) {
-                $order[0] = "start";
-                $order[1] = "ASC";
-            }
-            if ($order[1] == "ASC") {
-                usort($result, function ($a, $b) use (&$order) {
-                    return $a[$order[0]] > $b[$order[0]];
-                });
-            } else {
-                usort($result, function ($a, $b) use (&$order) {
-                    return $a[$order[0]] < $b[$order[0]];
-                });
-            }
-
-
-            return $result;
+            return $this->dataGridFactory->createDataSourceNotORM("shifts_x_users",
+                "id_shift.start,id_shift.end,arrival,departure",$filter,$order,[],["id_user"=>$this->user->id],$paginator,["start","ASC"]);
         });
-
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
 
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/Homepage/myShiftsDataGrid.latte');
 
-        $grid->addColumn("start", $perm = $this->translateAll("start"))->enableSort();
+        $grid->addColumn("start", "all.start")->enableSort();
 
-        $grid->addColumn("end", $perm = $this->translateAll("end"))->enableSort();
+        $grid->addColumn("end", "all.end")->enableSort();
 
-        $grid->addColumn("actualArrival", $perm = $this->translateAll("actualArrival"))->enableSort();
+        $grid->addColumn("arrival", "all.actualArrival")->enableSort();
 
-        $grid->addColumn("actualDeparture", $perm = $this->translateAll("actualDeparture"))->enableSort();
+        $grid->addColumn("departure", "all.actualDeparture")->enableSort();
 
-        $grid->addColumn("note", $perm = $this->translateAll("note"))->enableSort();
+        $grid->addColumn("note", "all.note")->enableSort();
 
+        $grid->setFilterFormFactory(function () {
+            $form = $this->dataGridFactory->createFilterForm();
+
+            $form->addDate('start',null,DateInput::TYPE_DATE);
+            $form->addDate('end',null,DateInput::TYPE_DATE);
+
+            $form->addDateTimeRange("arrival",DateInput::TYPE_DATE);
+            $form->addDateTimeRange("departure",DateInput::TYPE_DATE);
+
+            /*$form->addComponent(new ExtendedFormContainer(),"departure");
+
+            $form["departure"]->addDate('from',null,DateInput::TYPE_DATE)->setHtmlAttribute("class", "form-control");
+            $form["departure"]->addDate('to',null,DateInput::TYPE_DATE)->setHtmlAttribute("class", "form-control");*/
+
+            //$form->addDate('departure',null,DateInput::TYPE_DATE);
+
+            $form->addText("note");
+
+            return $form;
+        });
 
         return $grid;
     }

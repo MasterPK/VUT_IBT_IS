@@ -10,18 +10,37 @@
     </td>
 {/define}
 
-{define col-actualArrival}
-    <td class="grid-col-actualArrival">
-        {ifset $row["actualArrival"]}
-        {date_format($row["actualArrival"],"d.m.Y H:i:s")}
+{define col-arrival}
+    <td class="grid-col-arrival">
+        {ifset $row["arrival"]}
+            {date_format($row["arrival"],"d.m.Y H:i:s")}
         {/ifset}
     </td>
 {/define}
 
-{define col-actualDeparture}
-    <td class="grid-col-actualDeparture">
-        {ifset $row["actualDeparture"]}
-        {date_format($row["actualDeparture"],"d.m.Y H:i:s")}
+{define col-departure}
+    <td class="grid-col-departure">
+        {ifset $row["departure"]}
+            {date_format($row["departure"],"d.m.Y H:i:s")}
         {/ifset}
     </td>
 {/define}
+
+{define col-filter-arrival}
+    {formContainer arrival}
+        <div class="text-center">
+            {input from}&nbsp;-&nbsp;
+            {input to}
+        </div>
+    {/formContainer}
+{/define}
+
+{define col-filter-departure}
+    {formContainer departure}
+        <div class="text-center">
+            {input from}&nbsp;-&nbsp;
+            {input to}
+        </div>
+    {/formContainer}
+{/define}
+

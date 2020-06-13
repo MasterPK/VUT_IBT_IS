@@ -27,3 +27,13 @@
         {$row->idStation->name}
     </td>
 {/define}
+
+
+{define col-filter-datetime}
+    {formContainer datetime}
+        <div class="text-center">
+            {input from}&nbsp;-&nbsp;
+            {input to}
+        </div>
+    {/formContainer}
+{/define}

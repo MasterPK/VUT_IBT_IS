@@ -326,51 +326,8 @@ class AdminPresenter extends MainPresenter
             ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
-
-            $query = $this->database->table("access_log")->select("access_log.id,datetime,log_rfid,status,id_user.first_name,id_user.sur_name,id_station.name");
-
-            if (isset($filter["status"]) && $filter["status"] == -1) {
-                unset($filter["status"]);
-            }
-
-            if (empty($order[1])) {
-                $order[0] = "id";
-                $order[1] = "DESC";
-            }
-
-            $filters = [];
-            foreach ($filter as $k => $v) {
-                if ($k == 'id' || is_array($v)) {
-                    $filters[$k] = $v;
-                } else if (is_a($v, DateTimeImmutable::class)) {
-                    $filters["datetime>="] = $v;
-                    $date = new Nette\Utils\DateTime($v->format("m/d/Y"));
-                    $date->modify("+ 1 day");
-                    $filters["datetime<="] = $date;
-                } else {
-                    $filters[$k . ' LIKE ?'] = "%$v%";
-                }
-            }
-
-            if (isset($order[0])) {
-                if ($paginator != null) {
-                    $query = $query->where($filters)->order($order[0] . " " . $order[1])->limit($paginator->getItemsPerPage(), $paginator->getOffset());
-                } else {
-                    $query = $query->where($filters)->order($order[0] . " " . $order[1]);
-                }
-
-            } else {
-                if ($paginator != null) {
-                    $query = $query->where($filters)->limit($paginator->getItemsPerPage(), $paginator->getOffset());
-                } else {
-                    $query = $query->where($filters);
-                }
-
-            }
-            $query = $query->fetchAll();
-
-            return $query;
-
+            return $this->dataGridFactory->createDataSourceNotORM("access_log",
+                "access_log.id,datetime,log_rfid,status,id_user.first_name,id_user.sur_name,id_station.name",$filter,$order,["status"],[],$paginator,["id","DESC"]);
         });
 
 
@@ -390,7 +347,10 @@ class AdminPresenter extends MainPresenter
             $form->addText("sur_name");
             $form->addText("name");
 
-            $form->addDate("datetime", null, DateInput::TYPE_DATE);
+            $form->addDateTimeRange("datetime",DateInput::TYPE_DATE);
+
+
+            //$form->addDate("datetime", null, DateInput::TYPE_DATE);
 
 
             return $form;
