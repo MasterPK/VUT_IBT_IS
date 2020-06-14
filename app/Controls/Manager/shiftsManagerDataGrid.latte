@@ -20,3 +20,21 @@
     <a href="{plink shiftUsers $primary}" class="ajax btn btn-primary btn-sm m-1">{_all.users}</a>
     <a href="{plink deleteShift! $primary}" onclick="return confirm({_all.really});" class="ajax btn btn-danger btn-sm m-1">{_all.delete}</a>
 {/define}
+
+{define col-filter-start}
+    {formContainer start}
+        <div class="text-center">
+            {input from}&nbsp;-&nbsp;
+            {input to}
+        </div>
+    {/formContainer}
+{/define}
+
+{define col-filter-end}
+    {formContainer end}
+        <div class="text-center">
+            {input from}&nbsp;-&nbsp;
+            {input to}
+        </div>
+    {/formContainer}
+{/define}

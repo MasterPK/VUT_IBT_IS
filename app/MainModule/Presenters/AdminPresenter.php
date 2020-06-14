@@ -36,14 +36,14 @@ class AdminPresenter extends MainPresenter
 
         $grid->addColumn("id", "ID")
             ->enableSort();
-        $grid->addColumn("name", $this->translate("all.name"))
+        $grid->addColumn("name", "all.name")
             ->enableSort();
-        $grid->addColumn("description", $this->translate("all.description"));
-        $grid->addColumn("lastUpdate", $this->translate("all.lastUpdate"))
+        $grid->addColumn("description", "all.description");
+        $grid->addColumn("lastUpdate", "all.lastUpdate")
             ->enableSort();
-        $grid->addColumn("apiToken", $this->translate("all.apiToken"))
+        $grid->addColumn("apiToken", "all.apiToken")
             ->enableSort();
-        $grid->addColumn("mode", $this->translate("all.stationMode"))
+        $grid->addColumn("mode", "all.stationMode")
             ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
@@ -62,8 +62,8 @@ class AdminPresenter extends MainPresenter
             $form->addTextArea("description")->setHtmlAttribute("class", "form-control");
 
             $form->addSelect("mode", null, [
-                Station::MODE_NORMAL => $this->translate("all.normalMode"),
-                Station::MODE_CHECK_ONLY => $this->translate("all.checkOnlyMode")
+                Station::MODE_NORMAL => "all.normalMode",
+                Station::MODE_CHECK_ONLY => "all.checkOnlyMode"
             ])->setHtmlAttribute("class", "form-control");
 
             $form["save"]->getControlPrototype()->onClick = "return confirm(\"" . $this->translate("all.reallyStationEdit") . "\");";
@@ -97,9 +97,9 @@ class AdminPresenter extends MainPresenter
 
 
             $form->addSelect("mode", null, [
-                -1 => $this->translate("all.all"),
-                Station::MODE_NORMAL => $this->translate("all.normalMode"),
-                Station::MODE_CHECK_ONLY => $this->translate("all.checkOnlyMode")
+                -1 => "all.all",
+                Station::MODE_NORMAL => "all.normalMode",
+                Station::MODE_CHECK_ONLY => "all.checkOnlyMode"
             ])
                 ->setHtmlAttribute("class", "form-control");
 
@@ -135,23 +135,23 @@ class AdminPresenter extends MainPresenter
 
         $grid->addColumn("id", "ID")
             ->enableSort();
-        $grid->addColumn("email", $this->translate("messages.visitor.email"))
+        $grid->addColumn("email","messages.visitor.email")
             ->enableSort();
-        $grid->addColumn("firstName", $this->translate("messages.visitor.firstName"))
+        $grid->addColumn("firstName","messages.visitor.firstName")
             ->enableSort();
-        $grid->addColumn("surName", $this->translate("messages.visitor.surName"))
+        $grid->addColumn("surName","messages.visitor.surName")
             ->enableSort();
-        $grid->addColumn("permission", $this->translate("all.permission"))
+        $grid->addColumn("permission","all.permission")
             ->enableSort();
-        $grid->addColumn("registration", $this->translate("all.registration"))
+        $grid->addColumn("registration","all.registration")
             ->enableSort();
-        $grid->addColumn("registrationDate", $this->translate("all.registrationDate"))
+        $grid->addColumn("registrationDate","all.registrationDate")
             ->enableSort();
-        $grid->addColumn("lastLogin", $this->translate("all.lastLogin"))
+        $grid->addColumn("lastLogin","all.lastLogin")
             ->enableSort();
-        $grid->addColumn("rfid", $this->translate("messages.main.profile.rfid"))
+        $grid->addColumn("rfid","messages.main.profile.rfid")
             ->enableSort();
-        $grid->addColumn("token", $this->translate("all.apiToken"))
+        $grid->addColumn("token","all.apiToken")
             ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
@@ -174,14 +174,14 @@ class AdminPresenter extends MainPresenter
             $form->addText("rfid")->setHtmlAttribute("class", "form-control");
 
             $form->addSelect("permission", null, [
-                Permissions::REGISTERED => $this->translate("messages.main.roles.registered"),
-                Permissions::MANAGER => $this->translate("messages.main.roles.manager"),
-                Permissions::ADMIN => $this->translate("messages.main.roles.admin")
+                Permissions::REGISTERED =>"messages.main.roles.registered",
+                Permissions::MANAGER =>"messages.main.roles.manager",
+                Permissions::ADMIN =>"messages.main.roles.admin"
             ])->setHtmlAttribute("class", "form-control");
 
             $form->addSelect("registration", null, [
-                0 => $this->translate("messages.main.global.noB"),
-                1 => $this->translate("messages.main.global.yesB")
+                0 =>"messages.main.global.noB",
+                1 =>"messages.main.global.yesB"
             ])->setHtmlAttribute("class", "form-control");
 
 
@@ -219,16 +219,16 @@ class AdminPresenter extends MainPresenter
             $form->addDate("lastLogin", null, DateInput::TYPE_DATE)->setHtmlAttribute("class", "form-control");
 
             $form->addSelect("permission", null, [
-                -1 => $this->translate("all.all"),
-                Permissions::REGISTERED => $this->translate("messages.main.roles.registered"),
-                Permissions::MANAGER => $this->translate("messages.main.roles.manager"),
-                Permissions::ADMIN => $this->translate("messages.main.roles.admin")
+                -1 => "all.all",
+                Permissions::REGISTERED => "messages.main.roles.registered",
+                Permissions::MANAGER => "messages.main.roles.manager",
+                Permissions::ADMIN => "messages.main.roles.admin"
             ])->setHtmlAttribute("class", "form-control");
 
             $form->addSelect("registration", null, [
-                -1 => $this->translate("all.all"),
-                0 => $this->translate("messages.main.global.noB"),
-                1 => $this->translate("messages.main.global.yesB")
+                -1 => "all.all",
+                0 => "messages.main.global.noB",
+                1 => "messages.main.global.yesB"
             ])->setHtmlAttribute("class", "form-control");
 
             return $form;
@@ -273,9 +273,9 @@ class AdminPresenter extends MainPresenter
 
         $grid->addColumn("id", "ID")
             ->enableSort();
-        $grid->addColumn("rfid", $this->translate("messages.main.profile.rfid"))
+        $grid->addColumn("rfid", "messages.main.profile.rfid")
             ->enableSort();
-        $grid->addColumn("createdAt", $this->translate("all.createdAt"))
+        $grid->addColumn("createdAt", "all.createdAt")
             ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
@@ -312,17 +312,17 @@ class AdminPresenter extends MainPresenter
 
         $grid->addColumn("id", "ID")
             ->enableSort();
-        $grid->addColumn("datetime", $this->translate("all.datetime"))
+        $grid->addColumn("datetime", "all.datetime")
             ->enableSort();
-        $grid->addColumn("log_rfid", $this->translate("messages.main.profile.rfid"))
+        $grid->addColumn("log_rfid", "messages.main.profile.rfid")
             ->enableSort();
-        $grid->addColumn("status", $this->translate("all.status"))
+        $grid->addColumn("status", "all.status")
             ->enableSort();
-        $grid->addColumn("first_name", $this->translate("all.firstName"))
+        $grid->addColumn("first_name", "all.firstName")
             ->enableSort();
-        $grid->addColumn("sur_name", $this->translate("all.surName"))
+        $grid->addColumn("sur_name", "all.surName")
             ->enableSort();
-        $grid->addColumn("name", $this->translate("all.stationName"))
+        $grid->addColumn("name", "all.stationName")
             ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
@@ -338,9 +338,9 @@ class AdminPresenter extends MainPresenter
 
             $form->addText("log_rfid");
             $form->addSelect("status", null, [
-                -1 => $this->translate("all.all"),
-                AccessLog::ACCESS_DENIED => $this->translate("all.denied"),
-                AccessLog::ACCESS_GRANTED => $this->translate("all.granted")
+                -1 => "all.all",
+                AccessLog::ACCESS_DENIED => "all.denied",
+                AccessLog::ACCESS_GRANTED => "all.granted"
             ]);
 
             $form->addText("first_name");
@@ -348,11 +348,6 @@ class AdminPresenter extends MainPresenter
             $form->addText("name");
 
             $form->addDateTimeRange("datetime",DateInput::TYPE_DATE);
-
-
-            //$form->addDate("datetime", null, DateInput::TYPE_DATE);
-
-
             return $form;
         });
 
@@ -386,13 +381,13 @@ class AdminPresenter extends MainPresenter
         $grid->addColumn("id", "ID")
             ->enableSort();
 
-        $grid->addColumn("key", $this->translate("all.key"))
+        $grid->addColumn("key", "all.key")
             ->enableSort();
 
-        $grid->addColumn("value", $this->translate("all.value"))
+        $grid->addColumn("value", "all.value")
             ->enableSort();
 
-        $grid->addColumn("note", $this->translate("all.note"));
+        $grid->addColumn("note", "all.note");
 
         $grid->setFilterFormFactory(function () {
             $form = $this->dataGridFactory->createFilterForm();

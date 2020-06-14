@@ -106,8 +106,8 @@ final class HomepagePresenter extends MainPresenter
         $grid->setFilterFormFactory(function () {
             $form = $this->dataGridFactory->createFilterForm();
 
-            $form->addDate('start',null,DateInput::TYPE_DATE);
-            $form->addDate('end',null,DateInput::TYPE_DATE);
+            $form->addDateTimeRange('start',DateInput::TYPE_DATE);
+            $form->addDateTimeRange('end',DateInput::TYPE_DATE);
 
             $form->addDateTimeRange("arrival",DateInput::TYPE_DATE);
             $form->addDateTimeRange("departure",DateInput::TYPE_DATE);
@@ -130,6 +130,7 @@ final class HomepagePresenter extends MainPresenter
 
     public function renderMyShifts()
     {
+        $this->template->shifts=$this->user->shifts;
     }
 
 }

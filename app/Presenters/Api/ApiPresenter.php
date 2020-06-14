@@ -195,79 +195,77 @@ final class ApiPresenter implements IPresenter
 
         $user = $this->orm->users->getBy(["rfid" => $user_rfid]);
 
-        if (!$user) {
-            return ["s" => "err", "error" => "User doesnt exist!"];
-        }
+        if ($user) {
 
-        $userShifts = $this->orm->shiftsUsers->findBy(["idUser" => $user->id])->fetchAll();
+            $userShifts = $this->orm->shiftsUsers->findBy(["idUser" => $user->id])->fetchAll();
 
-        usort($userShifts, function ($a, $b) {
-            return $a->idShift->start > $b->idShift->start;
-        });
+            usort($userShifts, function ($a, $b) {
+                return $a->idShift->start > $b->idShift->start;
+            });
 
-        $settings = $this->orm->settings->findAll()->fetchPairs("key", "value");
+            $settings = $this->orm->settings->findAll()->fetchPairs("key", "value");
 
-        if ($row->mode == 1 && $userShifts) {
-            foreach ($userShifts as $item) {
-                $now = new DateTime();
-                // Shift is running
-                if ($item->idShift->start <= $now && $item->idShift->end >= $now) {
-                    // User arrival
-                    if (!isset($item->arrival) && !$user->present) {
-                        $item->arrival = $now;
-                        $intervalInSeconds = (new DateTime())->setTimeStamp(0)->add($item->idShift->start->diff($now))->getTimeStamp();
-                        $intervalInMinutes = $intervalInSeconds / 60;
-                        if ($intervalInMinutes > $settings["max_start_deviation"]) {
-                            $newNotification = new App\Models\Orm\Notifications\Notification();
-                            $newNotification->subject = "LATE_ARRIVAL";
-                            $newNotification->description = $user->email;
-                            $newNotification->createdAt = new DateTime();
-                            $this->orm->notifications->persistAndFlush($newNotification);
+            if ($row->mode == 1 && $userShifts) {
+                foreach ($userShifts as $item) {
+                    $now = new DateTime();
+                    // Shift is running
+                    if ($item->idShift->start <= $now && $item->idShift->end >= $now) {
+                        // User arrival
+                        if (!isset($item->arrival) && !$user->present) {
+                            $item->arrival = $now;
+                            $intervalInSeconds = (new DateTime())->setTimeStamp(0)->add($item->idShift->start->diff($now))->getTimeStamp();
+                            $intervalInMinutes = $intervalInSeconds / 60;
+                            if ($intervalInMinutes > $settings["max_start_deviation"]) {
+                                $newNotification = new App\Models\Orm\Notifications\Notification();
+                                $newNotification->subject = "LATE_ARRIVAL";
+                                $newNotification->description = $user->email;
+                                $newNotification->createdAt = new DateTime();
+                                $this->orm->notifications->persistAndFlush($newNotification);
+                            }
+                            $this->orm->shiftsUsers->persistAndFlush($item);
+                            break;
+                            // User departure
+                        } else if ($user->present && isset($item->arrival)) {
+                            $item->departure = $now;
+                            $intervalInSeconds = (new DateTime())->setTimeStamp(0)->add($now->diff($item->idShift->end))->getTimeStamp();
+                            $intervalInMinutes = $intervalInSeconds / 60;
+                            if ($intervalInMinutes > $settings["max_end_deviation"]) {
+                                $newNotification = new App\Models\Orm\Notifications\Notification();
+                                $newNotification->subject = "EARLY_DEPARTURE";
+                                $newNotification->description = $user->email;
+                                $newNotification->createdAt = new DateTime();
+                                $this->orm->notifications->persistAndFlush($newNotification);
+                            }
+                            $this->orm->shiftsUsers->persistAndFlush($item);
+                            break;
+                        } else if (!$user->present && isset($item->arrival) && isset($item->departure)) {
+                            $item->departure = null;
+                            $this->orm->shiftsUsers->persistAndFlush($item);
+                            break;
                         }
-                        $this->orm->shiftsUsers->persistAndFlush($item);
-                        break;
-                        // User departure
-                    } else if ($user->present && isset($item->arrival)) {
-                        $item->departure = $now;
-                        $intervalInSeconds = (new DateTime())->setTimeStamp(0)->add($now->diff($item->idShift->end))->getTimeStamp();
-                        $intervalInMinutes = $intervalInSeconds / 60;
-                        if ($intervalInMinutes > $settings["max_end_deviation"]) {
-                            $newNotification = new App\Models\Orm\Notifications\Notification();
-                            $newNotification->subject = "EARLY_DEPARTURE";
-                            $newNotification->description = $user->email;
-                            $newNotification->createdAt = new DateTime();
-                            $this->orm->notifications->persistAndFlush($newNotification);
+
+                    } else if ($item->idShift->start >= $now) {
+                        if (!$user->present && !isset($item->arrival) && !isset($item->departure)) {
+                            $item->arrival = $now;
+                            $this->orm->shiftsUsers->persistAndFlush($item);
+                            break;
                         }
-                        $this->orm->shiftsUsers->persistAndFlush($item);
-                        break;
-                    } else if (!$user->present && isset($item->arrival) && isset($item->departure)) {
-                        $item->departure = null;
-                        $this->orm->shiftsUsers->persistAndFlush($item);
-                        break;
-                    }
 
-                } else if ($item->idShift->start >= $now) {
-                    if (!$user->present && !isset($item->arrival) && !isset($item->departure)) {
-                        $item->arrival = $now;
-                        $this->orm->shiftsUsers->persistAndFlush($item);
-                        break;
-                    }
+                    } else if ($item->idShift->end <= $now) {
+                        if ($user->present && isset($item->arrival) && !isset($item->departure)) {
+                            $item->departure = $now;
+                            $this->orm->shiftsUsers->persistAndFlush($item);
+                            break;
+                        }
 
-                } else if ($item->idShift->end <= $now) {
-                    if ($user->present && isset($item->arrival) && !isset($item->departure)) {
-                        $item->departure = $now;
-                        $this->orm->shiftsUsers->persistAndFlush($item);
-                        break;
                     }
 
                 }
-
+                $user->present = !$user->present;
             }
-            $user->present = !$user->present;
+
+            $this->orm->users->persistAndFlush($user);
         }
-
-        $this->orm->users->persistAndFlush($user);
-
         $result = $this->database->table('access_log')->insert([
             "datetime" => new DateTime,
             "log_rfid" => $user_rfid,

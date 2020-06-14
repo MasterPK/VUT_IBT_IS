@@ -98,7 +98,7 @@
                 events: [
                     {foreach $shifts as $shift}
                     {
-                        /*title: "{$shift->start->format("h:i")|noescape} - {$shift->end->format("h:i")|noescape}",*/
+                        title: "{$shift->start->format("H:i")|noescape} - {$shift->end->format("H:i")|noescape}",
                         start: Date.parse("{$shift->start->format("m/d/y h:i")|noescape}"),
                         end: Date.parse("{$shift->end->format("m/d/y h:i")|noescape}"),
                         backgroundColor: '#0069d9', //red
@@ -106,6 +106,7 @@
                     },
                     {/foreach}
                 ],
+                displayEventTime: false
 
             });
 

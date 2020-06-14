@@ -16,6 +16,20 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {_all.calendar}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
                 <div class="card-body">
                     {control myShiftsDataGrid}
                 </div>
@@ -25,5 +39,42 @@
 {/block}
 
 {block scripts}
+    <script>
+        $(function () {
+            /* initialize the calendar
+             -----------------------------------------------------------------*/
 
+            var Calendar = FullCalendar.Calendar;
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new Calendar(calendarEl, {
+                height: "auto",
+                locale: '{if $locale}cs{else}en{/if}',
+                plugins: ['bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                'themeSystem': 'bootstrap',
+                events: [
+                    {foreach $shifts as $shift}
+                    {
+                        title: "{$shift->start->format("H:i")|noescape} - {$shift->end->format("H:i")|noescape}",
+                        start: Date.parse({$shift->start->format("m/d/y h:i")}),
+                        end: Date.parse({$shift->end->format("m/d/y h:i")}),
+                        backgroundColor: '#0069d9', //red
+                        borderColor: '#0069d9', //red
+                    },
+                    {/foreach}
+                ],
+                displayEventTime: false
+
+            });
+
+            calendar.render();
+        })
+
+
+    </script>
 {/block}

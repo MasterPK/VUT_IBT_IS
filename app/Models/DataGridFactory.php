@@ -68,8 +68,16 @@ class DataGridFactory
 
         $filters = [ICollection:: AND];
         foreach ($filter as $k => $v) {
-            if ($k == 'id' || is_array($v) || is_numeric($v)) {
+            if ($k == 'id' || is_numeric($v)) {
                 $filters[$k] = $v;
+            } else if (is_array($v)) { // Date Range
+                if (key_exists("from", $v) && key_exists("to", $v) && is_a($v["from"], DateTimeImmutable::class) && is_a($v["to"], DateTimeImmutable::class)) {
+                    $filters["$k>="] = $v["from"];
+                    $date = new Nette\Utils\DateTime($v["to"]->format("m/d/Y"));
+                    $date->modify("+ 1 day");
+                    $filters["$k<"] = $date;
+                }
+
             } else if (is_a($v, DateTimeImmutable::class)) {
                 $filters["$k>="] = $v;
                 $date = new Nette\Utils\DateTime($v->format("m/d/Y"));
@@ -84,7 +92,13 @@ class DataGridFactory
             if (is_array($value)) {
                 array_push($filters, $value);
             } else {
-                $filters[$key] = $value;
+                if($filters[0]==ICollection::AND)
+                {
+                    array_push($filters, [$key=>$value]);
+                }else{
+                    $filters[$key] = $value;
+                }
+
             }
         }
 
@@ -116,8 +130,8 @@ class DataGridFactory
     public function createFilterForm()
     {
         $form = new ExtendedFormContainer();
-        $form->addSubmit('filter', $this->translator->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
-        $form->addSubmit('cancel', $this->translator->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+        $form->addSubmit('filter', "all.filter")->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
+        $form->addSubmit('cancel', "all.cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
         return $form;
     }
 
@@ -129,8 +143,8 @@ class DataGridFactory
     public function createEditForm()
     {
         $form = new ExtendedFormContainer();
-        $form->addSubmit('save', $this->translator->translate("all.save"))->getControlPrototype()->class = 'btn btn-sm btn-success m-1';
-        $form->addSubmit('cancel', $this->translator->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+        $form->addSubmit('save', "all.save")->getControlPrototype()->class = 'btn btn-sm btn-success m-1';
+        $form->addSubmit('cancel', "all.cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
         return $form;
     }
 

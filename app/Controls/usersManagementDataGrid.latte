@@ -20,7 +20,7 @@
 {define row-actions}
     <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_all.edit}</a>
     <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-sm m-1">{_all.assignRfid}</a>
-    <a href="{plink :Main:Manager:userStationsPerms $primary}" class="btn btn-primary btn-sm m-1">{_all.detail}</a>
+    <a href="{plink :Main:Manager:userStationsPerms $primary}" class="btn btn-primary btn-sm m-1">{_all.permission}</a>
 {/define}
 
 
@@ -32,4 +32,22 @@
             {_all.yesB}
         {/if}
     </td>
+{/define}
+
+{define col-filter-registrationDate}
+    {formContainer registrationDate}
+        <div class="text-center">
+            {input from}&nbsp;-&nbsp;
+            {input to}
+        </div>
+    {/formContainer}
+{/define}
+
+{define col-filter-lastLogin}
+    {formContainer lastLogin}
+        <div class="text-center">
+            {input from}&nbsp;-&nbsp;
+            {input to}
+        </div>
+    {/formContainer}
 {/define}

@@ -20,6 +20,7 @@ use Nette;
 use Nextras\Datagrid\Datagrid;
 use Nextras\Orm\Collection\Collection;
 use Nextras\Orm\Collection\ICollection;
+use Vodacek\Forms\Controls\DateInput;
 
 class ManagerPresenter extends MainPresenter
 {
@@ -46,30 +47,30 @@ class ManagerPresenter extends MainPresenter
     public function createComponentUsersDataGrid()
     {
 
-        $grid = new Datagrid();
+        $grid = $this->dataGridFactory->createDataGrid();
 
         $grid->addColumn('id', "ID")
             ->enableSort();
 
-        $grid->addColumn('firstName', $this->translate("messages.visitor.firstName"))
+        $grid->addColumn('firstName', "messages.visitor.firstName")
             ->enableSort();
 
-        $grid->addColumn('surName', $this->translate("messages.visitor.surName"))
+        $grid->addColumn('surName', "messages.visitor.surName")
             ->enableSort();
 
-        $grid->addColumn('email', $this->translate("messages.visitor.email"))
+        $grid->addColumn('email', "messages.visitor.email")
             ->enableSort();
 
-        $grid->addColumn('rfid', $this->translate("messages.main.profile.rfid"))
+        $grid->addColumn('rfid', "messages.main.profile.rfid")
             ->enableSort();
 
-        $grid->addColumn('registration', $this->translate("messages.main.manager.registration"))
+        $grid->addColumn('registration', "messages.main.manager.registration")
             ->enableSort();
 
-        $grid->addColumn("registrationDate", $this->translate("datagrid.datetimeRegistration"))
+        $grid->addColumn("registrationDate", "datagrid.datetimeRegistration")
             ->enableSort();
 
-        $grid->addColumn("lastLogin", $this->translate("datagrid.lastLogin"))
+        $grid->addColumn("lastLogin", "datagrid.lastLogin")
             ->enableSort();
 
         $grid->setDatasourceCallback(function ($filter, $order, $paginator) {
@@ -94,14 +95,12 @@ class ManagerPresenter extends MainPresenter
             return count($this->dataGridFactory->createDataSource("users", $filter, $order, ["registration"], []));
         });
 
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/usersManagementDataGrid.latte');
 
 
         $grid->setFilterFormFactory(function () {
-            $form = new Nette\Forms\Container();
-            $form->addText('id')
-                ->addCondition(Form::INTEGER); // your custom input type
+            $form = $this->dataGridFactory->createFilterForm();
+            $form->addId();
 
             $form->addText('firstName')
                 ->setHtmlAttribute("class", "form-control");
@@ -115,11 +114,8 @@ class ManagerPresenter extends MainPresenter
             $form->addText('rfid')
                 ->setHtmlAttribute("class", "form-control");
 
-            $form->addText('registrationDate')
-                ->setHtmlAttribute("class", "form-control");
-
-            $form->addText('lastLogin')
-                ->setHtmlAttribute("class", "form-control");
+            $form->addDateTimeRange("registrationDate", DateInput::TYPE_DATE);
+            $form->addDateTimeRange("lastLogin", DateInput::TYPE_DATE);
 
             $form->addSelect("registration", null, [
                 -1 => "all",
@@ -128,30 +124,18 @@ class ManagerPresenter extends MainPresenter
             ])
                 ->setHtmlAttribute("class", "form-control");
 
-
-            // these buttons are not compulsory
-            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
-            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
-
             return $form;
         });
 
         $grid->setEditFormFactory(function ($row) {
 
-            $form = new Nette\Forms\Container();
-
-            /*$form->addText("rfid")
-                ->setHtmlAttribute("class", "form-control");*/
+            $form = $this->dataGridFactory->createEditForm();
 
             $form->addSelect("registration", null, [
                 0 => $this->translate("noB"),
                 1 => $this->translate("yesB")
             ])
                 ->setHtmlAttribute("class", "form-control");
-
-
-            $form->addSubmit('save', "save")->getControlPrototype()->class = 'btn btn-sm btn-success m-1';
-            $form->addSubmit('cancel', "cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
 
             if ($row) {
                 $form->setDefaults($row->toArray());
@@ -169,8 +153,7 @@ class ManagerPresenter extends MainPresenter
 
         });
 
-        $grid->addGlobalAction('activateUsers', $this->translate("all.activateUsers"), function (array $userIds, Datagrid $grid) {
-
+        $grid->addGlobalAction('activateUsers', "all.activateUsers", function (array $userIds, Datagrid $grid) {
             foreach ($userIds as $id) {
                 if ($this->orm->users->getById($id)->getValue("permission") > Permissions::MANAGER) {
                     continue;
@@ -180,8 +163,7 @@ class ManagerPresenter extends MainPresenter
             $grid->redrawControl('rows');
         });
 
-        $grid->addGlobalAction('deactivateUsers', $this->translate("all.deactivateUsers"), function (array $userIds, Datagrid $grid) {
-
+        $grid->addGlobalAction('deactivateUsers', "all.deactivateUsers", function (array $userIds, Datagrid $grid) {
             foreach ($userIds as $id) {
                 // Protection from editing user with higher role then current user
                 if (!(($this->user->permission == Permissions::MANAGER && $this->orm->users->getById($id)->getValue("permission") < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
@@ -295,54 +277,33 @@ class ManagerPresenter extends MainPresenter
     public function createComponentNewRfidsGrid()
     {
 
-        $grid = new Datagrid();
+        $grid = $this->dataGridFactory->createDataGrid();
 
-        $grid->setDatasourceCallback(function ($filter, $order) {
-            $filters = [ICollection:: AND];
-            foreach ($filter as $k => $v) {
-                if ($k == 'id' || is_array($v)) {
-                    $filters[$k] = $v;
-                } else {
-                    array_push($filters, [LikeFilterFunction::class, $k, $v]);
-                }
-            }
-
-            if (isset($order[0])) {
-                $data = $this->orm->newRfids->findBy($filters)->orderBy($order[0], $order[1])->fetchAll();
-            } else {
-                $data = $this->orm->newRfids->findBy($filters)->fetchAll();
-            }
-            return $data;
+        $grid->setDatasourceCallback(function ($filter, $order, $paginator) {
+            return $this->dataGridFactory->createDataSource("newRfids", $filter, $order, [], [], $paginator);
         });
 
         $grid->addColumn("id", "ID")
             ->enableSort();
 
-        $grid->addColumn("rfid", $this->translate("messages.main.profile.rfid"))
+        $grid->addColumn("rfid", "messages.main.profile.rfid")
             ->enableSort();
 
-        $grid->addColumn("createdAt", $this->translateAll("createdAt"))
+        $grid->addColumn("createdAt", "all.createdAt")
             ->enableSort();
 
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/assignRfidToUserDataGrid.latte');
 
-        $grid->setTranslator($this->translator);
 
         $grid->setFilterFormFactory(function () {
-            $form = new Nette\Forms\Container();
-            $form->addText('id')
-                ->setHtmlAttribute("class", "form-control")
-                ->addCondition(Form::INTEGER);
-
+            $form = $this->dataGridFactory->createFilterForm();
+            $form->addId();
 
             $form->addText('rfid')
                 ->setHtmlAttribute("class", "form-control");
 
             $form->addText('createdAt')
                 ->setHtmlAttribute("class", "form-control");
-
-            $form->addSubmit('filter', "filter")->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
-            $form->addSubmit('cancel', "cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
 
             return $form;
         });
@@ -360,27 +321,12 @@ class ManagerPresenter extends MainPresenter
             return null;
         }
 
-        $grid = new Datagrid();
+        $grid = $this->dataGridFactory->createDataGrid();
 
-        $grid->setDataSourceCallback(function ($filter, $order) {
-            $filter["idUser"] = $this->selectedUser;
+        $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
 
-            if (isset($order[0])) {
-                $data = $this->orm->stationsUsers->findBy(["idUser" => $this->selectedUser])->orderBy($order[0], $order[1])->fetchAll();
-            } else {
-                $data = $this->orm->stationsUsers->findBy(["idUser" => $this->selectedUser])->fetchAll();
-            }
-
-            $result = [];
-            foreach ($data as $row) {
-
-                $station = $row->idStation;
-
-
-                array_push($result, ["id" => $row->id, "stationName" => $station->name, "perm" => $row->perm, "stationMode" => $station->mode]);
-            }
-
-            return $result;
+            return $this->dataGridFactory->createDataSourceNotORM("stations_x_users", "stations_x_users.id AS permId,id_station.name,perm,id_station.mode",
+                $filter, $order, ["perm", "mode"], ["id_user" => $this->selectedUser], $paginator, [], ["permId" => "stations_x_users.id"]);
         });
 
         $grid->onRender[] = function (Datagrid $datagrid) {
@@ -389,40 +335,62 @@ class ManagerPresenter extends MainPresenter
 
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/userStationPermsDataGrid.latte');
 
-        $grid->addColumn("id", "ID");
+        $grid->addColumn("permId", "ID")->enableSort();
 
 
-        $grid->addColumn("stationName", $this->translate("all.stationName"));
+        $grid->addColumn("name", "all.stationName")->enableSort();
 
 
-        $grid->addColumn("perm", $this->translate("all.permission"));
+        $grid->addColumn("perm", "all.permission")->enableSort();
 
 
-        $grid->addColumn("stationMode", $this->translate("all.stationMode"));
+        $grid->addColumn("mode", "all.stationMode")->enableSort();
+
+        $grid->setFilterFormFactory(function () {
+            $form = $this->dataGridFactory->createFilterForm();
+
+            $form->addId("permId");
+
+            $form->addText("name");
+
+            $form->addSelect("perm", null, [
+                -1 => "all.all",
+                StationsUsers::PERM_BASIC => "all.basic",
+                StationsUsers::PERM_TWO_PHASE => "all.twoPhase",
+                StationsUsers::PERM_ADMIN => "all.admin"
+            ]);
+
+            $form->addSelect("mode", null, [
+                -1 => "all.all",
+                Station::MODE_NORMAL => "all.normalMode",
+                Station::MODE_CHECK_ONLY => "all.checkOnlyMode"
+            ]);
+
+
+
+            return $form;
+        });
 
         $grid->setEditFormFactory(function ($row) {
 
-            $form = new Nette\Forms\Container();
+            $form = $this->dataGridFactory->createEditForm();
 
             if ($this->user->permission == Permissions::ADMIN) {
                 $stationPerms = [
-                    StationsUsers::PERM_BASIC => $this->translate("all.basic"),
-                    StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
-                    StationsUsers::PERM_ADMIN => $this->translate("all.admin"),
+                    StationsUsers::PERM_BASIC => "all.basic",
+                    StationsUsers::PERM_TWO_PHASE => "all.twoPhase",
+                    StationsUsers::PERM_ADMIN => "all.admin",
                 ];
             } else {
                 $stationPerms = [
-                    StationsUsers::PERM_BASIC => $this->translate("all.basic"),
-                    StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
+                    StationsUsers::PERM_BASIC => "all.basic",
+                    StationsUsers::PERM_TWO_PHASE => "all.twoPhase",
                 ];
             }
 
             $form->addSelect("perm", null, $stationPerms)
                 ->setHtmlAttribute("class", "form-control");
 
-
-            $form->addSubmit('save', $this->translate("all.save"))->getControlPrototype()->class = 'btn btn-sm btn-success m-1';
-            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
 
             if ($row) {
                 $form->setDefaults($row);
@@ -435,13 +403,15 @@ class ManagerPresenter extends MainPresenter
         $grid->setEditFormCallback(function (Nette\Forms\Container $row) {
             $values = $row->getValues();
 
-            $perm = $this->orm->stationsUsers->getById($values->id);
+            $perm = $this->orm->stationsUsers->getById($values->permId);
 
             if ($perm->idStation->mode == Station::MODE_CHECK_ONLY && $values->perm == StationsUsers::PERM_TWO_PHASE) {
                 $this->showDangerToastAndRefresh($this->translate("all.badAccessMode"));
                 return;
             }
-            $this->orm->stationsUsers->update((int)$values->id, $values);
+            $id=$values->permId;
+            unset($values->permId);
+            $this->orm->stationsUsers->update((int)$id, $values);
             $this->showSuccessToast();
         });
 
@@ -543,8 +513,87 @@ class ManagerPresenter extends MainPresenter
         return $form;
     }
 
-    public function newPermSave(Form $form)
+    public function createComponentNewStationPermForm()
     {
+        $form = new Form();
+
+        $selectedStation = $this->orm->stations->getById($this->selectedStation);
+
+        if (!$selectedStation)
+            return null;
+
+
+        $form->addHidden("station")
+            ->setDefaultValue($selectedStation->id);
+
+        $users = $this->orm->users->findAll()->fetchAll();
+
+        $finalUsers=[];
+        foreach ($users as $user)
+        {
+            $foundStation=false;
+            foreach ($user->stations as $station)
+            {
+                if($station==$selectedStation){
+                    $foundStation=true;
+                    break;
+                }
+            }
+            if(!$foundStation){
+                $finalUsers[$user->id]=$user->firstName." ".$user->surName." (".$user->email.")";
+            }
+        }
+
+        $form->addSelect("userId", null, $finalUsers)
+            ->setHtmlAttribute("class", "form-control");
+
+
+        if ($this->user->permission == Permissions::ADMIN) {
+            if($selectedStation->mode==Station::MODE_NORMAL){
+                $stationPerms = [
+                    StationsUsers::PERM_BASIC => $this->translate("all.basic"),
+                    StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
+                    StationsUsers::PERM_ADMIN => $this->translate("all.admin"),
+                ];
+            }else{
+                $stationPerms = [
+                    StationsUsers::PERM_BASIC => $this->translate("all.basic"),
+                    StationsUsers::PERM_ADMIN => $this->translate("all.admin"),
+                ];
+            }
+        } else {
+            if($selectedStation->mode==Station::MODE_NORMAL){
+                $stationPerms = [
+                    StationsUsers::PERM_BASIC => $this->translate("all.basic"),
+                    StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
+                ];
+            }else{
+                $stationPerms = [
+                    StationsUsers::PERM_BASIC => $this->translate("all.basic")
+                ];
+            }
+
+        }
+
+
+        $form->addSelect("mode", null, $stationPerms)
+            ->setHtmlAttribute("class", "form-control");
+
+        $form->addText("stationPlaceholder")
+            ->setDisabled()
+            ->setDefaultValue($selectedStation->name)
+            ->setHtmlAttribute("class", "form-control");
+
+        $form->addSubmit("submit", $this->translate("all.save"))
+            ->setHtmlAttribute("class", "form-control btn btn-primary");
+
+        $form->onSubmit[] = [$this, "newStationPermSave"];
+
+
+        return $form;
+    }
+
+    public function newStationPermSave($form){
         $values = $form->getValues();
         // Protection from editing user with higher role than current user
 
@@ -595,6 +644,59 @@ class ManagerPresenter extends MainPresenter
         }
         $this->redirect("userStationsPerms");
 
+    }
+
+    public function newPermSave(Form $form)
+    {
+        $values = $form->getValues();
+        // Protection from editing user with higher role than current user
+
+        $row = $this->orm->users->getBy(["id" => $values->userId]);
+
+        if (!$row)
+            return;
+
+        if (!(($this->user->permission == Permissions::MANAGER && $row->permission < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
+            $this->redirect("Manager:usersManagement");
+        }
+
+        // end of protection
+
+
+        $station = $this->orm->stations->getById($values->station);
+
+        if (!$station) {
+            $this->showDangerToast();
+            return;
+        }
+
+        if ($station->mode == Station::MODE_CHECK_ONLY && ($values->mode == StationsUsers::PERM_TWO_PHASE)) {
+            $this->showDangerToastAndRefresh($this->translate("all.badAccessMode"));
+            return;
+        }
+
+        $perm = new StationsUsers();
+        $perm->perm = $values->mode;
+        $perm->idUser = $this->orm->users->getById($values->userId);
+        $perm->idStation = $station;
+
+        $existingPerm = $this->orm->stationsUsers->getBy(["idStation" => $station, "idUser" => $perm->idUser]);
+
+        if ($existingPerm) {
+            $this->showDangerToast($this->translate("all.alreadyExists"));
+            return;
+        }
+
+
+        try {
+            $row = $this->orm->stationsUsers->persistAndFlush($perm);
+        } catch (Exception $e) {
+            $this->showDangerToastAndRefresh();
+        }
+        if (!$row) {
+            $this->showDangerToastAndRefresh();
+        }
+
 
     }
 
@@ -628,50 +730,42 @@ class ManagerPresenter extends MainPresenter
 
     public function createComponentStationsDataGrid()
     {
-        $grid = new Datagrid();
+        $grid = $this->dataGridFactory->createDataGrid();
 
 
         $grid->addColumn("id", "ID")
             ->enableSort();
-        $grid->addColumn("name", $this->translate("all.name"))
+        $grid->addColumn("name", "all.name")
             ->enableSort();
-        $grid->addColumn("description", $this->translate("all.description"))
+        $grid->addColumn("description", "all.description")
             ->enableSort();
-        $grid->addColumn("lastUpdate", $this->translate("all.lastUpdate"))
+        $grid->addColumn("lastUpdate", "all.lastUpdate")
             ->enableSort();
-        $grid->addColumn("mode", $this->translate("all.stationMode"))
+        $grid->addColumn("mode", "all.stationMode")
             ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
             return $this->dataGridFactory->createDataSource("stations", $filter, $order, ["mode"], [], $paginator);
         });
 
-        $grid->setPagination(10, function ($filter, $order) {
-            return count($this->dataGridFactory->createDataSource("stations", $filter, $order, ["mode"], []));
-        });
-
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/stationsDataGrid.latte');
 
         $grid->setFilterFormFactory(function () {
-            $form = new Nette\Forms\Container();
-            $form->addText('id')
-                ->addCondition(Form::INTEGER); // your custom input type
+            $form = $this->dataGridFactory->createFilterForm();
 
-            $form->addText('name')
-                ->setHtmlAttribute("class", "form-control");
+            $form->addId();
+
+            $form->addText('name');
 
             $form->addSelect("mode", null, [
-                -1 => $this->translate("all.all"),
-                Station::MODE_NORMAL => $this->translate("all.normalMode"),
-                Station::MODE_CHECK_ONLY => $this->translate("all.checkOnlyMode")
-            ])
-                ->setHtmlAttribute("class", "form-control");
+                -1 => "all.all",
+                Station::MODE_NORMAL => "all.normalMode",
+                Station::MODE_CHECK_ONLY => "all.checkOnlyMode"
+            ]);
 
+            $form->addText('description');
 
-            // these buttons are not compulsory
-            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
-            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+            $form->addDateTimeRange("lastUpdate", DateInput::TYPE_DATE);
 
             return $form;
         });
@@ -694,46 +788,71 @@ class ManagerPresenter extends MainPresenter
 
     public function createComponentStationPermsDataGrid()
     {
-        $grid = new Datagrid();
+        $grid = $this->dataGridFactory->createDataGrid();
 
-        $grid->addColumn("id", "ID")
+        $grid->addColumn("permId", "ID")
             ->enableSort();
-        $grid->addColumn("idUser", $this->translate("all.user"))
+        $grid->addColumn("first_name", "all.firstName")
             ->enableSort();
-        $grid->addColumn("perm", $this->translate("all.permission"))
+        $grid->addColumn("sur_name", "all.surName")
+            ->enableSort();
+        $grid->addColumn("perm", "all.permission")
             ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
-            return $this->dataGridFactory->createDataSource("stationsUsers", $filter, $order, ["perm"], ["idStation" => $station = $this->orm->stations->getById($this->selectedStation)], $paginator);
+            return $this->dataGridFactory->createDataSourceNotORM("stations_x_users", "stations_x_users.id AS permId,id_user.first_name,id_user.sur_name,perm",
+                $filter, $order, ["perm"], ["id_station" => $station = $this->orm->stations->getById($this->selectedStation)->id], $paginator, [], ["permId" => "stations_x_users.id"]);
         });
 
-        $grid->setPagination(10, function ($filter, $order) {
-            return count($this->dataGridFactory->createDataSource("stationsUsers", $filter, $order, ["perm"], ["idStation" => $station = $this->orm->stations->getById($this->selectedStation)]));
-        });
-
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/stationPermsDataGrid.latte');
 
         $grid->setFilterFormFactory(function () {
-            $form = new Nette\Forms\Container();
-            $form->addText('id')
-                ->addCondition(Form::INTEGER); // your custom input type
+            $form = $this->dataGridFactory->createFilterForm();
 
+            $form->addId("permId");
+
+            $form->addText("first_name");
+            $form->addText("sur_name");
 
             $form->addSelect("perm", null, [
-                -1 => $this->translate("all.all"),
-                StationsUsers::PERM_BASIC => $this->translate("all.basic"),
-                StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
-                StationsUsers::PERM_ADMIN => $this->translate("all.admin")
-            ])
-                ->setHtmlAttribute("class", "form-control");
-
-
-            // these buttons are not compulsory
-            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
-            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+                -1 => "all.all",
+                StationsUsers::PERM_BASIC => "all.basic",
+                StationsUsers::PERM_TWO_PHASE => "all.twoPhase",
+                StationsUsers::PERM_ADMIN => "all.admin"
+            ]);
 
             return $form;
+        });
+
+        $grid->setEditFormFactory(function ($row) {
+            $form = $this->dataGridFactory->createEditForm();
+
+            $form->addSelect("perm", null, [
+                StationsUsers::PERM_BASIC => "all.basic",
+                StationsUsers::PERM_TWO_PHASE => "all.twoPhase",
+                StationsUsers::PERM_ADMIN => "all.admin"
+            ])->setHtmlAttribute("class", "form-control");
+
+            if ($row) {
+                $form->setDefaults($row->toArray());
+            }
+
+            return $form;
+        });
+
+        $grid->setEditFormCallback(function (Nette\Forms\Container $row) {
+            $values = $row->getValues();
+
+            $perm = $this->orm->stationsUsers->getById($values->permId);
+
+            if ($perm->idStation->mode == Station::MODE_CHECK_ONLY && $values->perm == StationsUsers::PERM_TWO_PHASE) {
+                $this->showDangerToastAndRefresh($this->translate("all.badAccessMode"));
+                return;
+            }
+            $permId = $values->permId;
+            unset($values->permId);
+            $this->orm->stationsUsers->update((int)$permId, $values);
+            $this->showSuccessToast();
         });
 
         $grid->onRender[] = function (Datagrid $datagrid) {
@@ -746,32 +865,27 @@ class ManagerPresenter extends MainPresenter
 
     public function createComponentPresentUsersDataGrid()
     {
-        $grid = new Datagrid();
+        $grid = $this->dataGridFactory->createDataGrid();
 
 
-        $grid->addColumn("firstName", $this->translate("all.firstName"))
+        $grid->addColumn("firstName", "all.firstName")
             ->enableSort();
-        $grid->addColumn("surName", $this->translate("all.surName"))
+        $grid->addColumn("surName", "all.surName")
+            ->enableSort();
+        $grid->addColumn("email", "messages.visitor.email")
             ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
             return $this->dataGridFactory->createDataSource("users", $filter, $order, [], ["present" => 1], $paginator);
         });
 
-        $grid->setPagination(10, function ($filter, $order) {
-            return count($this->dataGridFactory->createDataSource("users", $filter, $order, [], ["present" => 1]));
-        });
-
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
 
         $grid->setFilterFormFactory(function () {
-            $form = new Nette\Forms\Container();
+            $form = $this->dataGridFactory->createFilterForm();
+
             $form->addText('firstName');
             $form->addText('surName');
-
-            // these buttons are not compulsory
-            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
-            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+            $form->addText('email');
 
             return $form;
         });
@@ -788,18 +902,18 @@ class ManagerPresenter extends MainPresenter
     public function createComponentShiftsDataGrid()
     {
 
-        $grid = new Datagrid();
+        $grid = $this->dataGridFactory->createDataGrid();
 
         $grid->addColumn('id', "ID")
             ->enableSort();
 
-        $grid->addColumn('start', $this->translate("all.start"))
+        $grid->addColumn('start', "all.start")
             ->enableSort();
 
-        $grid->addColumn('end', $this->translate("all.end"))
+        $grid->addColumn('end', "all.end")
             ->enableSort();
 
-        $grid->addColumn('note', $this->translate("all.note"))
+        $grid->addColumn('note', "all.note")
             ->enableSort();
 
 
@@ -809,52 +923,28 @@ class ManagerPresenter extends MainPresenter
 
         });
 
-        $grid->setPagination(10, function ($filter, $order) {
-
-            return count($this->dataGridFactory->createDataSource("shifts", $filter, $order, [], [], null, ["start", Collection::ASC]));
-        });
-
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/templateDataGrid.latte');
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/shiftsManagerDataGrid.latte');
 
 
         $grid->setFilterFormFactory(function () {
-            $form = new Nette\Forms\Container();
-            $form->addText('id')
-                ->addCondition(Form::INTEGER); // your custom input type
+            $form = $this->dataGridFactory->createFilterForm();
+            $form->addId();
 
-            $form->addText('start')
-                ->setHtmlAttribute("class", "form-control");
-
-            $form->addText('end')
-                ->setHtmlAttribute("class", "form-control");
+            $form->addDateTimeRange('start',DateInput::TYPE_DATE);
+            $form->addDateTimeRange('end',DateInput::TYPE_DATE);
 
             $form->addText('note')
                 ->setHtmlAttribute("class", "form-control");
-
-            // these buttons are not compulsory
-            $form->addSubmit('filter', $this->translate("all.filter"))->getControlPrototype()->class = 'btn btn-sm btn-primary m-1';
-            $form->addSubmit('cancel', $this->translate("all.cancel"))->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
 
             return $form;
         });
 
         $grid->setEditFormFactory(function ($row) {
 
-            $form = new Nette\Forms\Container();
+            $form = $this->dataGridFactory->createEditForm();
 
-            $form->addText('start')
-                ->setHtmlAttribute("class", "form-control");
-
-            $form->addText('end')
-                ->setHtmlAttribute("class", "form-control");
-
-            $form->addTextArea('note')
-                ->setHtmlAttribute("class", "form-control");
-
-
-            $form->addSubmit('save', "save")->getControlPrototype()->class = 'btn btn-sm btn-success m-1';
-            $form->addSubmit('cancel', "cancel")->getControlPrototype()->class = 'btn btn-sm btn-danger m-1';
+            $form->addDate('start',DateInput::TYPE_DATETIME_LOCAL)->setHtmlAttribute("class", "form-control");
+            $form->addDate('end',DateInput::TYPE_DATETIME_LOCAL)->setHtmlAttribute("class", "form-control");
 
             if ($row) {
                 $form->setDefaults($row->toArray());
@@ -876,7 +966,7 @@ class ManagerPresenter extends MainPresenter
 
         });
 
-        $grid->addGlobalAction('delete', $this->translate("all.delete"), function (array $ids, Datagrid $grid) {
+        $grid->addGlobalAction('delete', "all.delete", function (array $ids, Datagrid $grid) {
 
             foreach ($ids as $id) {
                 $this->orm->shifts->delete($id);
@@ -885,8 +975,6 @@ class ManagerPresenter extends MainPresenter
             $this->showSuccessToastAndRefresh();
         });
 
-
-        $grid->setTranslator($this->translator);
 
         return $grid;
 

@@ -17,9 +17,9 @@ class ExtendedFormContainer extends Container
         return $this[$name] = new DateInput($title, $type);
     }
 
-    public function addId()
+    public function addId($name="id")
     {
-        $this->addText('id')
+        $this->addText($name)
             ->setHtmlType('number')
             ->addCondition(Form::FILLED)
             ->addRule(Form::INTEGER);

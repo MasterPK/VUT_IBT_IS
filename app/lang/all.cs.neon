@@ -96,3 +96,5 @@ settingBadFormat: "Pole nesmí obsahovat prázdné znaky!"
 missing: "Toto pole je povinné!"
 missingApiToken: "Nevygenerovali jste API klíč!"
 myAccessLog: "Moje přístupy"
+userPerms: "Oprávnění uživatele"
+

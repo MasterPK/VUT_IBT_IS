@@ -18,6 +18,33 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="btn btn-primary" data-toggle="collapse" href="#collapseNewStationPermForm" role="button" aria-expanded="false"
+                               aria-controls="collapseNewStationPermForm">
+                                {_all.createNew}
+                            </a>
+                        </div>
+                        <div class="collapse card-body" id="collapseNewStationPermForm">
+                            <form n:name="newStationPermForm">
+                                <div class="form-group">
+                                    <label>{_all.user}</label>
+                                    {input userId}
+                                </div>
+                                <div class="form-group">
+                                    <label>{_all.accessMode}</label>
+                                    {input mode}
+                                </div>
+                                <div class="form-group">
+                                    <label>{_all.stationName}</label>
+                                    {input stationPlaceholder}
+                                </div>
+                                {input submit}
+                            </form>
+                        </div>
+                    </div>
+                </div>
                 <div class="card-body">
                     {control stationPermsDataGrid}
                 </div>
