@@ -61,8 +61,42 @@
                     </div>
                 </div>
             </div>
-
-
+        </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header border-0">
+                    <h3 class="card-title">{_all.nextShifts}</h3>
+                    <div class="card-tools">
+                        <a n:href="myShifts" class="btn btn-tool btn-sm">
+                            <i class="fas fa-bars"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body table-responsive p-0">
+                    <table class="table table-striped table-valign-middle">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach $myNextShifts as $row}
+                            <tr>
+                                <td class="text-center">
+                                    {date_format($row->idShift->start,"d.m.Y H:i:s")}
+                                </td>
+                                <td class="text-center">-</td>
+                                <td class="text-center">
+                                    {date_format($row->idShift->end,"d.m.Y H:i:s")}
+                                </td>
+                            </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <!-- /.col-md-6 -->
     </div>

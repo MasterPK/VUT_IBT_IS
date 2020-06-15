@@ -11,6 +11,7 @@ use Cassandra\Date;
 use Exception;
 use Nette;
 use Nextras\Datagrid\Datagrid;
+use Nextras\Orm\Collection\Collection;
 use Vodacek\Forms\Controls\DateInput;
 
 final class HomepagePresenter extends MainPresenter
@@ -135,6 +136,7 @@ final class HomepagePresenter extends MainPresenter
 
     public function renderDefault($week = 0)
     {
+        // Graph with hours this and last week
         $week *= 7;
         $weekOffset = (new Nette\Utils\DateTime())->format("N") - 1;
         $startDate = (new Nette\Utils\DateTime())->modify("- $weekOffset days - $week days");
@@ -152,6 +154,9 @@ final class HomepagePresenter extends MainPresenter
         }
 
         $this->template->prevWeekChange = $this->template->prevWeekChangePercent >= 0 ? true : false;
+
+        // Table with next shifts
+        $this->template->myNextShifts=$this->orm->shiftsUsers->findBy(["idUser"=>$this->user])->orderBy("arrival",Collection::ASC)->limitBy(5)->fetchAll();
 
     }
 
