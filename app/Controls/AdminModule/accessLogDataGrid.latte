@@ -5,13 +5,25 @@
 {/define}
 
 {define col-status}
-<td class="grid-col-status">
-    {if $row->status==0}
-    {_all.denied}
-    {else}
-    {_all.granted}
-    {/if}
-</td>
+    <td class="grid-col-status">
+        {if $row->status==0}
+            {_all.denied}
+        {else}
+            {_all.granted}
+        {/if}
+    </td>
+{/define}
+
+{define col-arrival}
+    <td class="grid-col-arrival">
+        {switch $row->arrival}
+            {case null}
+            {case 0}
+            {_all.departure}
+            {case 1}
+            {_all.arrival}
+        {/switch}
+    </td>
 {/define}
 
 {define col-idUser}

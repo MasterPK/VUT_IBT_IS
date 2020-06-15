@@ -97,4 +97,7 @@ missing: "Toto pole je povinné!"
 missingApiToken: "Nevygenerovali jste API klíč!"
 myAccessLog: "Moje přístupy"
 userPerms: "Oprávnění uživatele"
+arrival: "Příchod"
+departure: "Odchod"
+arrivalDeparture: "Příchod/Odchod"
 

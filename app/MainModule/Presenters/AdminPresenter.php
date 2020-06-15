@@ -324,10 +324,12 @@ class AdminPresenter extends MainPresenter
             ->enableSort();
         $grid->addColumn("name", "all.stationName")
             ->enableSort();
+        $grid->addColumn("arrival", "all.arrivalDeparture")
+            ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
             return $this->dataGridFactory->createDataSourceNotORM("access_log",
-                "access_log.id,datetime,log_rfid,status,id_user.first_name,id_user.sur_name,id_station.name",$filter,$order,["status"],[],$paginator,["id","DESC"]);
+                "access_log.id,datetime,log_rfid,status,id_user.first_name,id_user.sur_name,id_station.name,arrival",$filter,$order,["status","arrival"],[],$paginator,["id","DESC"]);
         });
 
 
@@ -346,6 +348,11 @@ class AdminPresenter extends MainPresenter
             $form->addText("first_name");
             $form->addText("sur_name");
             $form->addText("name");
+            $form->addSelect("arrival", null, [
+                -1 => "all.all",
+                AccessLog::ARRIVAL_FALSE => "all.departure",
+                AccessLog::ARRIVAL_TRUE => "all.arrival"
+            ]);
 
             $form->addDateTimeRange("datetime",DateInput::TYPE_DATE);
             return $form;

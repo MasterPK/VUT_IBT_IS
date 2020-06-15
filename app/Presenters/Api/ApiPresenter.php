@@ -249,6 +249,10 @@ final class ApiPresenter implements IPresenter
                             $item->arrival = $now;
                             $this->orm->shiftsUsers->persistAndFlush($item);
                             break;
+                        }else if($user->present && isset($item->arrival) && !isset($item->departure)){
+                            $item->arrival = null;
+                            $this->orm->shiftsUsers->persistAndFlush($item);
+                            break;
                         }
 
                     } else if ($item->idShift->end <= $now) {
@@ -271,7 +275,8 @@ final class ApiPresenter implements IPresenter
             "log_rfid" => $user_rfid,
             "status" => $status,
             "id_station" => $id_station,
-            "id_user" => $user ? $user->id : null
+            "id_user" => $user ? $user->id : null,
+            "arrival" => $user && $row->mode==1 ? $user->present : null
         ]);
         if (!$result) {
             return ["s" => "err", "error" => "Error while saving in database!"];
