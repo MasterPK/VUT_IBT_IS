@@ -75,4 +75,9 @@
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3" />
+  <component name="PhpStepFilterConfiguration">
+    <skipped_functions>
+      <skipped_function name="App\MainModule\Presenters\HomepagePresenter-&gt;renderDefault" />
+    </skipped_functions>
+  </component>
 </project>

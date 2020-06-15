@@ -10,7 +10,6 @@ use Throwable;
 /**
  * Class DatabaseService
  * @package App\Models
- * @deprecated
  */
 class DatabaseService
 {
@@ -25,7 +24,7 @@ class DatabaseService
      * Get all users.
      * @return array|Nette\Database\Table\IRow[] Iterable list of all users.
      */
-    public function getAllUsers():array
+    public function getAllUsers(): array
     {
         return $this->database->table("users")->fetchAssoc("id");
     }
@@ -137,7 +136,7 @@ class DatabaseService
     public function checkPassword(string $email, string $password): bool
     {
         $user = $this->getUser($email);
-        if (password_verify( $password,$user["password"])) {
+        if (password_verify($password, $user["password"])) {
             return true;
         } else {
             return false;
@@ -152,10 +151,9 @@ class DatabaseService
      */
     public function getTable(string $name)
     {
-        try{
+        try {
             return $this->database->table($name);
-        }catch (Exception $ignored)
-        {
+        } catch (Exception $ignored) {
             throw new Exception("Table not found!");
         }
 
@@ -166,11 +164,43 @@ class DatabaseService
      * @param $email
      * @return int
      */
-    public function getUserPermission($email):int
+    public function getUserPermission($email): int
     {
-        return (int)($this->database->table("users")->where("email",$email)->select("permission")->fetch())->permission;
+        return (int)($this->database->table("users")->where("email", $email)->select("permission")->fetch())->permission;
     }
 
+    public function getUserWorkHours($idUser,Nette\Utils\DateTime $startDate,int $daysCount):array
+    {
+        $nowStart = $startDate;
+        $nowEnd = (Nette\Utils\DateTime::from($nowStart))->modify("+ 1 days");
+        $nowStart->setTime(0,0,0);
+        $nowEnd->setTime(0,0,0);
+
+        $totalHours=[];
+        $days=[];
+
+        for($i=0;$i<$daysCount;$i++)
+        {
+            $hours=0;
+            $rows=$this->database->table("shifts_x_users")->select("arrival,departure")->where(["id_user"=>$idUser,"id_shift.start >= "=>$nowStart,"id_shift.end <= ?"=>$nowEnd])->fetchAll();
+            foreach ($rows as $row)
+            {
+                if($row->arrival!=null && $row->departure!=null)
+                {
+                    $interval=($row->arrival->diff($row->departure,true));
+                    $hours+=$interval->h + $interval->i/60;
+                }
+            }
+
+            array_push($totalHours,$hours);
+            array_push($days,strftime("%A",$nowStart->getTimestamp()));
+            $nowStart->modify("+ 1 day");
+            $nowEnd->modify("+ 1 day");
+        }
+
+        return [$days,$totalHours];
+
+    }
 
 }
 
@@ -183,9 +213,8 @@ class UserNotFoundException extends Exception
 {
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {
-        if($message=="")
-        {
-            $message="User not found in database!";
+        if ($message == "") {
+            $message = "User not found in database!";
         }
         parent::__construct($message, $code, $previous);
     }

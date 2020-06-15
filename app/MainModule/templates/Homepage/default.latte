@@ -16,64 +16,84 @@
     <div class="row">
         <div class="col-lg-6">
             <div class="card">
+                <div class="card-header border-0">
+                    <div class="d-flex justify-content-between">
+                        <h3 class="card-title">{_all.workHoursByWeek}</h3>
+                        <a n:href="myShifts">{_all.myShifts}</a>
+                    </div>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
+                    <div class="d-flex">
+                        <p class="d-flex flex-column">
+                            <span class="text-bold text-lg">{array_sum($totalHours)}</span>
+                            <span>{_all.totalHours}</span>
+                        </p>
+                        <p class="ml-auto d-flex flex-column text-right">
+                    <span class="{if $prevWeekChange}text-success{else}text-danger{/if}">
+                      <i class="fas fa-arrow-up"></i> {$prevWeekChangePercent}%
+                    </span>
+                            <span class="text-muted">{_all.sinceLastWeek}</span>
+                        </p>
+                    </div>
+                    <!-- /.d-flex -->
 
-                    <p class="card-text">
-                        Some quick example text to build on the card title and make up the bulk of the
-                        card's
-                        content.
-                    </p>
-                    <a class="btn btn-primary" n:href="toastTest!">Toast test</a>
+                    <div class="position-relative mb-4">
+                        <div class="chartjs-size-monitor">
+                            <div class="chartjs-size-monitor-expand">
+                                <div class=""></div>
+                            </div>
+                            <div class="chartjs-size-monitor-shrink">
+                                <div class=""></div>
+                            </div>
+                        </div>
+                        <canvas id="workHoursByDay" height="200" width="492" class="chartjs-render-monitor"
+                                style="display: block; width: 492px; height: 200px;"></canvas>
+                    </div>
 
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
+                    <div class="d-flex flex-row justify-content-end">
+                  <span class="mr-2">
+                      <i class="fas fa-square text-primary"></i>&nbsp;<a n:href="default week=>0">{_all.thisWeek}</a>
+                  </span>
+
+                        <span>
+                    <i class="fas fa-square text-gray"></i>&nbsp;<a n:href="default week=>1">{_all.lastWeek}</a>
+                  </span>
+                    </div>
                 </div>
             </div>
 
-            <div class="card card-primary card-outline">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
 
-                    <p class="card-text">
-                        Some quick example text to build on the card title and make up the bulk of the
-                        card's
-                        content.
-                    </p>
-                    <a href="#" class="card-link">Card link</a>
-                    <a href="#" class="card-link">Another link</a>
-                </div>
-            </div><!-- /.card -->
-        </div>
-        <!-- /.col-md-6 -->
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="m-0">Featured</h5>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-title">Special title treatment</h6>
-
-                    <p class="card-text">With supporting text below as a natural lead-in to additional
-                        content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-
-            <div class="card card-primary card-outline">
-                <div class="card-header">
-                    <h5 class="m-0">Featured</h5>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-title">Special title treatment</h6>
-
-                    <p class="card-text">With supporting text below as a natural lead-in to additional
-                        content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
         </div>
         <!-- /.col-md-6 -->
     </div>
     <!-- /.row -->
+{/block}
+{block scripts}
+    <script>
+        var ctx = document.getElementById('workHoursByDay').getContext('2d');
+        var myChart = new Chart(ctx, {
+            responsive: true,
+            type: 'line',
+            data: {
+                labels: {$days},
+                datasets: [{
+                    label: '# {_all.hoursC|noescape}',
+                    data: {$totalHours},
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            stepSize: 1,
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
 {/block}

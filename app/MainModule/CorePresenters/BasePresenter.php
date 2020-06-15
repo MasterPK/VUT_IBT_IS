@@ -165,6 +165,15 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
         }
 
         $this->setDefaultSnippets(['all',"scripts"]);
+
+        if($this->getParameter("locale") == null || $this->getParameter("locale") == "cs")
+        {
+            setlocale(LC_TIME, "cs_CZ.utf8") or die('Locale not installed');;
+        }
+        else
+        {
+            setlocale(LC_TIME, "en_GB.utf8") or die('Locale not installed');;
+        }
     }
 
     protected function translate($value): string

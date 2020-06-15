@@ -95,7 +95,7 @@ class ManagerPresenter extends MainPresenter
             return count($this->dataGridFactory->createDataSource("users", $filter, $order, ["registration"], []));
         });
 
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/usersManagementDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/usersManagementDataGrid.latte');
 
 
         $grid->setFilterFormFactory(function () {
@@ -292,7 +292,7 @@ class ManagerPresenter extends MainPresenter
         $grid->addColumn("createdAt", "all.createdAt")
             ->enableSort();
 
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/assignRfidToUserDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/assignRfidToUserDataGrid.latte');
 
 
         $grid->setFilterFormFactory(function () {
@@ -333,7 +333,7 @@ class ManagerPresenter extends MainPresenter
             $datagrid->template->user = $this->user;
         };
 
-        $grid->addCellsTemplate(__DIR__ . '/../../Controls/userStationPermsDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/userStationPermsDataGrid.latte');
 
         $grid->addColumn("permId", "ID")->enableSort();
 

@@ -89,9 +89,9 @@ class UsersRepository extends BaseRepository
     {
         $user = $this->getById($id);
         foreach ($newValues as $key => $value) {
-            if($key=="id")
+            if ($key == "id")
                 continue;
-            $user->$key=$value;
+            $user->$key = $value;
         }
         $this->persistAndFlush($user);
     }
@@ -103,19 +103,17 @@ class UsersRepository extends BaseRepository
      */
     public function newToken($idUser)
     {
-        if($idUser==null)
-        {
+        if ($idUser == null) {
             throw new Exception();
         }
 
         $user = $this->getById($idUser);
 
-        if(!$user)
-        {
+        if (!$user) {
             throw new Exception();
         }
 
-        $user->token=Nette\Utils\Random::generate(16);
+        $user->token = Nette\Utils\Random::generate(16);
         $this->persistAndFlush($user);
 
     }
@@ -131,13 +129,9 @@ class UsersRepository extends BaseRepository
         array_push($filters, [LikeFilterFunction::class, "firstName", $name]);
         array_push($filters, [LikeFilterFunction::class, "surName", $name]);
 
-       return $this->findBy($filters)->fetchPairs("id","email");
+        return $this->findBy($filters)->fetchPairs("id", "email");
 
     }
-
-
-
-
 
 
 }
