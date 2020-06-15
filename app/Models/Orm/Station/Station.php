@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Models\Orm\Station;
 
-
 use App\Models\Orm\Users\User;
 use Nextras\Dbal\Utils\DateTimeImmutable;
 use Nextras\Orm\Entity\Entity;

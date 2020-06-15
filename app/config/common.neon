@@ -18,6 +18,8 @@ extensions:
     - Nittro\Bridges\NittroDI\NittroExtension
     nextras.orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
     dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
+    api: Apitte\Core\DI\ApiExtension
+
 
 dbal:
 	driver: mysqli
@@ -38,3 +40,7 @@ translation:
         - %appDir%/lang
     localeResolvers:
         - Contributte\Translation\LocalesResolvers\Router
+
+api:
+    debug: true
+    catchException: true # Sets if exception should be catched and transformed into response or rethrown to output (debug only)

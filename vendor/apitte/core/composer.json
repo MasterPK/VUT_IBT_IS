@@ -1,0 +1,68 @@
+{
+  "name": "apitte/core",
+  "description": "Core API library in Apitte stack",
+  "keywords": [
+    "api",
+    "apitte",
+    "http",
+    "rest",
+    "nette",
+    "annotation"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://github.com/apitte/core",
+  "authors": [
+    {
+      "name": "Milan Felix Šulc",
+      "homepage": "https://f3l1x.io"
+    },
+    {
+      "name": "Marek Bartoš",
+      "homepage": "https://bartos.dev"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "ext-json": "*",
+    "contributte/phpdoc": "v0.3.0",
+    "contributte/psr7-http-message": "v0.6.0",
+    "nette/reflection": "~2.4"
+  },
+  "require-dev": {
+    "mockery/mockery": "^1.1.0",
+    "nette/di": "~3.0.0",
+    "ninjify/nunjuck": "^0.2.0",
+    "ninjify/qa": "^0.8.0",
+    "phpstan/extension-installer": "^1.0",
+    "phpstan/phpstan-deprecation-rules": "^0.11",
+    "phpstan/phpstan-nette": "^0.11",
+    "phpstan/phpstan-shim": "^0.11",
+    "phpstan/phpstan-strict-rules": "^0.11",
+    "psr/log": "^1.1",
+    "symfony/validator": "^4.1.1"
+  },
+  "conflict": {
+    "nette/di": "<=3.0.0-RC"
+  },
+  "autoload": {
+    "psr-4": {
+      "Apitte\\Core\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Fixtures\\": "tests/fixtures"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.7.x-dev"
+    }
+  }
+}

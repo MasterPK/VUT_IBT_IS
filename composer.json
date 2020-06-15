@@ -26,7 +26,10 @@
 		"nittro/nette-bridges": "^2.1",
 		"contributte/translation": "^0.6.1",
 		"nextras/datagrid": "^3.1",
-		"nextras/orm": "^3.1"
+		"nextras/orm": "^3.1",
+		"voda/date-input": "^2.0",
+		"ublaboo/datagrid": "^6.2",
+		"apitte/core": "^0.6.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0"
