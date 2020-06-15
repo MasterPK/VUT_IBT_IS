@@ -133,5 +133,9 @@ class UsersRepository extends BaseRepository
 
     }
 
+    public function getCurrentlyPresentUsersCount(){
+        return $this->findBy(["present"=>1])->countStored();
+    }
+
 
 }

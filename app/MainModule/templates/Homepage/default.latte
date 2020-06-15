@@ -14,7 +14,7 @@
 
 {block content}
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-6 col-sm-12">
             <div class="card">
                 <div class="card-header border-0">
                     <div class="d-flex justify-content-between">
@@ -62,7 +62,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 col-sm-12">
             <div class="card">
                 <div class="card-header border-0">
                     <h3 class="card-title">{_all.nextShifts}</h3>
@@ -98,7 +98,20 @@
                 </div>
             </div>
         </div>
-        <!-- /.col-md-6 -->
+    </div>
+    <div class="row">
+        <div class="col-lg-3 col-md-12">
+            <div class="small-box bg-success">
+                <div class="inner">
+                    <h3>{$currentyPresentUsersCount}</h3>
+                    <p>{_all.presentUsers}</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-person-stalker"></i>
+                </div>
+                <a n:href="Manager:presentUsers" class="small-box-footer">{_all.moreInfo} <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
     </div>
     <!-- /.row -->
 {/block}

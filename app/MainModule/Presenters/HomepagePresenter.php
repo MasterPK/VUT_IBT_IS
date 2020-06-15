@@ -7,6 +7,7 @@ use App\Controls\ExtendedFormContainer;
 use App\MainModule\CorePresenters\MainPresenter;
 use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
+use App\Security\Permissions;
 use Cassandra\Date;
 use Exception;
 use Nette;
@@ -157,6 +158,14 @@ final class HomepagePresenter extends MainPresenter
 
         // Table with next shifts
         $this->template->myNextShifts=$this->orm->shiftsUsers->findBy(["idUser"=>$this->user])->orderBy("arrival",Collection::ASC)->limitBy(5)->fetchAll();
+
+        // Next data print only when manager or higher role
+        if(!$this->isAllowed(Permissions::MANAGER)){
+            return;
+        }
+
+        $this->template->currentyPresentUsersCount=$this->orm->users->getCurrentlyPresentUsersCount();
+
 
     }
 
