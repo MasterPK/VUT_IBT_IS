@@ -12,6 +12,9 @@ session:
 services:
     router: App\Router\RouterFactory::createRouter
     authenticator: App\Security\Authenticator
+    decorator.request:
+        class: App\Api\V1\Entity\Station
+        tags: [apitte.core.decorator: [priority: 50]]
 
 extensions:
     translation: Contributte\Translation\DI\TranslationExtension
@@ -43,4 +46,19 @@ translation:
 
 api:
     debug: true
-    catchException: true # Sets if exception should be catched and transformed into response or rethrown to output (debug only)
+    catchException: false # Sets if exception should be catched and transformed into response or rethrown to output (debug only)
+    plugins:
+        Apitte\Middlewares\DI\MiddlewaresPlugin:
+        Apitte\Core\DI\Plugin\CoreDecoratorPlugin:
+        Apitte\Core\DI\Plugin\CoreMappingPlugin:
+            request:
+                validator: Apitte\Core\Mapping\Validator\BasicValidator
+        Apitte\OpenApi\DI\OpenApiPlugin:
+            definition:
+                openapi: "3.0.2"
+                info:
+                    title: Attendance system API
+                    version: "1.0.0"
+                servers:
+                  - url: https://192.168.1.103
+                    description: Main RPi server. Local network address.

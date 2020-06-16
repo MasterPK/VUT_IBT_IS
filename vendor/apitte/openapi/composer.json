@@ -1,0 +1,58 @@
+{
+  "name": "apitte/openapi",
+  "description": "Apitte OpenApi library",
+  "keywords": [
+    "api",
+    "rest",
+    "json",
+    "openapi"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://github.com/apitte/openapi",
+  "authors": [
+    {
+      "name": "Milan Felix Šulc",
+      "homepage": "https://f3l1x.io"
+    },
+    {
+      "name": "Josef Benjač",
+      "homepage": "https://josefbenjac.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "apitte/core": "^0.6.0",
+    "nette/utils": "~3.0.1",
+    "tracy/tracy": "~2.6.0"
+  },
+  "suggest": {
+    "symfony/yaml": "Allows yaml definition"
+  },
+  "require-dev": {
+    "contributte/di": "^0.4.0",
+    "ninjify/nunjuck": "^0.2.0",
+    "ninjify/qa": "^0.8.0",
+    "phpstan/extension-installer": "^1.0",
+    "phpstan/phpstan-deprecation-rules": "^0.11",
+    "phpstan/phpstan-nette": "^0.11",
+    "phpstan/phpstan-shim": "^0.11",
+    "phpstan/phpstan-strict-rules": "^0.11",
+    "symfony/yaml": "^4.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Apitte\\OpenApi\\": "src"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.7.x-dev"
+    }
+  }
+}

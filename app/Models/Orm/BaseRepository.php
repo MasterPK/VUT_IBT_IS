@@ -9,7 +9,7 @@ use Nextras\Orm\Repository\Repository;
 abstract class BaseRepository extends Repository
 {
     /**
-     * Update item with new values.
+     * Update item with new values by ID.
      * @param int $id
      * @param array|mixed $newValues
      */
@@ -30,12 +30,49 @@ abstract class BaseRepository extends Repository
     }
 
     /**
+     * Update item with new values by mixed.
+     * Update only first found row!
+     * @param array $by
+     * @param array|mixed $newValues
+     */
+    public function updateBy(array $by, $newValues)
+    {
+        $user = $this->getBy($by);
+
+        if(!$user)
+            return;
+
+        foreach ($newValues as $key => $value) {
+            if($key=="id")
+                continue;
+            $user->$key=$value;
+        }
+
+        $this->persistAndFlush($user);
+    }
+
+    /**
      * Delete row with id;
      * @param $id
      */
     public function delete($id)
     {
         $row=$this->getById((int)$id);
+        if(!$row)
+        {
+            return;
+        }
+        $this->removeAndFlush($row);
+    }
+
+    /**
+     * Delete row with id;
+     * Delete only first found row!
+     * @param array $by
+     */
+    public function deleteBy(array $by)
+    {
+        $row=$this->getBy($by);
         if(!$row)
         {
             return;
