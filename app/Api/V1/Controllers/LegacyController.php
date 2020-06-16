@@ -25,6 +25,7 @@ use Exception;
 use Nette\Database\Context;
 use Nette\Mail\Mailer;
 use Nette\Utils\DateTime;
+use Tracy\Debugger;
 
 /**
  * Legacy API.
@@ -65,6 +66,18 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
     }
 
     /**
+     * Create final response.
+     * Compute hash from data and add to response with data.
+     * @param ApiResponse $response
+     * @param $content
+     * @return ApiResponse
+     */
+    private function prepareResponse(ApiResponse $response,$content){
+        $hash = (string)md5(json_encode($content));
+        return $response->writeJsonBody(["m" => $content, "h" => $hash]);
+    }
+
+    /**
      * Save data from sensor.
      * @Path("/add-new-rfid")
      * @Method("GET")
@@ -94,14 +107,14 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
         }
 
         if ($this->orm->users->getBy(["rfid" => $entity->rfid]) || $this->orm->newRfids->getBy(["rfid" => $entity->rfid])) {
-            return $response->writeJsonBody(["s" => "ok", "m" => "RFID already exists. Nothing changed."]);
+            return $this->prepareResponse($response,["s" => "ok", "m" => "RFID already exists. Nothing changed."]);
         }
 
         $entity->createdAt = new DateTime();
 
         $this->orm->newRfids->persistAndFlush($entity);
 
-        return $response->writeJsonBody(["s" => "ok"]);
+        return $this->prepareResponse($response,["s" => "ok"]);
     }
 
     /**
@@ -128,7 +141,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
         $content=$request->getParameter("content");
 
         $this->emailService->sendEmail($to,$header,$content);
-        return $response->writeJsonBody(["s" => "ok"]);
+        return $this->prepareResponse($response,["s" => "ok"]);
     }
 
 
@@ -146,7 +159,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
     public function emailHandle(ApiRequest $request, ApiResponse $response):ApiResponse
     {
         $err_count = $this->emailService->handle();
-        return $response->writeJsonBody(["s" => "ok", "email_err" => $err_count]);
+        return $this->prepareResponse($response,["s" => "ok", "email_err" => $err_count]);
     }
 
     /**
@@ -202,7 +215,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
             "datetime" => new Datetime
         ]);
 
-        return $response->writeJsonBody(["s" => "ok"]);
+        return $this->prepareResponse($response,["s" => "ok"]);
     }
 
 
@@ -326,7 +339,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
             throw new ServerErrorException("Error while saving in database!", 500);
         }
 
-        return $apiResponse->writeJsonBody(["s" => "ok"]);
+        return $this->prepareResponse($apiResponse,["s" => "ok"]);
     }
 
     /**
@@ -354,7 +367,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
         $row = $this->database->table('stations_x_users')->where("id_station = ?", $station->id);
 
         if (!$row) {
-            return $apiResponse->writeJsonBody(["s" => "ok", "u" => ""]);
+            return $this->prepareResponse($apiResponse,["s" => "ok", "u" => ""]);
         }
         $response = ["s" => "ok", "u" => array()];
         $count = 0;
@@ -377,7 +390,6 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
 
         $this->database->table('stations')->where("id", $station->id)->update(["last_update" => new Datetime]);
 
-
-        return $apiResponse->writeJsonBody($response);
+        return $this->prepareResponse($apiResponse,$response);
     }
 }
