@@ -14,9 +14,9 @@ use Exception;
 use Nette\Database\Context;
 
 /**
- * @GroupPath("/api/v1")
+ * @GroupPath("/v1")
  */
-abstract class BaseV1Controller implements IController
+abstract class BaseV1Controller extends BaseController
 {
     protected $orm;
     protected $database;

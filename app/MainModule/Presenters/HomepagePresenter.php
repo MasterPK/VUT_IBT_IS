@@ -157,7 +157,7 @@ final class HomepagePresenter extends MainPresenter
         $this->template->prevWeekChange = $this->template->prevWeekChangePercent >= 0 ? true : false;
 
         // Table with next shifts
-        $this->template->myNextShifts=$this->orm->shiftsUsers->findBy(["idUser"=>$this->user])->orderBy("arrival",Collection::ASC)->limitBy(5)->fetchAll();
+        $this->template->myNextShifts=$this->orm->shiftsUsers->findBy(["idUser"=>$this->user,"arrival"=>null])->orderBy("arrival",Collection::ASC)->limitBy(5)->fetchAll();
 
         // Next data print only when manager or higher role
         if(!$this->isAllowed(Permissions::MANAGER)){

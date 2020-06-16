@@ -13,7 +13,6 @@ use Apitte\Core\Annotation\Controller\Request;
 use Apitte\Core\Annotation\Controller\Responses;
 use Apitte\Core\Annotation\Controller\Response;
 use Apitte\Core\Annotation\Controller\RequestMapper;
-use Apitte\Core\Annotation\Controller;
 use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
@@ -32,27 +31,27 @@ use Nette\Utils\DateTime;
 final class StationController extends BaseV1Controller
 {
     /**
-     * Check params stationId and stationToken
+     * Check param stationToken
      * @param ApiRequest $request
      */
     private function checkStationTokens(ApiRequest $request)
     {
         $stationToken = $request->getParameter("stationToken");
-        $idStation = $request->getParameter("stationId");
 
-        $station = $this->orm->stations->getBy(["apiToken" => $stationToken, "id" => $idStation]);
+        $station = $this->orm->stations->getBy(["apiToken" => $stationToken]);
 
         if (!$station) {
-            throw new ClientErrorException("Station does not exist or ID and token are not valid!", 404);
+            throw new ClientErrorException("Station does not exist!", 400);
         }
     }
 
     /**
-     * Get data about station specified by Id and API token.
+     * Get data about station specified by API token.
+     * Manager user token required.
      * @Path("/")
      * @Method("GET")
      * @RequestParameters({
-     * 		@RequestParameter(name="stationId", type="int", description="Station Id", in="query"),
+     *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
      * 		@RequestParameter(name="stationToken", type="string", description="Station API token", in="query")
      * })
      * @Responses({
@@ -66,13 +65,15 @@ final class StationController extends BaseV1Controller
      */
     public function getStation(ApiRequest $request, ApiResponse $response): ApiResponse
     {
+        $this->checkUserPermission($request,Permissions::MANAGER);
         $this->checkStationTokens($request);
-        $station = $this->orm->stations->getById($request->getParameter("stationId"));
+        $station = $this->orm->stations->getBy(["apiToken"=>$request->getParameter("stationToken")]);
         return $response->writeJsonBody($station->toArray());
     }
 
     /**
-     * Get all stations. Admin user token required.
+     * Get all stations.
+     * Admin user token required.
      * @Path("/all")
      * @Method("GET")
      * @RequestParameters({
@@ -100,7 +101,8 @@ final class StationController extends BaseV1Controller
     }
 
     /**
-     * Update station data. Admin user token required.
+     * Update station data.
+     * Admin user token required.
      * @Path("/")
      * @Method("PUT")
      * @RequestParameters({
@@ -145,7 +147,8 @@ final class StationController extends BaseV1Controller
     }
 
     /**
-     * Delete station. Admin user token required.
+     * Delete station.
+     * Admin user token required.
      * @Path("/")
      * @Method("DELETE")
      * @RequestParameters({

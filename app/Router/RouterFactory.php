@@ -15,7 +15,7 @@ final class RouterFactory
 	public static function createRouter(): RouteList
 	{
 		$router = new RouteList;
-        $router->addRoute("api/<action>", "Api:default");
+        //$router->addRoute("api/<action>", "Api:default");
         $router->addRoute("[<locale=cs cs|en>/]<module>/<presenter>/<action>", "Visitor:Login:default");
         $router->addRoute("[<locale=cs cs|en>/]<presenter>/<action>", "Visitor:Login:default");
 

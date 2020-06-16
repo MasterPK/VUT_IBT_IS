@@ -37,28 +37,6 @@
     <link rel="stylesheet" href="{$basePath}/plugins/chart.js/Chart.css">
     <!-- Ion Icons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-
-    <!-- jQuery -->
-    <script src="{$basePath}/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="{$basePath}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="{$basePath}/dist/js/adminlte.min.js"></script>
-    <!-- Nittro script -->
-    <script type="application/javascript" src="{$basePath}/dist/js/nittro.min.js" async defer></script>
-    <!-- iziToast script -->
-    <script src="{$basePath}/dist/js/iziToast.min.js" type="text/javascript"></script>
-    <!-- fullCalendar 2.2.5 -->
-    <script src="{$basePath}/plugins/moment/moment.min.js"></script>
-    <script src="{$basePath}/plugins/fullcalendar/main.min.js"></script>
-    <script src="{$basePath}/plugins/fullcalendar-daygrid/main.min.js"></script>
-    <script src="{$basePath}/plugins/fullcalendar-timegrid/main.min.js"></script>
-    <script src="{$basePath}/plugins/fullcalendar-interaction/main.min.js"></script>
-    <script src="{$basePath}/plugins/fullcalendar-bootstrap/main.min.js"></script>
-    <script src='{$basePath}/plugins/fullcalendar/locales/cs.js'></script>
-    <!-- Chart.js -->
-    <script src="{$basePath}/plugins/chart.js/Chart.js"></script>
-
 </head>
 <body class="hold-transition sidebar-mini nittro-transition-auto nittro-transition-dim">
 {snippet all}
@@ -353,12 +331,33 @@
     <!-- ./wrapper -->
 
     <!-- Toast notif snippet -->
-
+</body>
     {snippet toastSnippet}
         <script>
             {ifset $toastHTML}{$toastHTML|noescape}{/ifset}
         </script>
     {/snippet}
+
+    <!-- jQuery -->
+    <script src="{$basePath}/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="{$basePath}/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="{$basePath}/dist/js/adminlte.min.js"></script>
+    <!-- Nittro script -->
+    <script type="application/javascript" src="{$basePath}/dist/js/nittro.min.js" async defer></script>
+    <!-- iziToast script -->
+    <script src="{$basePath}/dist/js/iziToast.min.js" type="text/javascript"></script>
+    <!-- fullCalendar 2.2.5 -->
+    <script src="{$basePath}/plugins/moment/moment.min.js"></script>
+    <script src="{$basePath}/plugins/fullcalendar/main.min.js"></script>
+    <script src="{$basePath}/plugins/fullcalendar-daygrid/main.min.js"></script>
+    <script src="{$basePath}/plugins/fullcalendar-timegrid/main.min.js"></script>
+    <script src="{$basePath}/plugins/fullcalendar-interaction/main.min.js"></script>
+    <script src="{$basePath}/plugins/fullcalendar-bootstrap/main.min.js"></script>
+    <script src='{$basePath}/plugins/fullcalendar/locales/cs.js'></script>
+    <!-- Chart.js -->
+    <script src="{$basePath}/plugins/chart.js/Chart.js"></script>
 
     {snippet scripts}
         {ifset #scripts}
@@ -369,5 +368,5 @@
 {/snippet}
 
 
-</body>
+
 </html>
