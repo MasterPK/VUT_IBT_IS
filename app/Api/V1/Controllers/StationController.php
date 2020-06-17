@@ -72,7 +72,7 @@ final class StationController extends BaseV1Controller
     }
 
     /**
-     * Get all stations.
+     * Get all stations. Return array of stations.
      * Admin user token required.
      * @Path("/all")
      * @Method("GET")
@@ -95,7 +95,9 @@ final class StationController extends BaseV1Controller
         $stations = $this->orm->stations->findAll()->fetchAll();
         $result = [];
         foreach ($stations as $station) {
-            array_push($result, $station->toArray());
+            $tmpArray=$station->toArray();
+            unset($tmpArray["users"]);
+            array_push($result, $tmpArray);
         }
         return $response->writeJsonBody($result);
     }

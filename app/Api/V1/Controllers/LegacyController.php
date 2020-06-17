@@ -225,7 +225,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
      * @Path("/save-access")
      * @Method("GET")
      * @RequestParameters({
-     * 		@RequestParameter(name="id_station", type="int", description="Id of station", in="query"),
+     * 		@RequestParameter(name="token", type="string", description="Id of station", in="query"),
      *      @RequestParameter(name="user_rfid", type="string", description="User RFID", in="query"),
      *      @RequestParameter(name="status", type="int", description="Status of access", in="query")
      * })
@@ -241,12 +241,12 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
     public function saveAccess(ApiRequest $request, ApiResponse $apiResponse): ApiResponse
     {
 
-        $id_station = $request->getParameter('id_station');
+        $token = $request->getParameter('token');
         $user_rfid = $request->getParameter('user_rfid');
         $status = $request->getParameter('status');
 
         //check existing station and user
-        $station = $this->orm->stations->getById($id_station);
+        $station = $this->orm->stations->getBy(["apiToken"=>$token]);
 
         if (!$station) {
             throw new ClientErrorException("Station doesnt exist!", 400);
@@ -331,7 +331,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
             "datetime" => new DateTime,
             "log_rfid" => $user_rfid,
             "status" => $status,
-            "id_station" => $id_station,
+            "id_station" => $station->id,
             "id_user" => $user ? $user->id : null,
             "arrival" => $user && $station->mode == 1 ? $user->present : null
         ]);
@@ -382,6 +382,58 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
                     $count++;
                 } else if ($value["perm"] == 1) {
                     array_push($response["u"], ["r" => $user["rfid"], "p" => $value["perm"]]);
+                    $count++;
+                }
+            }
+        }
+        $response["c"] = (string)$count;
+
+        $this->database->table('stations')->where("id", $station->id)->update(["last_update" => new Datetime]);
+
+        return $this->prepareResponse($apiResponse,$response);
+    }
+
+    /**
+     * Get users permissions specific for specified station. V2 experimental version with data compression.
+     * Old version return user as object of type key=>value, this return user as array of raw values.
+     * @Path("/get-users-v2")
+     * @Method("GET")
+     * @RequestParameters({
+     * 		@RequestParameter(name="token", type="string", description="Station API token", in="query")
+     * })
+     * @Responses({
+     *     @Response(code="200", description="Success"),
+     *     @Response(code="400", description="Bad request")
+     * })
+     * @param ApiRequest $request
+     * @param ApiResponse $apiResponse
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function getUsersV2(ApiRequest $request, ApiResponse $apiResponse): ApiResponse
+    {
+        $this->checkToken($request);
+
+        $station = $this->orm->stations->getBy(["apiToken" => $request->getParameter("token")]);
+
+        $row = $this->database->table('stations_x_users')->where("id_station = ?", $station->id);
+
+        if (!$row) {
+            return $this->prepareResponse($apiResponse,["s" => "ok", "u" => ""]);
+        }
+        $response = ["s" => "ok", "u" => array()];
+        $count = 0;
+        foreach ($row as $value) {
+            $user = $this->database->table('users')->where("id", $value["id_user"])->fetch();
+            if (!$user) {
+                continue;
+            }
+            if ($user["registration"] == 1 && !empty($user["rfid"])) {
+                if (($value["perm"] == 2 || $value["perm"] == 3) && $user["pin"] != "") {
+                    array_push($response["u"], [$user["rfid"],$value["perm"],$user["pin"]]);
+                    $count++;
+                } else if ($value["perm"] == 1) {
+                    array_push($response["u"], [$user["rfid"],$value["perm"]]);
                     $count++;
                 }
             }
