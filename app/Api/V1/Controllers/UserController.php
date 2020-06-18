@@ -25,34 +25,20 @@ use App\Api\V1\BaseControllers\BaseV1Controller;
 use Nette\Utils\DateTime;
 
 /**
- * @Tag("Station")
- * @ControllerPath("/station")
+ * @Tag("User")
+ * @ControllerPath("/user")
  */
-final class StationController extends BaseV1Controller
+final class UserController extends BaseV1Controller
 {
-    /**
-     * Check param stationToken
-     * @param ApiRequest $request
-     */
-    private function checkStationTokens(ApiRequest $request)
-    {
-        $stationToken = $request->getParameter("stationToken");
-
-        $station = $this->orm->stations->getBy(["apiToken" => $stationToken]);
-
-        if (!$station) {
-            throw new ClientErrorException("Station does not exist!", 400);
-        }
-    }
 
     /**
-     * Get data about station specified by API token.
+     * Get data about user specified by API token.
      * Admin user token required.
-     * @Path("/")
+     * @Path("/{email}")
      * @Method("GET")
      * @RequestParameters({
      *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
-     * 		@RequestParameter(name="stationToken", type="string", description="Station API token", in="query")
+     *     @RequestParameter(name="email", type="string", description="Email of user to find"),
      * })
      * @Responses({
      *     @Response(code="200", description="Success"),
@@ -63,21 +49,24 @@ final class StationController extends BaseV1Controller
      * @param ApiResponse $response
      * @return ApiResponse
      */
-    public function getStation(ApiRequest $request, ApiResponse $response): ApiResponse
+    public function get(ApiRequest $request, ApiResponse $response): ApiResponse
     {
         $this->checkUserPermission($request,Permissions::ADMIN);
-        $this->checkStationTokens($request);
-        $station = $this->orm->stations->getBy(["apiToken"=>$request->getParameter("stationToken")]);
-        return $response->writeJsonBody($station->toArray());
+        $row = $this->orm->users->getBy(["email"=>$request->getParameter("email")]);
+        if(!$row)
+        {
+            throw new ClientErrorException("User not found!", 400);
+        }
+        return $response->writeJsonBody($row->toArray());
     }
 
     /**
-     * Get all stations. Return array of stations.
+     * Get all users.
      * Admin user token required.
      * @Path("/all")
      * @Method("GET")
      * @RequestParameters({
-     * 		@RequestParameter(name="userToken", type="string", description="User token", in="query")
+     * 		@RequestParameter(name="userToken", type="string", description="User API token", in="query")
      * })
      * @Responses({
      *     @Response(code="200", description="Success"),
@@ -88,14 +77,16 @@ final class StationController extends BaseV1Controller
      * @param ApiResponse $response
      * @return ApiResponse
      */
-    public function getStations(ApiRequest $request, ApiResponse $response): ApiResponse
+    public function getAll(ApiRequest $request, ApiResponse $response): ApiResponse
     {
         $this->checkUserPermission($request, Permissions::ADMIN);
-        $stations = $this->orm->stations->findAll()->fetchAll();
+        $rows = $this->orm->users->findAll()->fetchAll();
         $result = [];
-        foreach ($stations as $station) {
-            $tmpArray=$station->toArray();
-            unset($tmpArray["users"]);
+        foreach ($rows as $row) {
+            $tmpArray=$row->toArray();
+            unset($tmpArray["stations"]);
+            unset($tmpArray["shifts"]);
+            unset($tmpArray["roles"]);
             array_push($result, $tmpArray);
         }
         return $response->writeJsonBody($result);
@@ -129,7 +120,7 @@ final class StationController extends BaseV1Controller
         $station = $this->orm->stations->getBy(["apiToken" => $request->getParameter("apiToken")]);
 
         if (!$station) {
-            throw new ClientErrorException("Station not found!", 404);
+            throw new ClientErrorException("Station not found!", 400);
         }
 
         $params = $request->getParameters();
@@ -171,7 +162,7 @@ final class StationController extends BaseV1Controller
         $station = $this->orm->stations->getBy(["apiToken" => $request->getParameter("apiToken")]);
 
         if (!$station) {
-            throw new ClientErrorException("Station not found!", 404);
+            throw new ClientErrorException("Station not found!", 400);
         }
 
         $this->orm->stations->deleteBy(["apiToken" => $request->getParameter("apiToken")]);

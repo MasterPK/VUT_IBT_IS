@@ -79,7 +79,7 @@ abstract class BaseV1Controller extends BaseController
         $user = $this->orm->users->getBy(["token" => $userToken]);
 
         if (!$user) {
-            throw new ClientErrorException("Token invalid!", 404);
+            throw new ClientErrorException("Token not found!", 400);
         }
 
         if ($user->permission < $permission) {
