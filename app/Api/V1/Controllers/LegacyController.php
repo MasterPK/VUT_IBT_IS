@@ -344,8 +344,8 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
     }
 
     /**
-     * Get users permissions specific for specified station.
-     * @Path("/get-users")
+     * Get users permissions specific for specified station. Deprecated! use new request.
+     * @Path("/get-users-old")
      * @Method("GET")
      * @RequestParameters({
      * 		@RequestParameter(name="token", type="string", description="Station API token", in="query")
@@ -358,6 +358,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
      * @param ApiResponse $apiResponse
      * @return ApiResponse
      * @throws Exception
+     * @deprecated
      */
     public function getUsers(ApiRequest $request, ApiResponse $apiResponse): ApiResponse
     {
@@ -397,7 +398,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
     /**
      * Get users permissions specific for specified station. V2 experimental version with data compression.
      * Old version return user as object of type key=>value, this return user as array of raw values.
-     * @Path("/get-users-v2")
+     * @Path("/get-users")
      * @Method("GET")
      * @RequestParameters({
      * 		@RequestParameter(name="token", type="string", description="Station API token", in="query")
