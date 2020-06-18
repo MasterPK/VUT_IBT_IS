@@ -252,6 +252,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
             throw new ClientErrorException("Station doesnt exist!", 400);
         }
 
+        /** @var App\Models\Orm\Users\User $user */
         $user = $this->orm->users->getBy(["rfid" => $user_rfid]);
 
         if ($user) {
@@ -277,7 +278,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
                             if ($intervalInMinutes > $settings["max_start_deviation"]) {
                                 $newNotification = new App\Models\Orm\Notifications\Notification();
                                 $newNotification->subject = "LATE_ARRIVAL";
-                                $newNotification->description = $user->email;
+                                $newNotification->description = $user->firstName . " " . $user->surName;
                                 $newNotification->createdAt = new DateTime();
                                 $this->orm->notifications->persistAndFlush($newNotification);
                             }
@@ -291,7 +292,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
                             if ($intervalInMinutes > $settings["max_end_deviation"]) {
                                 $newNotification = new App\Models\Orm\Notifications\Notification();
                                 $newNotification->subject = "EARLY_DEPARTURE";
-                                $newNotification->description = $user->email;
+                                $newNotification->description = $user->firstName . " " . $user->surName;
                                 $newNotification->createdAt = new DateTime();
                                 $this->orm->notifications->persistAndFlush($newNotification);
                             }

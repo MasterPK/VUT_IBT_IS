@@ -15,6 +15,7 @@
         <LatteVariableSettings VarName="user" VarType="\Nette\Security\User" />
         <LatteVariableSettings VarName="activeMenuItem" VarType="mixed" />
         <LatteVariableSettings VarName="currentAction" VarType="mixed" />
+        <LatteVariableSettings VarName="selectedUserName" VarType="mixed" />
       </list>
     </option>
     <option name="customMacroSettings">

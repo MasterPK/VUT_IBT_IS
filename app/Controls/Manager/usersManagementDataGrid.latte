@@ -18,9 +18,10 @@
 
 
 {define row-actions}
-    <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_all.edit}</a>
-    <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-sm m-1">{_all.assignRfid}</a>
-    <a href="{plink :Main:Manager:userStationsPerms $primary}" class="btn btn-primary btn-sm m-1">{_all.permission}</a>
+    <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-xs m-1">{_all.edit}</a>
+    <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-xs m-1">{_all.assignRfid}</a>
+    <a href="{plink :Main:Manager:userStationsPerms $primary}" class="btn btn-primary btn-xs m-1">{_all.permission}</a>
+    <a href="{plink :Main:Manager:userShifts $primary}" class="btn btn-primary btn-xs m-1">{_all.shifts}</a>
 {/define}
 
 

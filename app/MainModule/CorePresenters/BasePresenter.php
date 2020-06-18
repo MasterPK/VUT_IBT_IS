@@ -174,6 +174,8 @@ class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
         {
             setlocale(LC_TIME, "en_GB.utf8") or die('Locale not installed');;
         }
+
+        $this->setDefaultSnippets(["all","content"]);
     }
 
     protected function translate($value): string

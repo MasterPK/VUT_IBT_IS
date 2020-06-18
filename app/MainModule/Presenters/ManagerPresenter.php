@@ -12,6 +12,7 @@ use App\Models\Orm\Shifts\Shift;
 use App\Models\Orm\ShiftsUsers\ShiftUser;
 use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
+use App\Models\Orm\Users\User;
 use App\Security\Permissions;
 use DateTimeImmutable;
 use Exception;
@@ -367,7 +368,6 @@ class ManagerPresenter extends MainPresenter
             ]);
 
 
-
             return $form;
         });
 
@@ -409,7 +409,7 @@ class ManagerPresenter extends MainPresenter
                 $this->showDangerToastAndRefresh($this->translate("all.badAccessMode"));
                 return;
             }
-            $id=$values->permId;
+            $id = $values->permId;
             unset($values->permId);
             $this->orm->stationsUsers->update((int)$id, $values);
             $this->showSuccessToast();
@@ -528,19 +528,17 @@ class ManagerPresenter extends MainPresenter
 
         $users = $this->orm->users->findAll()->fetchAll();
 
-        $finalUsers=[];
-        foreach ($users as $user)
-        {
-            $foundStation=false;
-            foreach ($user->stations as $station)
-            {
-                if($station==$selectedStation){
-                    $foundStation=true;
+        $finalUsers = [];
+        foreach ($users as $user) {
+            $foundStation = false;
+            foreach ($user->stations as $station) {
+                if ($station == $selectedStation) {
+                    $foundStation = true;
                     break;
                 }
             }
-            if(!$foundStation){
-                $finalUsers[$user->id]=$user->firstName." ".$user->surName." (".$user->email.")";
+            if (!$foundStation) {
+                $finalUsers[$user->id] = $user->firstName . " " . $user->surName . " (" . $user->email . ")";
             }
         }
 
@@ -549,25 +547,25 @@ class ManagerPresenter extends MainPresenter
 
 
         if ($this->user->permission == Permissions::ADMIN) {
-            if($selectedStation->mode==Station::MODE_NORMAL){
+            if ($selectedStation->mode == Station::MODE_NORMAL) {
                 $stationPerms = [
                     StationsUsers::PERM_BASIC => $this->translate("all.basic"),
                     StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
                     StationsUsers::PERM_ADMIN => $this->translate("all.admin"),
                 ];
-            }else{
+            } else {
                 $stationPerms = [
                     StationsUsers::PERM_BASIC => $this->translate("all.basic"),
                     StationsUsers::PERM_ADMIN => $this->translate("all.admin"),
                 ];
             }
         } else {
-            if($selectedStation->mode==Station::MODE_NORMAL){
+            if ($selectedStation->mode == Station::MODE_NORMAL) {
                 $stationPerms = [
                     StationsUsers::PERM_BASIC => $this->translate("all.basic"),
                     StationsUsers::PERM_TWO_PHASE => $this->translate("all.twoPhase"),
                 ];
-            }else{
+            } else {
                 $stationPerms = [
                     StationsUsers::PERM_BASIC => $this->translate("all.basic")
                 ];
@@ -593,7 +591,8 @@ class ManagerPresenter extends MainPresenter
         return $form;
     }
 
-    public function newStationPermSave($form){
+    public function newStationPermSave($form)
+    {
         $values = $form->getValues();
         // Protection from editing user with higher role than current user
 
@@ -800,7 +799,7 @@ class ManagerPresenter extends MainPresenter
             ->enableSort();
 
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
-            return $this->dataGridFactory->createDataSourceNotORM("stations_x_users", "stations_x_users.id AS permId,id_user.first_name,id_user.sur_name,perm",
+            return $this->dataGridFactory->createDataSourceNotORM("stations_x_users", "stations_x_users.id AS permId,id_user.first_name,id_user.sur_name,perm,id_user.permission",
                 $filter, $order, ["perm"], ["id_station" => $station = $this->orm->stations->getById($this->selectedStation)->id], $paginator, [], ["permId" => "stations_x_users.id"]);
         });
 
@@ -844,6 +843,11 @@ class ManagerPresenter extends MainPresenter
             $values = $row->getValues();
 
             $perm = $this->orm->stationsUsers->getById($values->permId);
+
+            // Protection from editing user with higher role then current user
+            if (!(($this->user->permission == Permissions::MANAGER && $values->permission < Permissions::MANAGER) || $this->user->permission == Permissions::ADMIN)) {
+                return;
+            }
 
             if ($perm->idStation->mode == Station::MODE_CHECK_ONLY && $values->perm == StationsUsers::PERM_TWO_PHASE) {
                 $this->showDangerToastAndRefresh($this->translate("all.badAccessMode"));
@@ -930,8 +934,8 @@ class ManagerPresenter extends MainPresenter
             $form = $this->dataGridFactory->createFilterForm();
             $form->addId();
 
-            $form->addDateTimeRange('start',DateInput::TYPE_DATE);
-            $form->addDateTimeRange('end',DateInput::TYPE_DATE);
+            $form->addDateTimeRange('start', DateInput::TYPE_DATE);
+            $form->addDateTimeRange('end', DateInput::TYPE_DATE);
 
             $form->addText('note')
                 ->setHtmlAttribute("class", "form-control");
@@ -943,8 +947,10 @@ class ManagerPresenter extends MainPresenter
 
             $form = $this->dataGridFactory->createEditForm();
 
-            $form->addDate('start',DateInput::TYPE_DATETIME_LOCAL)->setHtmlAttribute("class", "form-control");
-            $form->addDate('end',DateInput::TYPE_DATETIME_LOCAL)->setHtmlAttribute("class", "form-control");
+            $form->addDate('start', DateInput::TYPE_DATETIME_LOCAL)->setRequired()->setHtmlAttribute("class", "form-control");
+            $form->addDate('end', DateInput::TYPE_DATETIME_LOCAL)->setRequired()->setHtmlAttribute("class", "form-control");
+
+            $form->addTextArea("note")->setHtmlAttribute("class", "form-control");
 
             if ($row) {
                 $form->setDefaults($row->toArray());
@@ -984,8 +990,9 @@ class ManagerPresenter extends MainPresenter
     {
         $form = new ExtendedForm();
 
-        $defaultTime = new DateTimeImmutable();
-        $defaultTime->setTime(0, 0);
+        $defaultTime = new Nette\Utils\DateTime();
+        $defaultTime = $defaultTime->format("Y-m-d h");
+        $defaultTime = Nette\Utils\DateTime::createFromFormat("Y-m-d h",$defaultTime);
 
         $form->addDate('start')
             ->setRequired()
@@ -1234,6 +1241,61 @@ class ManagerPresenter extends MainPresenter
     public function renderShiftsManager()
     {
         $this->template->shifts = $this->orm->shifts->findAll()->fetchAll();
+    }
+
+    public function renderUserShifts($idUser)
+    {
+        if ($idUser == null) {
+            $this->redirect("Manager:usersManagement");
+        }
+        /** @var User $user */
+        $user = $this->orm->users->getById($idUser);
+        $this->template->shifts = $user->shifts;
+        $this->template->selectedUserName = $user->firstName . " " . $user->surName;
+    }
+
+    /**
+     * Create DataGrid that shows shifts of currently logged in user.
+     * @return Datagrid
+     */
+    public function createComponentUserShiftsDataGrid()
+    {
+        $grid = $this->dataGridFactory->createDataGrid();
+
+        $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
+
+            return $this->dataGridFactory->createDataSourceNotORM("shifts_x_users",
+                "id_shift.start,id_shift.end,arrival,departure", $filter, $order, [], ["id_user" => $this->getParameter("idUser")], $paginator, ["start", "ASC"]);
+        });
+
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Homepage/myShiftsDataGrid.latte');
+        $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/userShiftsDataGrid.latte');
+
+        $grid->addColumn("start", "all.start")->enableSort();
+
+        $grid->addColumn("end", "all.end")->enableSort();
+
+        $grid->addColumn("arrival", "all.actualArrival")->enableSort();
+
+        $grid->addColumn("departure", "all.actualDeparture")->enableSort();
+
+        $grid->addColumn("note", "all.note")->enableSort();
+
+        $grid->setFilterFormFactory(function () {
+            $form = $this->dataGridFactory->createFilterForm();
+
+            $form->addDateTimeRange('start', DateInput::TYPE_DATE);
+            $form->addDateTimeRange('end', DateInput::TYPE_DATE);
+
+            $form->addDateTimeRange("arrival", DateInput::TYPE_DATE);
+            $form->addDateTimeRange("departure", DateInput::TYPE_DATE);
+
+            $form->addText("note");
+
+            return $form;
+        });
+
+        return $grid;
     }
 
 

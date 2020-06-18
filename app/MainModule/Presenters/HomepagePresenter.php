@@ -7,6 +7,7 @@ use App\Controls\ExtendedFormContainer;
 use App\MainModule\CorePresenters\MainPresenter;
 use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
+use App\Models\Orm\Users\User;
 use App\Security\Permissions;
 use Cassandra\Date;
 use Exception;
@@ -114,13 +115,6 @@ final class HomepagePresenter extends MainPresenter
             $form->addDateTimeRange("arrival", DateInput::TYPE_DATE);
             $form->addDateTimeRange("departure", DateInput::TYPE_DATE);
 
-            /*$form->addComponent(new ExtendedFormContainer(),"departure");
-
-            $form["departure"]->addDate('from',null,DateInput::TYPE_DATE)->setHtmlAttribute("class", "form-control");
-            $form["departure"]->addDate('to',null,DateInput::TYPE_DATE)->setHtmlAttribute("class", "form-control");*/
-
-            //$form->addDate('departure',null,DateInput::TYPE_DATE);
-
             $form->addText("note");
 
             return $form;
@@ -130,8 +124,9 @@ final class HomepagePresenter extends MainPresenter
     }
 
 
-    public function renderMyShifts()
+    public function renderMyShifts($idUser)
     {
+
         $this->template->shifts = $this->user->shifts;
     }
 
@@ -157,14 +152,14 @@ final class HomepagePresenter extends MainPresenter
         $this->template->prevWeekChange = $this->template->prevWeekChangePercent >= 0 ? true : false;
 
         // Table with next shifts
-        $this->template->myNextShifts=$this->orm->shiftsUsers->findBy(["idUser"=>$this->user,"arrival"=>null])->orderBy("arrival",Collection::ASC)->limitBy(5)->fetchAll();
+        $this->template->myNextShifts = $this->orm->shiftsUsers->findBy(["idUser" => $this->user, "arrival" => null])->orderBy("arrival", Collection::ASC)->limitBy(5)->fetchAll();
 
         // Next data print only when manager or higher role
-        if(!$this->isAllowed(Permissions::MANAGER)){
+        if (!$this->isAllowed(Permissions::MANAGER)) {
             return;
         }
 
-        $this->template->currentyPresentUsersCount=$this->orm->users->getCurrentlyPresentUsersCount();
+        $this->template->currentyPresentUsersCount = $this->orm->users->getCurrentlyPresentUsersCount();
 
 
     }

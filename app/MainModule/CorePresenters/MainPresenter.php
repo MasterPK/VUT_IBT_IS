@@ -225,7 +225,7 @@ class MainPresenter extends BasePresenter
         $notification->read=1;
         $this->orm->notifications->persistAndFlush($notification);
 
-        $this->showSuccessToastAndRefresh();
+        $this->redirect("Manager:");
     }
 
 }

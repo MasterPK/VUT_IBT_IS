@@ -24,7 +24,7 @@ visitor:
     passwordMissing: "Musíte vyplnit heslo!"
     email: "Emailová adresa"
     sigInSuccess: "Přihlášení bylo úspěšné!"
-    signInError: "Přihlášení se nezdařilo. zadané údaje jsou chybné nebo nemáte aktivovaný účet."
+    signInError: "Přihlášení se nezdařilo. Zadané údaje jsou chybné nebo nemáte aktivovaný účet."
     signOutSuccess: "Odhlášení proběhlo úspěšně!"
     permanentLogin: "Trvalé přihlášení"
     registerNewUser: "Registrace"
