@@ -35,11 +35,11 @@ final class UserController extends BaseV1Controller
     /**
      * Get data about user specified by API token.
      * Admin user token required.
-     * @Path("/{email}")
+     * @Path("/")
      * @Method("GET")
      * @RequestParameters({
      *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
-     *     @RequestParameter(name="email", type="string", description="Email of user to find"),
+     *     @RequestParameter(name="email", type="string", description="Email of user to find", in="query"),
      * })
      * @Responses({
      *     @Response(code="200", description="Success"),

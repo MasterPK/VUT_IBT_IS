@@ -1039,16 +1039,13 @@ class ManagerPresenter extends MainPresenter
 
         $allShifts = $this->orm->shifts->findAll()->orderBy("start", Collection::ASC)->fetchAll();
 
-        foreach ($allShifts as $shift) {
-
-            if ($shift->end < $shift->start)
-                $form->addError("", false);
-            $this->showDangerToastAndRefresh($this->translate("all.badShiftTime"));
+        if ($values->end < $values->start)
+            $form->addError("", false);
+        $this->showDangerToastAndRefresh($this->translate("all.badShiftTime"));
 
 
-            if ($values->end < $values->start)
-                $form->addError("", false);
-            $this->showDangerToastAndRefresh($this->translate("all.badShiftTime"));
+        // Overlapping - feature is not used at this time
+        /*foreach ($allShifts as $shift) {
 
             if (!(($shift->end < $values->start) || ($values->end < $shift->start))) {
                 $form->addError("", false);
@@ -1056,7 +1053,7 @@ class ManagerPresenter extends MainPresenter
                 break;
             }
 
-        }
+        }*/
     }
 
     public function newShiftFormSuccess(Form $form)

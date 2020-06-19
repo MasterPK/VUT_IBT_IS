@@ -12,7 +12,7 @@ use Nextras\Orm\Relationships\ManyHasMany;
 
 /**
  * @property-read int           $id {primary}
- * @property string             $note
+ * @property string             $note {default ""}
  * @property DateTimeImmutable  $start
  * @property DateTimeImmutable  $end
  * @property ManyHasMany|User[] $users  {m:m User::$shifts, isMain=true}
