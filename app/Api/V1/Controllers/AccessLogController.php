@@ -34,7 +34,8 @@ class AccessLogController extends BaseV1Controller
 {
 
     /**
-     * Get all logs
+     * Get all logs.
+     * Admin user token required.
      * @Path("/all")
      * @Method("GET")
      * @RequestParameters({
@@ -54,20 +55,68 @@ class AccessLogController extends BaseV1Controller
      */
     public function get(ApiRequest $request, ApiResponse $response): ApiResponse
     {
-        $this->checkUserPermission($request,Permissions::ADMIN);
+        $this->checkUserPermission($request, Permissions::ADMIN);
 
-        $filter=Json::decode($request->getParameter("filter","[]"),Json::FORCE_ARRAY);
-        $order=Json::decode($request->getParameter("order","[]"),Json::FORCE_ARRAY);
-        $limit=$request->getParameter("limit",null);
+        $filter = Json::decode($request->getParameter("filter", "[]"), Json::FORCE_ARRAY);
+        $order = Json::decode($request->getParameter("order", "[]"), Json::FORCE_ARRAY);
+        $limit = $request->getParameter("limit", null);
 
-        $paginator=new Paginator();
-        $paginator->setItemsPerPage($limit);
+        if ($limit != null) {
+            $paginator = new Paginator();
+            $paginator->setItemsPerPage($limit);
+        } else {
+            $paginator = null;
+        }
 
-        $data=$this->dataGridFactory->createDataSource("logs",$filter,$order,[],[],$paginator,[]);
-        $result=[];
-        foreach ($data as $row)
-        {
-            array_push($result,$row->toArray());
+        $data = $this->dataGridFactory->createDataSource("logs", $filter, $order, [], [], $paginator, []);
+        $result = [];
+        foreach ($data as $row) {
+            array_push($result, $row->toArray());
+        }
+
+        return $response->writeJsonBody($result);
+    }
+
+    /**
+     * Get all RFIDs that are marked to be assigned to users.
+     * Admin user token required.
+     * @Path("/newRFIDs")
+     * @Method("GET")
+     * @RequestParameters({
+     *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
+     *     @RequestParameter(name="filter", type="string", description="JSON array in format $key=>$value. Will be transformed to LIKE search if posssible. Example: {logRfid:c92bb399}", in="query", required=false),
+     *     @RequestParameter(name="order", type="string", description="JSON array in format [column,order(ASC,DESC)]. Example: [id,DESC]. Note: Only one order is accepted.", in="query", required=false),
+     *     @RequestParameter(name="limit", type="int", description="Max items to display.", in="query", required=false),
+     * })
+     * @Responses({
+     *     @Response(code="200", description="Success"),
+     *     @Response(code="400", description="Bad request")
+     * })
+     * @param ApiRequest $request
+     * @param ApiResponse $response
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function getNewRfid(ApiRequest $request, ApiResponse $response): ApiResponse
+    {
+        $this->checkUserPermission($request, Permissions::ADMIN);
+
+        $filter = Json::decode($request->getParameter("filter", "[]"), Json::FORCE_ARRAY);
+        $order = Json::decode($request->getParameter("order", "[]"), Json::FORCE_ARRAY);
+        $limit = $request->getParameter("limit", null);
+
+        if ($limit != null) {
+            $paginator = new Paginator();
+            $paginator->setItemsPerPage($limit);
+        } else {
+            $paginator = null;
+        }
+
+
+        $data = $this->dataGridFactory->createDataSource("newRfids", $filter, $order, [], [], $paginator, []);
+        $result = [];
+        foreach ($data as $row) {
+            array_push($result, $row->toArray());
         }
 
         return $response->writeJsonBody($result);
