@@ -59,6 +59,7 @@ api:
                 info:
                     title: Attendance system API
                     version: "1.0.0"
+                    description: "This API provide complete access to data. Almost every request requires token of user that is administrator due to security reasons."
                 servers:
                   - url: https://192.168.1.103
                     description: Main RPi server. Local network address.

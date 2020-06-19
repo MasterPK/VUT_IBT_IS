@@ -19,14 +19,9 @@ use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use App\Models\Orm\Shifts\Shift;
 use App\Models\Orm\ShiftsUsers\ShiftUser;
-use App\Models\Orm\Users\User;
-use Nette;
 use App\Security\Permissions;
 use Exception;
 use App\Api\V1\BaseControllers\BaseV1Controller;
-use Nette\Utils\DateTime;
-use Nextras\Orm\Collection\Collection;
-use Tracy\Debugger;
 
 /**
  * @Tag("Shift")
@@ -34,8 +29,6 @@ use Tracy\Debugger;
  */
 final class ShiftController extends BaseV1Controller
 {
-
-
     /**
      * Get data about shift specified by ID.
      * Admin user token required.
@@ -61,7 +54,7 @@ final class ShiftController extends BaseV1Controller
         if (!$row) {
             throw new ClientErrorException("Shift not found!", 400);
         }
-        $result=$row->toArray();
+        $result = $row->toArray();
         unset($result["users"]);
         return $response->writeJsonBody($result);
     }
@@ -99,11 +92,11 @@ final class ShiftController extends BaseV1Controller
     /**
      * Update user data.
      * Admin user token required.
-     * @Path("/{id}")
+     * @Path("/")
      * @Method("PUT")
      * @RequestParameters({
      * 		@RequestParameter(name="userToken", type="string", description="Token of administrator", in="query", allowEmpty=false),
-     *      @RequestParameter(name="id", type="string", description="Id of shift to be edited", allowEmpty=false),
+     *      @RequestParameter(name="id", type="string", description="Id of shift to be edited", in="query", allowEmpty=false),
      *      @RequestParameter(name="note", type="string", description="Shift note", in="query", required=false, allowEmpty=false),
      *      @RequestParameter(name="start", type="datetime", description="Start of shift in format ISO 8601 (Y-m-d\TH:i:sP)", in="query", allowEmpty=false),
      *      @RequestParameter(name="end", type="datetime", description="End of shift in format ISO 8601 (Y-m-d\TH:i:sP)", in="query", allowEmpty=false),
@@ -252,10 +245,9 @@ final class ShiftController extends BaseV1Controller
         if (!$row) {
             throw new ClientErrorException("Shift not found!", 400);
         }
-        $users=[];
-        foreach ($row->users as $user)
-        {
-            array_push($users,$user->email);
+        $users = [];
+        foreach ($row->users as $user) {
+            array_push($users, $user->email);
         }
         return $response->writeJsonBody($users);
     }
@@ -283,19 +275,19 @@ final class ShiftController extends BaseV1Controller
     {
         $this->checkUserPermission($request, Permissions::ADMIN);
 
-        $user=$this->orm->users->getByEmail($request->getParameter("email"));
-        if(!$user){
-            throw new ClientErrorException("User not found!",400);
+        $user = $this->orm->users->getByEmail($request->getParameter("email"));
+        if (!$user) {
+            throw new ClientErrorException("User not found!", 400);
         }
 
-        $shift=$this->orm->shifts->getBy(["id"=>$request->getParameter("id")]);
-        if(!$shift){
-            throw new ClientErrorException("Shift not found!",400);
+        $shift = $this->orm->shifts->getBy(["id" => $request->getParameter("id")]);
+        if (!$shift) {
+            throw new ClientErrorException("Shift not found!", 400);
         }
 
-        $shiftUser=$this->orm->shiftsUsers->getBy(["idUser"=>$user,"idShift"=>$shift]);
+        $shiftUser = $this->orm->shiftsUsers->getBy(["idUser" => $user, "idShift" => $shift]);
 
-        if($shiftUser)
+        if ($shiftUser)
             $this->orm->shiftsUsers->removeAndFlush($shiftUser);
 
         return $response->writeJsonBody(["status" => "success"]);
@@ -326,21 +318,21 @@ final class ShiftController extends BaseV1Controller
 
         $newShiftUser = new ShiftUser();
 
-        $user=$this->orm->users->getByEmail($request->getParameter("email"));
-        if(!$user){
-            throw new ClientErrorException("User not found!",400);
+        $user = $this->orm->users->getByEmail($request->getParameter("email"));
+        if (!$user) {
+            throw new ClientErrorException("User not found!", 400);
         }
-        $newShiftUser->idUser=$user;
+        $newShiftUser->idUser = $user;
 
-        $shift=$this->orm->shifts->getBy(["id"=>$request->getParameter("id")]);
-        if(!$shift){
-            throw new ClientErrorException("Shift not found!",400);
+        $shift = $this->orm->shifts->getBy(["id" => $request->getParameter("id")]);
+        if (!$shift) {
+            throw new ClientErrorException("Shift not found!", 400);
         }
-        $newShiftUser->idShift=$shift;
+        $newShiftUser->idShift = $shift;
 
-        $existing = $this->orm->shiftsUsers->getBy(["idUser"=>$user,"idShift"=>$shift]);
-        if($existing){
-            throw new ClientErrorException("User is already assigned to shift!",400);
+        $existing = $this->orm->shiftsUsers->getBy(["idUser" => $user, "idShift" => $shift]);
+        if ($existing) {
+            throw new ClientErrorException("User is already assigned to shift!", 400);
         }
 
         $this->orm->shiftsUsers->persistAndFlush($newShiftUser);
@@ -348,6 +340,57 @@ final class ShiftController extends BaseV1Controller
         return $response->writeJsonBody(["status" => "success"]);
     }
 
+    /**
+     * Edit user at shift. You can assign real time of arrival and departure.
+     * Admin user token required.
+     * @Path("/user")
+     * @Method("PUT")
+     * @RequestParameters({
+     *     @RequestParameter(name="userToken", type="string", description="User API token", in="query", required=true),
+     *     @RequestParameter(name="id", type="int", description="ID of shift", in="query", required=true),
+     *     @RequestParameter(name="email", type="string", description="Email of user to be added.", in="query", required=true),
+     *     @RequestParameter(name="arrival", type="datetime", description="User arrival", in="query", required=false, allowEmpty=false),
+     *     @RequestParameter(name="departure", type="datetime", description="User departure", in="query", required=false, allowEmpty=false),
+     * })
+     * @Responses({
+     *     @Response(code="200", description="Success"),
+     *     @Response(code="400", description="Bad request"),
+     *     @Response(code="403", description="Forbidden")
+     * })
+     * @param ApiRequest $request
+     * @param ApiResponse $response
+     * @return ApiResponse
+     */
+    public function editUser(ApiRequest $request, ApiResponse $response): ApiResponse
+    {
+        $this->checkUserPermission($request, Permissions::ADMIN);
+
+        $user = $this->orm->users->getByEmail($request->getParameter("email"));
+        if (!$user) {
+            throw new ClientErrorException("User not found!", 400);
+        }
+
+        $shift = $this->orm->shifts->getBy(["id" => $request->getParameter("id")]);
+        if (!$shift) {
+            throw new ClientErrorException("Shift not found!", 400);
+        }
+
+        $existing = $this->orm->shiftsUsers->getBy(["idUser" => $user, "idShift" => $shift]);
+        if (!$existing) {
+            throw new ClientErrorException("User is not assigned to shift!", 400);
+        }
+
+        $params = $request->getParameters();
+
+        $params = $this->removeNullParams($params);
+        unset($params["userToken"]);
+        unset($params["id"]);
+        unset($params["email"]);
+
+        $this->orm->shiftsUsers->updateBy(["idUser" => $user, "idShift" => $shift],$params);
+
+        return $response->writeJsonBody(["status" => "success"]);
+    }
 
 
 }
