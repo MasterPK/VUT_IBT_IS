@@ -12,9 +12,6 @@ session:
 services:
     router: App\Router\RouterFactory::createRouter
     authenticator: App\Security\Authenticator
-    decorator.request:
-        class: App\Api\V1\Entity\Station
-        tags: [apitte.core.decorator: [priority: 50]]
 
 extensions:
     translation: Contributte\Translation\DI\TranslationExtension
@@ -46,7 +43,7 @@ translation:
 
 api:
     debug: true
-    catchException: false # Sets if exception should be catched and transformed into response or rethrown to output (debug only)
+    catchException: false
     plugins:
         Apitte\Middlewares\DI\MiddlewaresPlugin:
         Apitte\Core\DI\Plugin\CoreDecoratorPlugin:

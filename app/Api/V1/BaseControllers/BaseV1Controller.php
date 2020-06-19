@@ -9,6 +9,7 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\GroupPath;
 use Apitte\OpenApi\ISchemaBuilder;
+use App\Models\DataGridFactory;
 use App\Models\EmailService;
 use App\Models\Orm\Orm;
 use Exception;
@@ -27,13 +28,16 @@ abstract class BaseV1Controller extends BaseController
     protected $schemaBuilder;
     /** @var EmailService */
     protected $emailService;
+    /** @var DataGridFactory */
+    protected $dataGridFactory;
 
-    public function __construct(Orm $orm, Context $database, ISchemaBuilder $schemaBuilder, EmailService $emailService)
+    public function __construct(Orm $orm, Context $database, ISchemaBuilder $schemaBuilder, EmailService $emailService, DataGridFactory $dataGridFactory)
     {
         $this->orm = $orm;
         $this->database = $database;
         $this->schemaBuilder=$schemaBuilder;
         $this->emailService=$emailService;
+        $this->dataGridFactory=$dataGridFactory;
     }
 
     /**
