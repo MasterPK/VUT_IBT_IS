@@ -223,7 +223,7 @@ final class ShiftController extends BaseV1Controller
     /**
      * Get list of users on shift. Return only emails of users.
      * Admin user token required.
-     * @Path("/users")
+     * @Path("/user/all")
      * @Method("GET")
      * @RequestParameters({
      *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
