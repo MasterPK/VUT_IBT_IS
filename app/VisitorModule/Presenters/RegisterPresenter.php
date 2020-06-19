@@ -7,12 +7,10 @@ namespace App\VisitorModule\Presenters;
 use App\MainModule\CorePresenters\BasePresenter;
 use Nette;
 use App;
+use Nette\Utils\DateTime;
 
 class RegisterPresenter extends BasePresenter
 {
-
-    /** @var App\Models\EmailService @inject */
-    public $emailService;
 
     public function createComponentRegisterForm()
     {
@@ -86,8 +84,8 @@ class RegisterPresenter extends BasePresenter
         $newUser->registration = 0;
         $newUser->registrationDate = new Nette\Utils\DateTime();
         $newUser->password = password_hash($values->password, PASSWORD_BCRYPT);
-        $newUser->roles = "[\"registered\"]";
         $newUser->permission = App\Models\Permissions::REGISTERED;
+        $newUser->lastLogin = new DateTime();
 
         $this->orm->users->persistAndFlush($newUser);
 

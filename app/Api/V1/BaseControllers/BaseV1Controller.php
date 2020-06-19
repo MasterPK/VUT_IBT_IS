@@ -9,6 +9,7 @@ use Apitte\Core\Annotation\Controller\Path;
 use Apitte\Core\Annotation\Controller\Method;
 use Apitte\Core\Annotation\Controller\GroupPath;
 use Apitte\OpenApi\ISchemaBuilder;
+use App\Models\EmailService;
 use App\Models\Orm\Orm;
 use Exception;
 use Nette\Database\Context;
@@ -18,15 +19,21 @@ use Nette\Database\Context;
  */
 abstract class BaseV1Controller extends BaseController
 {
+    /** @var Orm  */
     protected $orm;
+    /** @var Context  */
     protected $database;
+    /** @var ISchemaBuilder  */
     protected $schemaBuilder;
+    /** @var EmailService */
+    protected $emailService;
 
-    public function __construct(Orm $orm, Context $database, ISchemaBuilder $schemaBuilder)
+    public function __construct(Orm $orm, Context $database, ISchemaBuilder $schemaBuilder, EmailService $emailService)
     {
         $this->orm = $orm;
         $this->database = $database;
         $this->schemaBuilder=$schemaBuilder;
+        $this->emailService=$emailService;
     }
 
     /**
@@ -49,7 +56,7 @@ abstract class BaseV1Controller extends BaseController
         $newParams=[];
         foreach ($params as $key=>$value)
         {
-            if($value!=null){
+            if($value!==null){
                 $newParams[$key]=$value;
             }
         }

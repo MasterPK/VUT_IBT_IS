@@ -18,9 +18,8 @@ use Nextras\Orm\Relationships\ManyHasMany;
  * @property string             $firstName
  * @property string             $surName
  * @property string             $rfid {default ""}
- * @property ArrayHash          $roles {container JsonContainer}
  * @property int                $permission
- * @property int                $registration
+ * @property int               $registration {default 0}
  * @property DateTimeImmutable  $registrationDate
  * @property DateTimeImmutable  $lastLogin {default NULL}
  * @property string             $token {default ""}
@@ -28,7 +27,7 @@ use Nextras\Orm\Relationships\ManyHasMany;
  * @property string             $password
  * @property ManyHasMany|Station[]  $stations {m:m Station::$users}
  * @property ManyHasMany|Shift[]    $shifts  {m:m Shift::$users}
- * @property bool               $present {default 0}
+ * @property int               $present {default 0}
  */
 class User extends Entity
 {

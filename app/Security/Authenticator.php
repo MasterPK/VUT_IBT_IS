@@ -6,6 +6,7 @@ namespace App\Security;
 
 use App\Models\Orm\Orm;
 use Nette;
+use Nette\Security\Identity;
 use Nette\Utils\Json;
 
 class Authenticator implements Nette\Security\IAuthenticator
@@ -43,6 +44,6 @@ class Authenticator implements Nette\Security\IAuthenticator
         $user->lastLogin=new Nette\Utils\DateTime();
         $this->orm->persistAndFlush($user);
 
-        return new \Nette\Security\Identity($user->id, $user->roles);
+        return new Identity($user->id);
     }
 }

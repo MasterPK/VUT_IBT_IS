@@ -17,8 +17,8 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\Models\Orm\Users\User;
 use Nette;
-use App\Models\Orm\Station\Station;
 use App\Security\Permissions;
 use Exception;
 use App\Api\V1\BaseControllers\BaseV1Controller;
@@ -30,6 +30,7 @@ use Nette\Utils\DateTime;
  */
 final class UserController extends BaseV1Controller
 {
+
 
     /**
      * Get data about user specified by API token.
@@ -51,10 +52,9 @@ final class UserController extends BaseV1Controller
      */
     public function get(ApiRequest $request, ApiResponse $response): ApiResponse
     {
-        $this->checkUserPermission($request,Permissions::ADMIN);
-        $row = $this->orm->users->getBy(["email"=>$request->getParameter("email")]);
-        if(!$row)
-        {
+        $this->checkUserPermission($request, Permissions::ADMIN);
+        $row = $this->orm->users->getBy(["email" => $request->getParameter("email")]);
+        if (!$row) {
             throw new ClientErrorException("User not found!", 400);
         }
         return $response->writeJsonBody($row->toArray());
@@ -83,7 +83,7 @@ final class UserController extends BaseV1Controller
         $rows = $this->orm->users->findAll()->fetchAll();
         $result = [];
         foreach ($rows as $row) {
-            $tmpArray=$row->toArray();
+            $tmpArray = $row->toArray();
             unset($tmpArray["stations"]);
             unset($tmpArray["shifts"]);
             unset($tmpArray["roles"]);
@@ -93,16 +93,23 @@ final class UserController extends BaseV1Controller
     }
 
     /**
-     * Update station data.
+     * Update user data.
      * Admin user token required.
-     * @Path("/")
+     * @Path("/{currentEmail}")
      * @Method("PUT")
      * @RequestParameters({
-     * 		@RequestParameter(name="userToken", type="string", description="User token", in="query", allowEmpty=false),
-     *      @RequestParameter(name="apiToken", type="string", description="Station token", in="query", allowEmpty=false),
-     *      @RequestParameter(name="name", type="string", description="Station name", in="query", required=false, allowEmpty=false),
-     *      @RequestParameter(name="description", type="string", description="Station description", in="query", required=false, allowEmpty=false),
-     *      @RequestParameter(name="mode", type="int", description="Station mode.", in="query", required=false, allowEmpty=false)
+     * 		@RequestParameter(name="userToken", type="string", description="Token of administrator", in="query", allowEmpty=false),
+     *      @RequestParameter(name="currentEmail", type="string", description="Email of user to be edited", allowEmpty=false),
+     *      @RequestParameter(name="email", type="string", description="", in="query", required=false, allowEmpty=false),
+     *      @RequestParameter(name="firstName", type="string", description="", in="query", required=false, allowEmpty=false),
+     *      @RequestParameter(name="surName", type="string", description="", in="query", required=false, allowEmpty=false),
+     *      @RequestParameter(name="permission", type="int", description="Permission from 1 to 3", in="query", required=false, allowEmpty=false),
+     *      @RequestParameter(name="lastLogin", type="datetime", description="DateTime of last login", in="query", required=false, allowEmpty=false),
+     *      @RequestParameter(name="pin", type="string", description="PIN code for stations", in="query", required=false, allowEmpty=false),
+     *      @RequestParameter(name="password", type="string", description="Password in RAW format. Hash will be done automatically.", in="query", required=false, allowEmpty=false),
+     *      @RequestParameter(name="present", type="int", description="Represent if user is currently in system (building, ...). False not present, True present.", in="query", required=false, allowEmpty=true),
+     *      @RequestParameter(name="token", type="string", description="New user token", in="query", required=false, allowEmpty=false),
+     *      @RequestParameter(name="registration", type="int", description="False disabled account, True activated account", in="query", required=false, allowEmpty=true)
      * })
      * @Responses({
      *     @Response(code="200", description="Success"),
@@ -117,22 +124,45 @@ final class UserController extends BaseV1Controller
     {
         $this->checkUserPermission($request, Permissions::ADMIN);
 
-        $station = $this->orm->stations->getBy(["apiToken" => $request->getParameter("apiToken")]);
+        /** @var User $row */
+        $row = $this->orm->users->getBy(["email" => $request->getParameter("currentEmail")]);
 
-        if (!$station) {
-            throw new ClientErrorException("Station not found!", 400);
+        if (!$row) {
+            throw new ClientErrorException("User not found!", 400);
         }
 
         $params = $request->getParameters();
         unset($params["userToken"]);
+        unset($params["currentEmail"]);
+
 
         $params = $this->removeNullParams($params);
 
-        if (isset($params["mode"]) && ($params["mode"] < 0 || $params["mode"] > 1)) {
-            throw new ClientErrorException("Invalid station mode! Valid values are 0 or 1.", 400);
+        if (isset($params["permission"]) && ($params["permission"] < 1 || $params["permission"] > 3)) {
+            throw new ClientErrorException("Invalid user permission! Valid values are 1, 2 or 3.", 400);
         }
 
-        $this->orm->stations->updateBy(["apiToken" => $request->getParameter("apiToken")], $params);
+        if (isset($params["pin"]) && (strlen($params["pin"]) != 4 || !is_numeric($params["pin"]))) {
+            throw new ClientErrorException("Invalid PIN code! Value must be exactly 4 digits.", 400);
+        }
+
+        if (isset($params["token"]) && strlen($params["token"]) != 16) {
+            throw new ClientErrorException("Invalid new token! Value must be exactly 16 characters.", 400);
+        }
+
+        if (isset($params["password"])) {
+            $params["password"] = password_hash($params["password"], PASSWORD_BCRYPT);
+        }
+
+        if (isset($params["registration"]) && ($params["registration"] < 0 || $params["registration"] > 1)) {
+            throw new ClientErrorException("Invalid user registration value! Valid values are 0 or 1.", 400);
+        }
+
+        if (isset($params["present"]) && ($params["present"] < 0 || $params["present"] > 1)) {
+            throw new ClientErrorException("Invalid user present value! Valid values are 0 or 1.", 400);
+        }
+
+        $this->orm->users->updateBy(["email" => $request->getParameter("currentEmail")], $params);
 
         return $response->writeJsonBody(["status" => "success"]);
     }
@@ -140,11 +170,11 @@ final class UserController extends BaseV1Controller
     /**
      * Delete station.
      * Admin user token required.
-     * @Path("/")
+     * @Path("/{email}")
      * @Method("DELETE")
      * @RequestParameters({
      * 		@RequestParameter(name="userToken", type="string", description="User token", in="query", allowEmpty=false),
-     *      @RequestParameter(name="apiToken", type="string", description="Station token", in="query", allowEmpty=false),
+     *      @RequestParameter(name="email", type="string", description="Email of user to delete"),
      * })
      * @Responses({
      *     @Response(code="200", description="Success"),
@@ -159,26 +189,28 @@ final class UserController extends BaseV1Controller
     {
         $this->checkUserPermission($request, Permissions::ADMIN);
 
-        $station = $this->orm->stations->getBy(["apiToken" => $request->getParameter("apiToken")]);
+        $row = $this->orm->users->getBy(["email" => $request->getParameter("email")]);
 
-        if (!$station) {
-            throw new ClientErrorException("Station not found!", 400);
+        if (!$row) {
+            return $response->writeJsonBody(["status" => "success"]);
         }
 
-        $this->orm->stations->deleteBy(["apiToken" => $request->getParameter("apiToken")]);
+        $this->orm->users->deleteBy(["email" => $request->getParameter("email")]);
 
         return $response->writeJsonBody(["status" => "success"]);
     }
 
     /**
-     * Create new station. Admin user token required.
+     * Registration of new user. Send email implicitly.
+     * Admin user token is NOT required!
      * @Path("/")
      * @Method("POST")
      * @RequestParameters({
-     * 		@RequestParameter(name="userToken", type="string", description="User token", in="query", allowEmpty=false),
-     *      @RequestParameter(name="name", type="string", description="Station name", in="query",allowEmpty=false, required=true),
-     *      @RequestParameter(name="description", type="string", description="Station description", in="query", required=false, allowEmpty=false),
-     *      @RequestParameter(name="mode", type="int", description="Station mode.", in="query", required=false, allowEmpty=false)
+     *      @RequestParameter(name="email", type="string", description="", in="query", allowEmpty=false),
+     *      @RequestParameter(name="firstName", type="string", description="", in="query", allowEmpty=false),
+     *      @RequestParameter(name="surName", type="string", description="", in="query", allowEmpty=false),
+     *      @RequestParameter(name="pin", type="string", description="PIN code for stations", in="query", required=false, allowEmpty=false),
+     *      @RequestParameter(name="password", type="string", description="Password in RAW format. Hash will be done automatically.", in="query", allowEmpty=false),
      * })
      * @Responses({
      *     @Response(code="200", description="Success"),
@@ -193,33 +225,27 @@ final class UserController extends BaseV1Controller
     public function create(ApiRequest $request, ApiResponse $response): ApiResponse
     {
 
-        $this->checkUserPermission($request, Permissions::ADMIN);
-
-        $station = new Station();
-        $station->name = $request->getParameter("name");
-        try{
-            $station->description = $request->getParameter("description");
-        }catch (Exception $e){
-            $station->description="";
+        if ($this->orm->users->getBy(["email" => $request->getParameter("email")])) {
+            throw new ClientErrorException("User already exists!", 400);
         }
 
-        try{
-            $mode = $request->getParameter("mode");
-        }catch (Exception $e){
-            $mode = 0;
-        }
+        $newUser = new User();
+        $newUser->firstName = $request->getParameter("firstName");
+        $newUser->email = $request->getParameter("email");
+        $newUser->surName = $request->getParameter("surName");
+        $newUser->registration = 0;
+        $newUser->registrationDate = new Nette\Utils\DateTime();
+        $newUser->password = password_hash($request->getParameter("password"), PASSWORD_BCRYPT);
+        $newUser->permission = Permissions::REGISTERED;
+        $newUser->lastLogin = new DateTime();
 
-        if (!($mode == 0 || $mode == 1)) {
-            throw new ClientErrorException("Invalid station mode! Valid values are 0 or 1.", 400);
-        }
+        $this->orm->users->persistAndFlush($newUser);
 
-        $station->mode = $mode;
-        $station->lastUpdate = new DateTime();
-        $station->apiToken=Nette\Utils\Random::generate(16);
+        $this->emailService->sendEmail($newUser->email,
+            "Potvrzení registrace",
+            "Dobrý den,\nVaše registrace byla přijata ke schválení.\nJakmile bude schválena, budeme Vás informovat emailem.\n\nDocházkový systém");
 
-        $this->orm->stations->persistAndFlush($station);
-
-        return $response->writeJsonBody(["status" => "success","apiToken"=>$station->apiToken]);
+        return $response->writeJsonBody(["status" => "success"]);
     }
 
 }

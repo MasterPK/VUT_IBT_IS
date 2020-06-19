@@ -2,6 +2,7 @@
 
 namespace App\MainModule\CorePresenters;
 
+use App\Models\EmailService;
 use App\Models\Orm\Orm;
 use Nette;
 use Contributte;

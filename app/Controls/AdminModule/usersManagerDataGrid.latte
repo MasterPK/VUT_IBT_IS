@@ -7,14 +7,11 @@
 
 {define col-registration}
     <td class="grid-col-registration">
-        {switch $cell}
-            {case 0}
-            {_messages.main.global.noB}
-            {case 1}
-            {_messages.main.global.yesB}
-            {default}
-            {_messages.main.global.none}
-        {/switch}
+        {if $cell==0}
+            {_all.noB}
+        {else}
+            {_all.yesB}
+        {/if}
     </td>
 {/define}
 
