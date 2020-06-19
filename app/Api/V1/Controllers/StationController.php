@@ -242,7 +242,7 @@ final class StationController extends BaseV1Controller
      * @Method("GET")
      * @RequestParameters({
      *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
-     *     @RequestParameter(name="id", type="int", description="ID of shift", in="query"),
+     *     @RequestParameter(name="id", type="int", description="ID of station", in="query"),
      * })
      * @Responses({
      *     @Response(code="200", description="Success"),
