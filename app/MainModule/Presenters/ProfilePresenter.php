@@ -22,7 +22,6 @@ final class ProfilePresenter extends MainPresenter
     public function startup()
     {
         parent::startup();
-        $this->checkPermission(self::EDIT);
     }
 
     public function beforeRender()

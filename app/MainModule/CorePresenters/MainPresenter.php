@@ -62,71 +62,6 @@ class MainPresenter extends BasePresenter
         }
 
         $this->user = $this->orm->getRepositoryByName("users")->getById($this->getUser()->getId());
-        $this->setUpPermissions();
-    }
-
-    /**
-     * Set up static roles and permission ACL list.
-     * You need to manually create resources and
-     * @deprecated
-     */
-    private function setUpPermissions(): void
-    {
-
-        $acl = new Permission;
-
-        // Roles
-        $acl->addRole('guest');
-        $acl->addRole('registered', 'guest');
-        $acl->addRole('manager', 'registered');
-        $acl->addRole('admin', 'manager');
-
-        // Homepage
-        $acl->addResource('Main:Homepage');
-        $acl->addResource('Main:Profile');
-        $acl->addResource('Main:User');
-        $acl->addResource('Main:Manager');
-        $acl->addResource('Main:Admin');
-
-        $acl->allow('registered', 'Main:Homepage', self::VIEW);
-        $acl->allow('registered', 'Main:Profile', self::EDIT);
-        $acl->allow('registered', 'Main:User', self::EXTENDED_VIEW);
-        $acl->allow('manager', 'Main:Manager', self::EDIT);
-
-        $acl->allow("admin");
-
-        $this->acl = $acl;
-    }
-
-    /**
-     * Check if current user has specific permissions to this resource.
-     * @param string $resource Resource to be checked. If not specified then is used name of current presenter as resource.
-     * @param int $permission Permission to be checked. Always use constants!
-     * @return bool True if user has access.
-     * @throws Nette\InvalidArgumentException If $permission is outside of specific bounds.
-     * @throws Nette\Security\AuthenticationException If user has no access to resource.
-     * @throws Exception When fatal error.
-     * @deprecated Roles are deprecated. Use integer permissions function isAllowed.
-     */
-    protected function checkPermission(int $permission, string $resource = null): bool
-    {
-        if ($permission < self::MIN_PERM || $permission > self::MAX_PERM) {
-            throw new Nette\InvalidArgumentException("Specified permission is not valid. Check constants.");
-        }
-
-        if ($resource == null) {
-            $resource = $this->getName();
-        }
-        foreach ($this->getUser()->getRoles() as $role) {
-            try {
-                if ($this->acl->isAllowed($role, $resource, $permission)) {
-                    return true;
-                }
-            } catch (Exception $ignored) {
-                throw new Exception("Resource not found!");
-            }
-        }
-        throw new Nette\Security\AuthenticationException();
     }
 
     /**
@@ -140,7 +75,7 @@ class MainPresenter extends BasePresenter
         if ($this->user->permission >= $requiredPermission) {
             return true;
         } else {
-            if ($redirect) {
+            if ($redirect===true) {
                 $this->redirect(":Main:Homepage:default");
             } else {
                 return false;
@@ -165,7 +100,7 @@ class MainPresenter extends BasePresenter
         $this->template->permission = $this->user->permission;
 
         // Set notifications
-        if ($this->isAllowed(Permissions::MANAGER)) {
+        if ($this->isAllowed(Permissions::MANAGER ,false)) {
             $this->template->notifications = $this->orm->notifications->findAll()->orderBy("id", \Nextras\Orm\Collection\Collection::DESC)->fetchAll();
             $this->template->unreadNotificationsCount = $this->orm->notifications->findBy(["read"=>0])->countStored();
         }

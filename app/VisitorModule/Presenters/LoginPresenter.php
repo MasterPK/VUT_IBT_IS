@@ -61,7 +61,7 @@ final class LoginPresenter extends App\MainModule\CorePresenters\BasePresenter
             $user->login($values->email, $values->password);
 
             if ($values->permanent == true) {
-                $this->user->setExpiration("14 days");
+                $this->user->setExpiration("14 days",Nette\Security\IUserStorage::CLEAR_IDENTITY);
             } else {
                 $this->user->setExpiration('30 minutes',Nette\Security\IUserStorage::CLEAR_IDENTITY);
             }
