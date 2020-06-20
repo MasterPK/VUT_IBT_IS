@@ -316,6 +316,7 @@ final class ShiftController extends BaseV1Controller
     {
         $this->checkUserPermission($request, Permissions::ADMIN);
 
+        /** @var ShiftUser $newShiftUser */
         $newShiftUser = new ShiftUser();
 
         $user = $this->orm->users->getByEmail($request->getParameter("email"));
@@ -334,6 +335,8 @@ final class ShiftController extends BaseV1Controller
         if ($existing) {
             throw new ClientErrorException("User is already assigned to shift!", 400);
         }
+        $newShiftUser->arrival=null;
+        $newShiftUser->departure=null;
 
         $this->orm->shiftsUsers->persistAndFlush($newShiftUser);
 

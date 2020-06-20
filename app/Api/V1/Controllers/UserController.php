@@ -61,6 +61,37 @@ final class UserController extends BaseV1Controller
     }
 
     /**
+     * Get users that are present.
+     * Admin user token required.
+     * @Path("/present")
+     * @Method("GET")
+     * @RequestParameters({
+     *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
+     * })
+     * @Responses({
+     *     @Response(code="200", description="Success"),
+     *     @Response(code="400", description="Bad request"),
+     *     @Response(code="403", description="Forbidden")
+     * })
+     * @param ApiRequest $request
+     * @param ApiResponse $response
+     * @return ApiResponse
+     */
+    public function getPresent(ApiRequest $request, ApiResponse $response): ApiResponse
+    {
+        $this->checkUserPermission($request, Permissions::ADMIN);
+        $rows = $this->orm->users->findBy(["present" => 1])->fetchAll();
+
+        $result = [];
+        foreach ($rows as $row) {
+            $tmpArray = $row->toArray();
+            array_push($result, $tmpArray["email"]);
+        }
+
+        return $response->writeJsonBody($result);
+    }
+
+    /**
      * Get all users.
      * Admin user token required.
      * @Path("/all")

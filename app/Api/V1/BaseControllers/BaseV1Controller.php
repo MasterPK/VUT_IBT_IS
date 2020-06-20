@@ -16,7 +16,7 @@ use Exception;
 use Nette\Database\Context;
 
 /**
- * @GroupPath("/v1")
+ * Helper class that inject needed objects.
  */
 abstract class BaseV1Controller extends BaseController
 {

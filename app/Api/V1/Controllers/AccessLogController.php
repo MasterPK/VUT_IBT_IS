@@ -24,10 +24,7 @@ use Nette\Utils\Paginator;
 use Tracy\Debugger;
 
 /**
- * Legacy API.
- * It is hybrid system between OpenApi and LegacyApi.
- * Adds some new functionality but it is backwards compatible with old Api.
- * @Tag("Legacy station")
+ * @Tag("Logs")
  * @ControllerPath("/log")
  */
 class AccessLogController extends BaseV1Controller
@@ -120,5 +117,36 @@ class AccessLogController extends BaseV1Controller
         }
 
         return $response->writeJsonBody($result);
+    }
+
+    /**
+     * Remove RFID from new RFIDs list.
+     * Admin user token required.
+     * @Path("/newRFIDs")
+     * @Method("DELETE")
+     * @RequestParameters({
+     *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
+     *     @RequestParameter(name="rfid", type="string", description="Rfid to be deleted.", in="query"),
+     * })
+     * @Responses({
+     *     @Response(code="200", description="Success"),
+     *     @Response(code="400", description="Bad request")
+     * })
+     * @param ApiRequest $request
+     * @param ApiResponse $response
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function deleteNewRfid(ApiRequest $request, ApiResponse $response): ApiResponse
+    {
+        $this->checkUserPermission($request, Permissions::ADMIN);
+
+        $newRfid= $this->orm->newRfids->getBy(["rfid"=>$request->getParameter("rfid")]);
+
+        if($newRfid)
+        {
+            $this->orm->newRfids->delete($newRfid->id);
+        }
+        return $response->writeJsonBody(["status" => "success"]);
     }
 }
