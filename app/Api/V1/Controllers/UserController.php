@@ -17,6 +17,8 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
+use App\Models\Orm\ShiftsUsers\ShiftUser;
+use App\Models\Orm\StationsUsers\StationsUsers;
 use App\Models\Orm\Users\User;
 use Nette;
 use App\Security\Permissions;
@@ -277,6 +279,95 @@ final class UserController extends BaseV1Controller
             "Dobrý den,\nVaše registrace byla přijata ke schválení.\nJakmile bude schválena, budeme Vás informovat emailem.\n\nDocházkový systém");
 
         return $response->writeJsonBody(["status" => "success"]);
+    }
+
+    /**
+     * Get user shifts.
+     * Admin user token required.
+     * @Path("/shifts")
+     * @Method("GET")
+     * @RequestParameters({
+     *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
+     *     @RequestParameter(name="email", type="string", description="Email of user to find", in="query"),
+     * })
+     * @Responses({
+     *     @Response(code="200", description="Success"),
+     *     @Response(code="400", description="Bad request"),
+     *     @Response(code="403", description="Forbidden")
+     * })
+     * @param ApiRequest $request
+     * @param ApiResponse $response
+     * @return ApiResponse
+     */
+    public function getShifts(ApiRequest $request, ApiResponse $response): ApiResponse
+    {
+        $this->checkUserPermission($request, Permissions::ADMIN);
+
+        /** @var User $user */
+        $user=$this->orm->users->getBy(["email"=>$request->getParameter("email")]);
+
+        if(!$user)
+        {
+            throw new ClientErrorException("User not found!",400);
+        }
+
+        /** @var ShiftUser[] $rows */
+        $rows = $this->orm->shiftsUsers->findBy(["idUser" => $user])->fetchAll();
+
+        $shifts=[];
+        foreach ($rows as $row){
+            $tmp = $row->idShift->toArray();
+            $tmp["arrival"]=$row->arrival;
+            $tmp["departure"]=$row->departure;
+            unset($tmp["users"]);
+            array_push($shifts,$tmp);
+        }
+
+        return $response->writeJsonBody($shifts);
+    }
+
+    /**
+     * Get user stations.
+     * Admin user token required.
+     * @Path("/stations")
+     * @Method("GET")
+     * @RequestParameters({
+     *     @RequestParameter(name="userToken", type="string", description="User API token", in="query"),
+     *     @RequestParameter(name="email", type="string", description="Email of user to find", in="query"),
+     * })
+     * @Responses({
+     *     @Response(code="200", description="Success"),
+     *     @Response(code="400", description="Bad request"),
+     *     @Response(code="403", description="Forbidden")
+     * })
+     * @param ApiRequest $request
+     * @param ApiResponse $response
+     * @return ApiResponse
+     */
+    public function getStations(ApiRequest $request, ApiResponse $response): ApiResponse
+    {
+        $this->checkUserPermission($request, Permissions::ADMIN);
+
+        /** @var User $user */
+        $user=$this->orm->users->getBy(["email"=>$request->getParameter("email")]);
+
+        if(!$user)
+        {
+            throw new ClientErrorException("User not found!",400);
+        }
+
+        /** @var StationsUsers[] $rows */
+        $rows = $this->orm->stationsUsers->findBy(["idUser" => $user])->fetchAll();
+
+        $stations=[];
+        foreach ($rows as $row){
+            $tmp = $row->idStation->toArray();
+            $tmp["perm"]=$row->perm;
+            unset($tmp["users"]);
+            array_push($stations,$tmp);
+        }
+
+        return $response->writeJsonBody($stations);
     }
 
 }
