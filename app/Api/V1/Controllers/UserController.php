@@ -304,23 +304,22 @@ final class UserController extends BaseV1Controller
         $this->checkUserPermission($request, Permissions::ADMIN);
 
         /** @var User $user */
-        $user=$this->orm->users->getBy(["email"=>$request->getParameter("email")]);
+        $user = $this->orm->users->getBy(["email" => $request->getParameter("email")]);
 
-        if(!$user)
-        {
-            throw new ClientErrorException("User not found!",400);
+        if (!$user) {
+            throw new ClientErrorException("User not found!", 400);
         }
 
         /** @var ShiftUser[] $rows */
         $rows = $this->orm->shiftsUsers->findBy(["idUser" => $user])->fetchAll();
 
-        $shifts=[];
-        foreach ($rows as $row){
+        $shifts = [];
+        foreach ($rows as $row) {
             $tmp = $row->idShift->toArray();
-            $tmp["arrival"]=$row->arrival;
-            $tmp["departure"]=$row->departure;
+            $tmp["arrival"] = $row->arrival;
+            $tmp["departure"] = $row->departure;
             unset($tmp["users"]);
-            array_push($shifts,$tmp);
+            array_push($shifts, $tmp);
         }
 
         return $response->writeJsonBody($shifts);
@@ -349,22 +348,21 @@ final class UserController extends BaseV1Controller
         $this->checkUserPermission($request, Permissions::ADMIN);
 
         /** @var User $user */
-        $user=$this->orm->users->getBy(["email"=>$request->getParameter("email")]);
+        $user = $this->orm->users->getBy(["email" => $request->getParameter("email")]);
 
-        if(!$user)
-        {
-            throw new ClientErrorException("User not found!",400);
+        if (!$user) {
+            throw new ClientErrorException("User not found!", 400);
         }
 
         /** @var StationsUsers[] $rows */
         $rows = $this->orm->stationsUsers->findBy(["idUser" => $user])->fetchAll();
 
-        $stations=[];
-        foreach ($rows as $row){
+        $stations = [];
+        foreach ($rows as $row) {
             $tmp = $row->idStation->toArray();
-            $tmp["perm"]=$row->perm;
+            $tmp["perm"] = $row->perm;
             unset($tmp["users"]);
-            array_push($stations,$tmp);
+            array_push($stations, $tmp);
         }
 
         return $response->writeJsonBody($stations);
