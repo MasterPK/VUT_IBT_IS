@@ -265,6 +265,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
 
             $settings = $this->orm->settings->findAll()->fetchPairs("key", "value");
 
+            // Station must be in mode Attendance only
             if ($station->mode == 1) {
                 foreach ($userShifts as $item) {
                     $now = new DateTime();
@@ -324,7 +325,13 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
 
                     }
                 }
-                $user->present = !$user->present;
+                if($user->present == 1)
+                {
+                    $user->present=0;
+                }else
+                {
+                    $user->present=1;
+                }
             }
             $this->orm->users->persistAndFlush($user);
         }

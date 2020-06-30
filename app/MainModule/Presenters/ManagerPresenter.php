@@ -19,6 +19,7 @@ use Nette;
 use Nextras\Datagrid\Datagrid;
 use Nextras\Orm\Collection\Collection;
 use Nextras\Orm\Relationships\ManyHasMany;
+use Tracy\Debugger;
 use Vodacek\Forms\Controls\DateInput;
 
 class ManagerPresenter extends MainPresenter
@@ -638,8 +639,10 @@ class ManagerPresenter extends MainPresenter
         }
         if (!$row) {
             $this->showDangerToastAndRefresh();
+        } else {
+            $this->redirect("this");
         }
-        $this->redirect("userStationsPerms");
+
 
     }
 
@@ -695,8 +698,6 @@ class ManagerPresenter extends MainPresenter
         } else {
             $this->redirect("userStationsPerms");
         }
-
-
     }
 
     public function handleRemoveUserRfid()
@@ -991,8 +992,6 @@ class ManagerPresenter extends MainPresenter
         $form = new ExtendedForm();
 
         $defaultTime = new Nette\Utils\DateTime();
-        $defaultTime = $defaultTime->format("Y-m-d h");
-        $defaultTime = Nette\Utils\DateTime::createFromFormat("Y-m-d h", $defaultTime);
 
         $form->addDate('start')
             ->setRequired()
@@ -1031,6 +1030,8 @@ class ManagerPresenter extends MainPresenter
     public function newShiftFormValidate(Form $form)
     {
         $values = $form->getValues();
+
+        Debugger::barDump($values);
 
         if ($values->start >= $values->end) {
             $form->addError("", false);

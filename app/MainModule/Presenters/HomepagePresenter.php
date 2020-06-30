@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\MainModule\Presenters;
 
 use App\MainModule\CorePresenters\MainPresenter;
+use App\Models\Orm\Shifts\Shift;
 use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
 use App\Security\Permissions;
@@ -148,7 +149,12 @@ final class HomepagePresenter extends MainPresenter
         $this->template->prevWeekChange = $this->template->prevWeekChangePercent >= 0 ? true : false;
 
         // Table with next shifts
-        $this->template->myNextShifts = $this->orm->shiftsUsers->findBy(["idUser" => $this->user, "arrival" => null])->orderBy("arrival", Collection::ASC)->limitBy(5)->fetchAll();
+        $this->template->myNextShifts = $this->orm->shiftsUsers->findBy(["idUser" => $this->user, "arrival" => null])->limitBy(5)->fetchAll();
+
+        usort($this->template->myNextShifts, function ($a, $b)
+        {
+            return $a->idShift->start>=$b->idShift->start;
+        });
 
         // Next data print only when manager or higher role
         if($this->isAllowed(Permissions::MANAGER,false)) {
