@@ -692,7 +692,7 @@ class ManagerPresenter extends MainPresenter
         if (!$row) {
             $this->showDangerToastAndRefresh();
         }else{
-            $this->redirect("userStationPerms");
+            $this->redirect("userStationsPerms");
         }
 
 

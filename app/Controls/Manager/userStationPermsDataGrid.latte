@@ -31,7 +31,7 @@
     {define row-actions}
         {if $user->permission == 3 || $row["perm"]<=2}
             <a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-sm m-1">{_all.edit}</a>
-            <a href="{plink deleteUserStationPerm! $primary}" data-history="false" class="btn btn-primary btn-sm m-1">{_all.delete}</a>
+            <a href="{plink deleteUserStationPerm! $primary}" data-history="false" class="btn btn-danger btn-sm m-1">{_all.delete}</a>
         {/if}
     {/define}
 
