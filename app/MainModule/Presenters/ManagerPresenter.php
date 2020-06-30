@@ -18,6 +18,7 @@ use Nette\Application\UI\Form;
 use Nette;
 use Nextras\Datagrid\Datagrid;
 use Nextras\Orm\Collection\Collection;
+use Nextras\Orm\Relationships\ManyHasMany;
 use Vodacek\Forms\Controls\DateInput;
 
 class ManagerPresenter extends MainPresenter
@@ -529,7 +530,7 @@ class ManagerPresenter extends MainPresenter
         foreach ($users as $user) {
             $foundStation = false;
             foreach ($user->stations as $station) {
-                if ($station == $selectedStation) {
+                if ($station->id == $selectedStation->id) {
                     $foundStation = true;
                     break;
                 }
@@ -691,10 +692,9 @@ class ManagerPresenter extends MainPresenter
         }
         if (!$row) {
             $this->showDangerToastAndRefresh();
-        }else{
+        } else {
             $this->redirect("userStationsPerms");
         }
-
 
 
     }
@@ -992,7 +992,7 @@ class ManagerPresenter extends MainPresenter
 
         $defaultTime = new Nette\Utils\DateTime();
         $defaultTime = $defaultTime->format("Y-m-d h");
-        $defaultTime = Nette\Utils\DateTime::createFromFormat("Y-m-d h",$defaultTime);
+        $defaultTime = Nette\Utils\DateTime::createFromFormat("Y-m-d h", $defaultTime);
 
         $form->addDate('start')
             ->setRequired()
