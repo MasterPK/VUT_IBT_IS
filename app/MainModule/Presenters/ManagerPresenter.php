@@ -6,7 +6,6 @@ namespace App\MainModule\Presenters;
 
 use App\Controls\ExtendedForm;
 use App\MainModule\CorePresenters\MainPresenter;
-use App\Models\Orm\LikeFilterFunction;
 use App\Models\Orm\NewRfid\NewRfid;
 use App\Models\Orm\Shifts\Shift;
 use App\Models\Orm\ShiftsUsers\ShiftUser;
@@ -14,13 +13,11 @@ use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
 use App\Models\Orm\Users\User;
 use App\Security\Permissions;
-use DateTimeImmutable;
 use Exception;
 use Nette\Application\UI\Form;
 use Nette;
 use Nextras\Datagrid\Datagrid;
 use Nextras\Orm\Collection\Collection;
-use Nextras\Orm\Collection\ICollection;
 use Vodacek\Forms\Controls\DateInput;
 
 class ManagerPresenter extends MainPresenter
@@ -694,7 +691,10 @@ class ManagerPresenter extends MainPresenter
         }
         if (!$row) {
             $this->showDangerToastAndRefresh();
+        }else{
+            $this->redirect("userStationPerms");
         }
+
 
 
     }
@@ -1232,7 +1232,7 @@ class ManagerPresenter extends MainPresenter
         }
         $this->orm->shiftsUsers->flush();
 
-        $this->showSuccessToastAndRefresh();
+        $this->redirect("this");
     }
 
     public function renderShiftsManager()
@@ -1262,7 +1262,7 @@ class ManagerPresenter extends MainPresenter
         $grid->setDataSourceCallback(function ($filter, $order, $paginator) {
 
             return $this->dataGridFactory->createDataSourceNotORM("shifts_x_users",
-                "id_shift.start,id_shift.end,arrival,departure", $filter, $order, [], ["id_user" => $this->getParameter("idUser")], $paginator, ["start", "ASC"]);
+                "shifts_x_users.id,id_shift.start,id_shift.end,arrival,departure", $filter, $order, [], ["id_user" => $this->getParameter("idUser")], $paginator, ["start", "ASC"]);
         });
 
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/Homepage/myShiftsDataGrid.latte');

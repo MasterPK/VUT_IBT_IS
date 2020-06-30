@@ -20,4 +20,11 @@ class ExtendedForm extends Form
             ->addCondition(Form::FILLED)
             ->addRule(Form::INTEGER);
     }
+
+    public function addDateTimeRange($name, $type)
+    {
+        $this->addComponent(new ExtendedFormContainer(),$name);
+        $this[$name]->addDate('from',null,$type)->setHtmlAttribute("class", "form-control");
+        $this[$name]->addDate('to',null,$type)->setHtmlAttribute("class", "form-control");
+    }
 }

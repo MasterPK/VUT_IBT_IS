@@ -30,7 +30,7 @@
                         </p>
                         <p class="ml-auto d-flex flex-column text-right">
                     <span class="{if $prevWeekChange}text-success{else}text-danger{/if}">
-                      <i class="fas fa-arrow-up"></i> {$prevWeekChangePercent}%
+                      <i class="fas {if $prevWeekChangePercent>=0}fa-arrow-up{else}fa-arrow-down{/if}"></i> {$prevWeekChangePercent}%
                     </span>
                             <span class="text-muted">{_all.sinceLastWeek}</span>
                         </p>

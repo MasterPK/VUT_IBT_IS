@@ -1,9 +1,9 @@
 {
 	"name": "nette/web-project",
-	"description": "Nette: Standard Web Project",
+	"description": "BP:Petr Křehlík",
 	"keywords": ["nette"],
 	"type": "project",
-	"license": ["MIT", "BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+	"license": ["MIT"],
 	"require": {
 		"php": ">=7.3",
 		"nette/application": "^3.0",

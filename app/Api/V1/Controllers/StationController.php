@@ -24,7 +24,7 @@ use Nette;
 use App\Models\Orm\Station\Station;
 use App\Security\Permissions;
 use Exception;
-use App\Api\V1\BaseControllers\BaseV1Controller;
+use App\Api\V1\BaseControllers\MainController;
 use Nette\Utils\DateTime;
 use Tracy\Debugger;
 
@@ -32,7 +32,7 @@ use Tracy\Debugger;
  * @Tag("Station")
  * @ControllerPath("/station")
  */
-final class StationController extends BaseV1Controller
+final class StationController extends MainController
 {
     /**
      * Check param stationToken

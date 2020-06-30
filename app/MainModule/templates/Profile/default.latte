@@ -27,7 +27,13 @@
 
                     <h3 class="profile-username text-center">{$userName}</h3>
 
-                    <p class="text-muted text-center">{$roles|noescape}</p>
+                    <p class="text-muted text-center">
+                        {switch $permission}
+                            {case 1}{_messages.main.roles.registered}
+                            {case 2}{_messages.main.roles.manager}
+                            {case 3}{_messages.main.roles.admin}
+                        {/switch}
+                    </p>
 
                 </div>
                 <!-- /.card-body -->
@@ -39,11 +45,11 @@
             <div class="card">
                 <div class="card-header p-2">
                     <ul class="nav nav-pills">
-                        <li class="nav-item "><a
-                                    class="nav-link {ifset $tab}{if $tab=="timeline"}active{/if}{else}active{/ifset}" n:href="tab! timeline">{_messages.main.profile.timeline}</a>
-                        </li>
+                        <!--<li class="nav-item "><a
+                                    class="nav-link {ifset $tab}{if $tab=="timeline"}active{/if}{/ifset}" n:href="tab! timeline">{_messages.main.profile.timeline}</a>
+                        </li>-->
                         <li class="nav-item"><a
-                                    class="nav-link {ifset $tab}{if $tab=="settings"}active{/if}{/ifset}" n:href="tab! settings">{_messages.main.profile.settings}</a>
+                                    class="nav-link {ifset $tab}{if $tab=="settings"}active{/if}{else}active{/ifset}" n:href="tab! settings">{_messages.main.profile.settings}</a>
                         </li>
                     </ul>
                 </div><!-- /.card-header -->
@@ -57,7 +63,7 @@
                                 {include settings}
                             {/if}
                         {else}
-                            {include timeline}
+                            {include settings}
                         {/ifset}
                     </div>
                     <!-- /.tab-content -->

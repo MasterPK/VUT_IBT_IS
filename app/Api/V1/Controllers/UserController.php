@@ -23,14 +23,14 @@ use App\Models\Orm\Users\User;
 use Nette;
 use App\Security\Permissions;
 use Exception;
-use App\Api\V1\BaseControllers\BaseV1Controller;
+use App\Api\V1\BaseControllers\MainController;
 use Nette\Utils\DateTime;
 
 /**
  * @Tag("User")
  * @ControllerPath("/user")
  */
-final class UserController extends BaseV1Controller
+final class UserController extends MainController
 {
 
 

@@ -17,7 +17,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 use Apitte\Core\Exception\Api\ClientErrorException;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\Api\V1\BaseControllers\BaseV1Controller;
+use App\Api\V1\BaseControllers\MainController;
 use App\Models\Orm\Settings\Setting;
 use App\Models\Orm\StationsUsers\StationsUsers;
 use App\Models\Orm\Users\User;
@@ -27,7 +27,7 @@ use App\Security\Permissions;
  * @Tag("Setting")
  * @ControllerPath("/setting")
  */
-final class SettingsController extends BaseV1Controller
+final class SettingsController extends MainController
 {
     /**
      * Get all settings.

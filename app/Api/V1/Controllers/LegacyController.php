@@ -20,7 +20,7 @@ use Apitte\Core\UI\Controller\IController;
 use App;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
-use App\Api\V1\BaseControllers\BaseV1Controller;
+use App\Api\V1\BaseControllers\MainController;
 use Exception;
 use Nette\Database\Context;
 use Nette\Mail\Mailer;

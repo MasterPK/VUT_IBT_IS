@@ -25,5 +25,4 @@ class AccessLog extends Entity
 
     const ARRIVAL_FALSE = 0;
     const ARRIVAL_TRUE = 1;
-
 }

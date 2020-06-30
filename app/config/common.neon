@@ -43,7 +43,7 @@ translation:
 
 api:
     debug: true
-    catchException: false
+    catchException: true
     plugins:
         Apitte\Middlewares\DI\MiddlewaresPlugin:
         Apitte\Core\DI\Plugin\CoreDecoratorPlugin:

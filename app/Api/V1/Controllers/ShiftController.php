@@ -21,13 +21,13 @@ use App\Models\Orm\Shifts\Shift;
 use App\Models\Orm\ShiftsUsers\ShiftUser;
 use App\Security\Permissions;
 use Exception;
-use App\Api\V1\BaseControllers\BaseV1Controller;
+use App\Api\V1\BaseControllers\MainController;
 
 /**
  * @Tag("Shift")
  * @ControllerPath("/shift")
  */
-final class ShiftController extends BaseV1Controller
+final class ShiftController extends MainController
 {
     /**
      * Get data about shift specified by ID.

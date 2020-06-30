@@ -7,7 +7,7 @@ namespace App\Api\V1\Controllers;
 use Apitte\Core\Http\ApiRequest;
 use Apitte\Core\Http\ApiResponse;
 use Apitte\OpenApi\ISchemaBuilder;
-use App\Api\V1\BaseControllers\BaseV1Controller;
+use App\Api\V1\BaseControllers\MainController;
 use App\Security\Permissions;
 use Apitte\Core\Annotation\Controller\GroupPath;
 use Apitte\Core\Annotation\Controller\Path;
@@ -21,7 +21,7 @@ use Apitte\Core\Annotation\Controller\Tag;
  * @Tag("API Core")
  * @ControllerPath("/")
  */
-final class OpenApiController extends BaseV1Controller
+final class OpenApiController extends MainController
 {
 
     /**
