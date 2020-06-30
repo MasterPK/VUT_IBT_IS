@@ -74,26 +74,14 @@ class ManagerPresenter extends MainPresenter
             ->enableSort();
 
         $grid->setDatasourceCallback(function ($filter, $order, $paginator) {
-
-            if ($this->user->permission == Permissions::ADMIN) {
-                $customFilter = ["permission<=" => 3];
-            } else {
-                $customFilter = ["permission<=" => 1];
-            }
-
             return $this->dataGridFactory->createDataSource("users", $filter, $order, ["registration"], [], $paginator);
 
         });
 
-        $grid->setPagination(10, function ($filter, $order) {
+        $grid->onRender[] = function (Datagrid $datagrid) {
+            $datagrid->template->permission = $this->template->permission;
+        };
 
-            if ($this->user->permission == Permissions::ADMIN) {
-                $customFilter = ["permission<=" => 3];
-            } else {
-                $customFilter = ["permission<=" => 1];
-            }
-            return count($this->dataGridFactory->createDataSource("users", $filter, $order, ["registration"], []));
-        });
 
         $grid->addCellsTemplate(__DIR__ . '/../../Controls/Manager/usersManagementDataGrid.latte');
 
