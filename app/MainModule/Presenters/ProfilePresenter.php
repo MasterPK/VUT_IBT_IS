@@ -68,7 +68,7 @@ final class ProfilePresenter extends MainPresenter
     public function newPasswordFormValidate(Form $form, ArrayHash $values)
     {
         try {
-            if (!($this->databaseService->checkPassword($this->getUser()->getIdentity()->data["email"], $values->oldPassword))) {
+            if (!($this->databaseService->checkPassword($this->user->email, $values->oldPassword))) {
                 $form->addError("");
                 $this->showDangerToast($this->translate("messages.main.profile.currentPasswordIncorrect"));
                 return;
@@ -86,7 +86,7 @@ final class ProfilePresenter extends MainPresenter
     public function newPasswordFormSuccess($form, ArrayHash $values)
     {
         try {
-            $this->databaseService->updatePassword($this->getUser()->getIdentity()->data["email"], $values->newPassword);
+            $this->databaseService->updatePassword($this->user->email, $values->newPassword);
             $this->showSuccessToast($this->translate("messages.main.profile.passwordChangedSuccessfully"), true);
         } catch (UserNotFoundException $e) {
             $this->showDangerToast($e->getMessage(), true);

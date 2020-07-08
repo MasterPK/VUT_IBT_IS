@@ -19,7 +19,7 @@
 
 {define row-actions}
     {if $row->permission<$permission || $permission==3}<a href="{link edit! $primary}" data-datagrid-edit class="ajax btn btn-primary btn-xs m-1">{_all.edit}</a>
-    <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-xs m-1">{_all.assignRfid}</a>
+    <a href="{plink :Main:Manager:assignRfidToUser $primary}" class="btn btn-primary btn-xs m-1">RFID</a>
     <a href="{plink :Main:Manager:userStationsPerms $primary}" class="btn btn-primary btn-xs m-1">{_all.permission}</a>{/if}
     <a href="{plink :Main:Manager:userShifts $primary}" class="btn btn-primary btn-xs m-1">{_all.shifts}</a>
 {/define}
