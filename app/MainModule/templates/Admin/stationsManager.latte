@@ -68,11 +68,12 @@
     <script>
         $("#newApiToken").click(function () {
             let generateRandomString = stringGen(16);
-            console.log(generateRandomString);
             $("[name ='apiToken']").val(generateRandomString);
             $("#frm-newStationForm-apiTokenPlaceholder").val(generateRandomString);
         });
 
+        /** Author of function: Antony, https://stackoverflow.com/questions/16106701/how-to-generate-a-random-string-of-letters-and-numbers-in-javascript
+         */
         function stringGen(len) {
             var text = "";
 

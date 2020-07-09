@@ -27,7 +27,6 @@
 		"nextras/datagrid": "^3.1",
 		"nextras/orm": "^3.1",
 		"voda/date-input": "^2.0",
-		"ublaboo/datagrid": "^6.2",
 		"apitte/core": "^0.6.0",
 		"nette/utils": "3.1.2 as 3.0.3"
 	},

@@ -414,8 +414,6 @@ return array(
     'Nittro\\Bridges\\NittroUI\\Helpers' => $vendorDir . '/nittro/nette-bridges/src/Bridges/NittroUI/Helpers.php',
     'Nittro\\Bridges\\NittroUI\\Presenter' => $vendorDir . '/nittro/nette-bridges/src/Bridges/NittroUI/Presenter.php',
     'Nittro\\Bridges\\NittroUI\\PresenterUtils' => $vendorDir . '/nittro/nette-bridges/src/Bridges/NittroUI/PresenterUtils.php',
-    'Normalizer' => $vendorDir . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
-    'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
     'Tester\\Assert' => $vendorDir . '/nette/tester/src/Framework/Assert.php',
     'Tester\\AssertException' => $vendorDir . '/nette/tester/src/Framework/AssertException.php',
     'Tester\\CodeCoverage\\Collector' => $vendorDir . '/nette/tester/src/CodeCoverage/Collector.php',
@@ -461,5 +459,4 @@ return array(
     'Tracy\\ILogger' => $vendorDir . '/tracy/tracy/src/Tracy/Logger/ILogger.php',
     'Tracy\\Logger' => $vendorDir . '/tracy/tracy/src/Tracy/Logger/Logger.php',
     'Tracy\\OutputDebugger' => $vendorDir . '/tracy/tracy/src/Tracy/OutputDebugger/OutputDebugger.php',
-    'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
 );

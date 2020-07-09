@@ -76,47 +76,46 @@
         ]
     },
     {
-        "name": "contributte/application",
-        "version": "v0.4.1",
-        "version_normalized": "0.4.1.0",
+        "name": "apitte/middlewares",
+        "version": "v0.6.0",
+        "version_normalized": "0.6.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/contributte/application.git",
-            "reference": "401975416fbc87b13acc66d17882c5941b3e303b"
+            "url": "https://github.com/apitte/middlewares.git",
+            "reference": "304c352e69d74ad0091d0f774127d566a9ba421b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/contributte/application/zipball/401975416fbc87b13acc66d17882c5941b3e303b",
-            "reference": "401975416fbc87b13acc66d17882c5941b3e303b",
+            "url": "https://api.github.com/repos/apitte/middlewares/zipball/304c352e69d74ad0091d0f774127d566a9ba421b",
+            "reference": "304c352e69d74ad0091d0f774127d566a9ba421b",
             "shasum": ""
         },
         "require": {
-            "nette/application": "^3.0.0",
+            "apitte/core": "^0.6.0",
+            "contributte/middlewares": "^0.9.0",
             "php": "^7.2"
         },
         "require-dev": {
-            "nette/http": "~2.4.8 || ~3.0.0",
+            "mockery/mockery": "^0.9.9",
             "ninjify/nunjuck": "^0.2.0",
-            "ninjify/qa": "^0.9.0",
+            "ninjify/qa": "^0.8.0",
             "phpstan/extension-installer": "^1.0",
-            "phpstan/phpstan-deprecation-rules": "^0.11.0",
-            "phpstan/phpstan-nette": "^0.11.1",
-            "phpstan/phpstan-shim": "^0.11.2",
-            "phpstan/phpstan-strict-rules": "^0.11.0",
-            "psr/http-message": "~1.0.1",
-            "tracy/tracy": "~2.6.1"
+            "phpstan/phpstan-deprecation-rules": "^0.11",
+            "phpstan/phpstan-nette": "^0.11",
+            "phpstan/phpstan-shim": "^0.11",
+            "phpstan/phpstan-strict-rules": "^0.11"
         },
-        "time": "2020-04-01T17:34:21+00:00",
+        "time": "2019-07-06T19:55:18+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "0.5.x-dev"
+                "dev-master": "0.7.x-dev"
             }
         },
         "installation-source": "dist",
         "autoload": {
             "psr-4": {
-                "Contributte\\Application\\": "src"
+                "Apitte\\Middlewares\\": "src"
             }
         },
         "notification-url": "https://packagist.org/downloads/",
@@ -129,14 +128,84 @@
                 "homepage": "https://f3l1x.io"
             }
         ],
-        "description": "Extra contrib to nette/application",
-        "homepage": "https://github.com/contributte/application",
+        "description": "Middlewares support for Apitte stack",
+        "homepage": "https://github.com/apitte/middlewares",
         "keywords": [
-            "application",
-            "component",
-            "control",
-            "nette",
-            "presenter"
+            "Relay",
+            "api",
+            "apitte",
+            "middlewares"
+        ]
+    },
+    {
+        "name": "apitte/openapi",
+        "version": "v0.6.0",
+        "version_normalized": "0.6.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/apitte/openapi.git",
+            "reference": "10956a74cbba3b5d6169c4db1b9cfe052d8a0d01"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/apitte/openapi/zipball/10956a74cbba3b5d6169c4db1b9cfe052d8a0d01",
+            "reference": "10956a74cbba3b5d6169c4db1b9cfe052d8a0d01",
+            "shasum": ""
+        },
+        "require": {
+            "apitte/core": "^0.6.0",
+            "nette/utils": "~3.0.1",
+            "php": "^7.2",
+            "tracy/tracy": "~2.6.0"
+        },
+        "require-dev": {
+            "contributte/di": "^0.4.0",
+            "ninjify/nunjuck": "^0.2.0",
+            "ninjify/qa": "^0.8.0",
+            "phpstan/extension-installer": "^1.0",
+            "phpstan/phpstan-deprecation-rules": "^0.11",
+            "phpstan/phpstan-nette": "^0.11",
+            "phpstan/phpstan-shim": "^0.11",
+            "phpstan/phpstan-strict-rules": "^0.11",
+            "symfony/yaml": "^4.2"
+        },
+        "suggest": {
+            "symfony/yaml": "Allows yaml definition"
+        },
+        "time": "2019-07-06T19:55:07+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.7.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Apitte\\OpenApi\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Milan Felix Šulc",
+                "homepage": "https://f3l1x.io"
+            },
+            {
+                "name": "Josef Benjač",
+                "homepage": "https://josefbenjac.com"
+            }
+        ],
+        "description": "Apitte OpenApi library",
+        "homepage": "https://github.com/apitte/openapi",
+        "keywords": [
+            "api",
+            "json",
+            "openapi",
+            "rest"
         ]
     },
     {
@@ -205,6 +274,75 @@
         "keywords": [
             "dependency",
             "inject",
+            "nette"
+        ]
+    },
+    {
+        "name": "contributte/middlewares",
+        "version": "v0.9.1",
+        "version_normalized": "0.9.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/contributte/middlewares.git",
+            "reference": "fb99e083eaaa95d6ae2d45e8d6c00fa57d6943af"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/contributte/middlewares/zipball/fb99e083eaaa95d6ae2d45e8d6c00fa57d6943af",
+            "reference": "fb99e083eaaa95d6ae2d45e8d6c00fa57d6943af",
+            "shasum": ""
+        },
+        "require": {
+            "contributte/di": "^0.4.0",
+            "contributte/psr7-http-message": "^0.6.0",
+            "php": "^7.2"
+        },
+        "require-dev": {
+            "nette/application": "~3.0.0",
+            "nette/http": "~3.0.1",
+            "ninjify/nunjuck": "~0.2",
+            "ninjify/qa": "~0.8.0",
+            "phpstan/extension-installer": "^1.0",
+            "phpstan/phpstan-deprecation-rules": "^0.11",
+            "phpstan/phpstan-nette": "^0.11",
+            "phpstan/phpstan-shim": "^0.11",
+            "phpstan/phpstan-strict-rules": "^0.11",
+            "psr/log": "^1.0",
+            "tracy/tracy": "~2.6.1"
+        },
+        "suggest": {
+            "nette/application": "to use PresenterMiddleware",
+            "nette/http": "to use NetteMiddlewareExtension & NetteMiddlewareApplication",
+            "tracy/tracy": "to use TracyMiddleware"
+        },
+        "time": "2019-07-05T22:02:30+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.10.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Contributte\\Middlewares\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Milan Felix Šulc",
+                "homepage": "https://f3l1x.io"
+            }
+        ],
+        "description": "Middleware / Relay / PSR-7 support to Nette Framework",
+        "homepage": "https://github.com/contributte/middlewares",
+        "keywords": [
+            "Relay",
+            "middleware",
             "nette"
         ]
     },
@@ -491,17 +629,17 @@
     },
     {
         "name": "doctrine/cache",
-        "version": "1.10.1",
-        "version_normalized": "1.10.1.0",
+        "version": "1.10.2",
+        "version_normalized": "1.10.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/doctrine/cache.git",
-            "reference": "35a4a70cd94e09e2259dfae7488afc6b474ecbd3"
+            "reference": "13e3381b25847283a91948d04640543941309727"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/doctrine/cache/zipball/35a4a70cd94e09e2259dfae7488afc6b474ecbd3",
-            "reference": "35a4a70cd94e09e2259dfae7488afc6b474ecbd3",
+            "url": "https://api.github.com/repos/doctrine/cache/zipball/13e3381b25847283a91948d04640543941309727",
+            "reference": "13e3381b25847283a91948d04640543941309727",
             "shasum": ""
         },
         "require": {
@@ -520,7 +658,7 @@
         "suggest": {
             "alcaeus/mongo-php-adapter": "Required to use legacy MongoDB driver"
         },
-        "time": "2020-05-27T16:24:54+00:00",
+        "time": "2020-07-07T18:54:01+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -1765,21 +1903,20 @@
     },
     {
         "name": "nette/php-generator",
-        "version": "v3.4.0",
-        "version_normalized": "3.4.0.0",
+        "version": "v3.4.1",
+        "version_normalized": "3.4.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/nette/php-generator.git",
-            "reference": "ea2c8e8d6439f0a4e3cd3431c572b51a8131539b"
+            "reference": "7051954c534cebafd650efe8b145ac75b223cb66"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/nette/php-generator/zipball/ea2c8e8d6439f0a4e3cd3431c572b51a8131539b",
-            "reference": "ea2c8e8d6439f0a4e3cd3431c572b51a8131539b",
+            "url": "https://api.github.com/repos/nette/php-generator/zipball/7051954c534cebafd650efe8b145ac75b223cb66",
+            "reference": "7051954c534cebafd650efe8b145ac75b223cb66",
             "shasum": ""
         },
         "require": {
-            "ext-tokenizer": "*",
             "nette/utils": "^2.4.2 || ^3.0",
             "php": ">=7.1"
         },
@@ -1792,7 +1929,7 @@
         "suggest": {
             "nikic/php-parser": "to use ClassType::withBodiesFrom() & GlobalFunction::withBodyFrom()"
         },
-        "time": "2020-05-26T16:32:45+00:00",
+        "time": "2020-06-19T14:31:47+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2467,17 +2604,17 @@
     },
     {
         "name": "nextras/orm",
-        "version": "v3.1.2",
-        "version_normalized": "3.1.2.0",
+        "version": "v3.1.3",
+        "version_normalized": "3.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/nextras/orm.git",
-            "reference": "dd9d092c2b479d76858f19e57c481727b86fb0c1"
+            "reference": "d495ee1679daea9b1054b419c043d6788f45ab3e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/nextras/orm/zipball/dd9d092c2b479d76858f19e57c481727b86fb0c1",
-            "reference": "dd9d092c2b479d76858f19e57c481727b86fb0c1",
+            "url": "https://api.github.com/repos/nextras/orm/zipball/d495ee1679daea9b1054b419c043d6788f45ab3e",
+            "reference": "d495ee1679daea9b1054b419c043d6788f45ab3e",
             "shasum": ""
         },
         "require": {
@@ -2499,7 +2636,7 @@
             "phpstan/phpstan-shim": "0.11.1",
             "tracy/tracy": "~2.3"
         },
-        "time": "2020-04-13T10:32:55+00:00",
+        "time": "2020-05-08T07:14:36+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
@@ -2531,6 +2668,12 @@
             "database",
             "nextras",
             "orm"
+        ],
+        "funding": [
+            {
+                "url": "https://github.com/hrach",
+                "type": "github"
+            }
         ]
     },
     {
@@ -2801,68 +2944,6 @@
         ]
     },
     {
-        "name": "symfony/deprecation-contracts",
-        "version": "v2.1.2",
-        "version_normalized": "2.1.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/deprecation-contracts.git",
-            "reference": "dd99cb3a0aff6cadd2a8d7d7ed72c2161e218337"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/deprecation-contracts/zipball/dd99cb3a0aff6cadd2a8d7d7ed72c2161e218337",
-            "reference": "dd99cb3a0aff6cadd2a8d7d7ed72c2161e218337",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.1"
-        },
-        "time": "2020-05-27T08:34:37+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "files": [
-                "function.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Nicolas Grekas",
-                "email": "p@tchwork.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "A generic function and convention to trigger deprecation notices",
-        "homepage": "https://symfony.com",
-        "funding": [
-            {
-                "url": "https://symfony.com/sponsor",
-                "type": "custom"
-            },
-            {
-                "url": "https://github.com/fabpot",
-                "type": "github"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                "type": "tidelift"
-            }
-        ]
-    },
-    {
         "name": "symfony/filesystem",
         "version": "v5.1.2",
         "version_normalized": "5.1.2.0",
@@ -2929,93 +3010,18 @@
         ]
     },
     {
-        "name": "symfony/inflector",
-        "version": "v5.1.2",
-        "version_normalized": "5.1.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/inflector.git",
-            "reference": "fddb4262dd136b34db993a2a3488713df91e4856"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/inflector/zipball/fddb4262dd136b34db993a2a3488713df91e4856",
-            "reference": "fddb4262dd136b34db993a2a3488713df91e4856",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.2.5",
-            "symfony/deprecation-contracts": "^2.1",
-            "symfony/string": "^5.1"
-        },
-        "time": "2020-05-20T17:43:50+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "5.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\Inflector\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Bernhard Schussek",
-                "email": "bschussek@gmail.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony Inflector Component",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "inflection",
-            "pluralize",
-            "singularize",
-            "string",
-            "symfony",
-            "words"
-        ],
-        "funding": [
-            {
-                "url": "https://symfony.com/sponsor",
-                "type": "custom"
-            },
-            {
-                "url": "https://github.com/fabpot",
-                "type": "github"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                "type": "tidelift"
-            }
-        ]
-    },
-    {
         "name": "symfony/polyfill-ctype",
-        "version": "v1.17.0",
-        "version_normalized": "1.17.0.0",
+        "version": "v1.17.1",
+        "version_normalized": "1.17.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-ctype.git",
-            "reference": "e94c8b1bbe2bc77507a1056cdb06451c75b427f9"
+            "reference": "2edd75b8b35d62fd3eeabba73b26b8f1f60ce13d"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/e94c8b1bbe2bc77507a1056cdb06451c75b427f9",
-            "reference": "e94c8b1bbe2bc77507a1056cdb06451c75b427f9",
+            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/2edd75b8b35d62fd3eeabba73b26b8f1f60ce13d",
+            "reference": "2edd75b8b35d62fd3eeabba73b26b8f1f60ce13d",
             "shasum": ""
         },
         "require": {
@@ -3024,11 +3030,15 @@
         "suggest": {
             "ext-ctype": "For best performance"
         },
-        "time": "2020-05-12T16:14:59+00:00",
+        "time": "2020-06-06T08:46:27+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.17-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -3078,173 +3088,18 @@
         ]
     },
     {
-        "name": "symfony/polyfill-intl-grapheme",
-        "version": "v1.17.0",
-        "version_normalized": "1.17.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/polyfill-intl-grapheme.git",
-            "reference": "e094b0770f7833fdf257e6ba4775be4e258230b2"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-intl-grapheme/zipball/e094b0770f7833fdf257e6ba4775be4e258230b2",
-            "reference": "e094b0770f7833fdf257e6ba4775be4e258230b2",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3"
-        },
-        "suggest": {
-            "ext-intl": "For best performance"
-        },
-        "time": "2020-05-12T16:47:27+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.17-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Intl\\Grapheme\\": ""
-            },
-            "files": [
-                "bootstrap.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Nicolas Grekas",
-                "email": "p@tchwork.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony polyfill for intl's grapheme_* functions",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "compatibility",
-            "grapheme",
-            "intl",
-            "polyfill",
-            "portable",
-            "shim"
-        ],
-        "funding": [
-            {
-                "url": "https://symfony.com/sponsor",
-                "type": "custom"
-            },
-            {
-                "url": "https://github.com/fabpot",
-                "type": "github"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                "type": "tidelift"
-            }
-        ]
-    },
-    {
-        "name": "symfony/polyfill-intl-normalizer",
-        "version": "v1.17.0",
-        "version_normalized": "1.17.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
-            "reference": "1357b1d168eb7f68ad6a134838e46b0b159444a9"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/1357b1d168eb7f68ad6a134838e46b0b159444a9",
-            "reference": "1357b1d168eb7f68ad6a134838e46b0b159444a9",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.3"
-        },
-        "suggest": {
-            "ext-intl": "For best performance"
-        },
-        "time": "2020-05-12T16:14:59+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.17-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
-            },
-            "files": [
-                "bootstrap.php"
-            ],
-            "classmap": [
-                "Resources/stubs"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Nicolas Grekas",
-                "email": "p@tchwork.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony polyfill for intl's Normalizer class and related functions",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "compatibility",
-            "intl",
-            "normalizer",
-            "polyfill",
-            "portable",
-            "shim"
-        ],
-        "funding": [
-            {
-                "url": "https://symfony.com/sponsor",
-                "type": "custom"
-            },
-            {
-                "url": "https://github.com/fabpot",
-                "type": "github"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                "type": "tidelift"
-            }
-        ]
-    },
-    {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.17.0",
-        "version_normalized": "1.17.0.0",
+        "version": "v1.17.1",
+        "version_normalized": "1.17.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "fa79b11539418b02fc5e1897267673ba2c19419c"
+            "reference": "7110338d81ce1cbc3e273136e4574663627037a7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/fa79b11539418b02fc5e1897267673ba2c19419c",
-            "reference": "fa79b11539418b02fc5e1897267673ba2c19419c",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/7110338d81ce1cbc3e273136e4574663627037a7",
+            "reference": "7110338d81ce1cbc3e273136e4574663627037a7",
             "shasum": ""
         },
         "require": {
@@ -3253,11 +3108,15 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2020-05-12T16:47:27+00:00",
+        "time": "2020-06-06T08:46:27+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "1.17-dev"
+            },
+            "thanks": {
+                "name": "symfony/polyfill",
+                "url": "https://github.com/symfony/polyfill"
             }
         },
         "installation-source": "dist",
@@ -3291,349 +3150,6 @@
             "polyfill",
             "portable",
             "shim"
-        ],
-        "funding": [
-            {
-                "url": "https://symfony.com/sponsor",
-                "type": "custom"
-            },
-            {
-                "url": "https://github.com/fabpot",
-                "type": "github"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                "type": "tidelift"
-            }
-        ]
-    },
-    {
-        "name": "symfony/polyfill-php80",
-        "version": "v1.17.0",
-        "version_normalized": "1.17.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/polyfill-php80.git",
-            "reference": "5e30b2799bc1ad68f7feb62b60a73743589438dd"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-php80/zipball/5e30b2799bc1ad68f7feb62b60a73743589438dd",
-            "reference": "5e30b2799bc1ad68f7feb62b60a73743589438dd",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.0.8"
-        },
-        "time": "2020-05-12T16:47:27+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "1.17-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Polyfill\\Php80\\": ""
-            },
-            "files": [
-                "bootstrap.php"
-            ],
-            "classmap": [
-                "Resources/stubs"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Ion Bazan",
-                "email": "ion.bazan@gmail.com"
-            },
-            {
-                "name": "Nicolas Grekas",
-                "email": "p@tchwork.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony polyfill backporting some PHP 8.0+ features to lower PHP versions",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "compatibility",
-            "polyfill",
-            "portable",
-            "shim"
-        ],
-        "funding": [
-            {
-                "url": "https://symfony.com/sponsor",
-                "type": "custom"
-            },
-            {
-                "url": "https://github.com/fabpot",
-                "type": "github"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                "type": "tidelift"
-            }
-        ]
-    },
-    {
-        "name": "symfony/property-access",
-        "version": "v5.1.2",
-        "version_normalized": "5.1.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/property-access.git",
-            "reference": "638b96246da68810484a5a46ff397e9326f42afc"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/property-access/zipball/638b96246da68810484a5a46ff397e9326f42afc",
-            "reference": "638b96246da68810484a5a46ff397e9326f42afc",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.2.5",
-            "symfony/inflector": "^4.4|^5.0",
-            "symfony/polyfill-php80": "^1.15",
-            "symfony/property-info": "^5.1.1"
-        },
-        "require-dev": {
-            "symfony/cache": "^4.4|^5.0"
-        },
-        "suggest": {
-            "psr/cache-implementation": "To cache access methods."
-        },
-        "time": "2020-06-04T09:56:18+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "5.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\PropertyAccess\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Fabien Potencier",
-                "email": "fabien@symfony.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony PropertyAccess Component",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "access",
-            "array",
-            "extraction",
-            "index",
-            "injection",
-            "object",
-            "property",
-            "property path",
-            "reflection"
-        ],
-        "funding": [
-            {
-                "url": "https://symfony.com/sponsor",
-                "type": "custom"
-            },
-            {
-                "url": "https://github.com/fabpot",
-                "type": "github"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                "type": "tidelift"
-            }
-        ]
-    },
-    {
-        "name": "symfony/property-info",
-        "version": "v5.1.2",
-        "version_normalized": "5.1.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/property-info.git",
-            "reference": "75d79faca45092829b55eb83f73068e34c6567c5"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/property-info/zipball/75d79faca45092829b55eb83f73068e34c6567c5",
-            "reference": "75d79faca45092829b55eb83f73068e34c6567c5",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.2.5",
-            "symfony/polyfill-php80": "^1.15",
-            "symfony/string": "^5.1"
-        },
-        "conflict": {
-            "phpdocumentor/reflection-docblock": "<3.2.2",
-            "phpdocumentor/type-resolver": "<0.3.0",
-            "symfony/dependency-injection": "<4.4"
-        },
-        "require-dev": {
-            "doctrine/annotations": "~1.7",
-            "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
-            "symfony/cache": "^4.4|^5.0",
-            "symfony/dependency-injection": "^4.4|^5.0",
-            "symfony/serializer": "^4.4|^5.0"
-        },
-        "suggest": {
-            "phpdocumentor/reflection-docblock": "To use the PHPDoc",
-            "psr/cache-implementation": "To cache results",
-            "symfony/doctrine-bridge": "To use Doctrine metadata",
-            "symfony/serializer": "To use Serializer metadata"
-        },
-        "time": "2020-06-15T11:50:15+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "5.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\PropertyInfo\\": ""
-            },
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Kévin Dunglas",
-                "email": "dunglas@gmail.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony Property Info Component",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "doctrine",
-            "phpdoc",
-            "property",
-            "symfony",
-            "type",
-            "validator"
-        ],
-        "funding": [
-            {
-                "url": "https://symfony.com/sponsor",
-                "type": "custom"
-            },
-            {
-                "url": "https://github.com/fabpot",
-                "type": "github"
-            },
-            {
-                "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                "type": "tidelift"
-            }
-        ]
-    },
-    {
-        "name": "symfony/string",
-        "version": "v5.1.2",
-        "version_normalized": "5.1.2.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/symfony/string.git",
-            "reference": "ac70459db781108db7c6d8981dd31ce0e29e3298"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/symfony/string/zipball/ac70459db781108db7c6d8981dd31ce0e29e3298",
-            "reference": "ac70459db781108db7c6d8981dd31ce0e29e3298",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=7.2.5",
-            "symfony/polyfill-ctype": "~1.8",
-            "symfony/polyfill-intl-grapheme": "~1.0",
-            "symfony/polyfill-intl-normalizer": "~1.0",
-            "symfony/polyfill-mbstring": "~1.0",
-            "symfony/polyfill-php80": "~1.15"
-        },
-        "require-dev": {
-            "symfony/error-handler": "^4.4|^5.0",
-            "symfony/http-client": "^4.4|^5.0",
-            "symfony/translation-contracts": "^1.1|^2",
-            "symfony/var-exporter": "^4.4|^5.0"
-        },
-        "time": "2020-06-11T12:16:36+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "5.1-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Symfony\\Component\\String\\": ""
-            },
-            "files": [
-                "Resources/functions.php"
-            ],
-            "exclude-from-classmap": [
-                "/Tests/"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Nicolas Grekas",
-                "email": "p@tchwork.com"
-            },
-            {
-                "name": "Symfony Community",
-                "homepage": "https://symfony.com/contributors"
-            }
-        ],
-        "description": "Symfony String component",
-        "homepage": "https://symfony.com",
-        "keywords": [
-            "grapheme",
-            "i18n",
-            "string",
-            "unicode",
-            "utf-8",
-            "utf8"
         ],
         "funding": [
             {
@@ -3744,17 +3260,17 @@
     },
     {
         "name": "symfony/translation-contracts",
-        "version": "v2.1.2",
-        "version_normalized": "2.1.2.0",
+        "version": "v2.1.3",
+        "version_normalized": "2.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/translation-contracts.git",
-            "reference": "e5ca07c8f817f865f618aa072c2fe8e0e637340e"
+            "reference": "616a9773c853097607cf9dd6577d5b143ffdcd63"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/e5ca07c8f817f865f618aa072c2fe8e0e637340e",
-            "reference": "e5ca07c8f817f865f618aa072c2fe8e0e637340e",
+            "url": "https://api.github.com/repos/symfony/translation-contracts/zipball/616a9773c853097607cf9dd6577d5b143ffdcd63",
+            "reference": "616a9773c853097607cf9dd6577d5b143ffdcd63",
             "shasum": ""
         },
         "require": {
@@ -3763,11 +3279,15 @@
         "suggest": {
             "symfony/translation-implementation": ""
         },
-        "time": "2020-05-20T17:43:50+00:00",
+        "time": "2020-07-06T13:23:11+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
                 "dev-master": "2.1-dev"
+            },
+            "thanks": {
+                "name": "symfony/contracts",
+                "url": "https://github.com/symfony/contracts"
             }
         },
         "installation-source": "dist",
@@ -3888,78 +3408,6 @@
             "debugger",
             "nette",
             "profiler"
-        ]
-    },
-    {
-        "name": "ublaboo/datagrid",
-        "version": "v6.2.22",
-        "version_normalized": "6.2.22.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/contributte/datagrid.git",
-            "reference": "852ed2d78df3f52f8f7e2beff19754640adf7c64"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/contributte/datagrid/zipball/852ed2d78df3f52f8f7e2beff19754640adf7c64",
-            "reference": "852ed2d78df3f52f8f7e2beff19754640adf7c64",
-            "shasum": ""
-        },
-        "require": {
-            "contributte/application": "^0.4.1",
-            "nette/application": "^3.0.1",
-            "nette/di": "^3.0.0",
-            "nette/forms": "^3.0.1",
-            "nette/utils": "^3.0.1",
-            "php": "^7.2",
-            "symfony/property-access": "^3.0.0 || ^4.0.0 || ^5.0.0"
-        },
-        "require-dev": {
-            "dibi/dibi": "^3.0.0 || ^4.0.0",
-            "doctrine/orm": "~2.6.3",
-            "gamee/php-code-checker-rules": "^1.0",
-            "mockery/mockery": "~1.2.2",
-            "nette/database": "~3.0.2",
-            "nette/tester": "^2.2",
-            "nextras/orm": "~3.1.0",
-            "ninjify/coding-standard": "^0.9.0",
-            "phpstan/phpstan": "^0.11.12",
-            "phpstan/phpstan-strict-rules": "^0.11.1",
-            "tharos/leanmapper": "~3.4.1",
-            "tracy/tracy": "~2.6.3"
-        },
-        "time": "2020-06-15T07:11:35+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "6.3.x-dev"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Ublaboo\\DataGrid\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Pavel Janda",
-                "homepage": "https://paveljanda.com"
-            },
-            {
-                "name": "Milan Felix Šulc",
-                "homepage": "https://f3l1x.io"
-            }
-        ],
-        "description": "DataGrid for Nette Framework: filtering, sorting, pagination, tree view, table view, translator, etc",
-        "keywords": [
-            "datagrid",
-            "grid",
-            "nette"
         ]
     },
     {

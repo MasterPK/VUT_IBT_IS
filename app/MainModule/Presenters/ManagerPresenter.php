@@ -18,7 +18,6 @@ use Nette\Application\UI\Form;
 use Nette;
 use Nextras\Datagrid\Datagrid;
 use Nextras\Orm\Collection\Collection;
-use Nextras\Orm\Relationships\ManyHasMany;
 use Tracy\Debugger;
 use Vodacek\Forms\Controls\DateInput;
 
@@ -1032,17 +1031,6 @@ class ManagerPresenter extends MainPresenter
             $form->addError("", false);
         $this->showDangerToastAndRefresh($this->translate("all.badShiftTime"));
 
-
-        // Overlapping - feature is not used at this time
-        /*foreach ($allShifts as $shift) {
-
-            if (!(($shift->end < $values->start) || ($values->end < $shift->start))) {
-                $form->addError("", false);
-                $this->showDangerToastAndRefresh($this->translate("all.shiftTimeOverlap"));
-                break;
-            }
-
-        }*/
     }
 
     public function newShiftFormSuccess(Form $form)
