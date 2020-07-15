@@ -9,7 +9,12 @@ use Nette\Application\UI\Form;
 use Nette\Forms\Container;
 use Vodacek\Forms\Controls\DateInput;
 
-
+/**
+ * Class ExtendedFormContainer
+ * Extends form by DateTime elements
+ * @package App\Controls
+ * @author Petr Křehlík
+ */
 class ExtendedFormContainer extends Container
 {
     public function addDate($name, $title = "My input", $type = DateInput::TYPE_DATETIME_LOCAL)

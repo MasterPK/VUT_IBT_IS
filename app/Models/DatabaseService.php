@@ -10,6 +10,7 @@ use Throwable;
 /**
  * Class DatabaseService
  * @package App\Models
+ * @author Petr Křehlík
  */
 class DatabaseService
 {

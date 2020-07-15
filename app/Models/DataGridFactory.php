@@ -21,6 +21,7 @@ use Nextras\Orm\Entity\IEntity;
  * Class DataGridFactory
  * @package App\Models
  * Class with functions to help creating Nextras\DataGrid.
+ * @author Petr Křehlík
  */
 class DataGridFactory
 {

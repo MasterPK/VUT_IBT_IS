@@ -5,6 +5,12 @@ namespace App\Controls;
 use Nette;
 
 
+/**
+ * Class AlertControl
+ * Flash message alert
+ * @author Petr Křehlík
+ * @package App\Controls
+ */
 class AlertControl extends Nette\Application\UI\Control
 {
     public const SUCCESS = "Success";

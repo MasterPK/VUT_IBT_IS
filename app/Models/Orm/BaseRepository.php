@@ -6,6 +6,12 @@ namespace App\Models\Orm;
 
 use Nextras\Orm\Repository\Repository;
 
+/**
+ * Class BaseRepository
+ * Used as base repository for all other repositories. Provides universal functions.
+ * @package App\Models\Orm
+ * @author Petr Křehlík
+ */
 abstract class BaseRepository extends Repository
 {
     /**

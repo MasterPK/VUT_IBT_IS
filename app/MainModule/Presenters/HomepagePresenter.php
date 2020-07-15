@@ -8,11 +8,17 @@ use App\Models\Orm\Shifts\Shift;
 use App\Models\Orm\Station\Station;
 use App\Models\Orm\StationsUsers\StationsUsers;
 use App\Security\Permissions;
+use Exception;
 use Nette;
 use Nextras\Datagrid\Datagrid;
 use Nextras\Orm\Collection\Collection;
 use Vodacek\Forms\Controls\DateInput;
 
+/**
+ * Class HomepagePresenter
+ * Dashboard handler
+ * @package App\MainModule\Presenters
+ */
 final class HomepagePresenter extends MainPresenter
 {
 
@@ -26,6 +32,10 @@ final class HomepagePresenter extends MainPresenter
         $this->showToast(["color" => "green", "title" => "Test", "message" => "Zprava"]);
     }
 
+    /**
+     * Show user permissions in DataGrid
+     * @return Datagrid
+     */
     public function createComponentMyStationsPerms()
     {
         $grid = $this->dataGridFactory->createDataGrid();
@@ -127,6 +137,11 @@ final class HomepagePresenter extends MainPresenter
         $this->template->shifts = $this->user->shifts;
     }
 
+    /**
+     * Show hours per week, next shifts and current present users
+     * @param int $week How much weeks go to history
+     * @throws Exception
+     */
     public function renderDefault($week = 0)
     {
         // Graph with hours this and last week

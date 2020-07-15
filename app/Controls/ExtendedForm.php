@@ -7,6 +7,12 @@ namespace App\Controls;
 use Nette\Application\UI\Form;
 use Vodacek\Forms\Controls\DateInput;
 
+/**
+ * Class ExtendedForm
+ * Extends form by DateTime elements
+ * @package App\Controls
+ * @author Petr Křehlík
+ */
 class ExtendedForm extends Form
 {
     public function addDate($name, $title = "My input",$type=DateInput::TYPE_DATETIME_LOCAL)

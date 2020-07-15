@@ -16,6 +16,11 @@ use Nette\Application\UI\Form;
 use Ublaboo;
 use Vodacek\Forms\Controls\DateInput;
 
+/**
+ * Class AdminPresenter
+ * Admin operations
+ * @package App\MainModule\Presenters
+ */
 class AdminPresenter extends MainPresenter
 {
 

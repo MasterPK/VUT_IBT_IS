@@ -12,6 +12,13 @@ use Nextras\Orm\Mapper\Dbal\CustomFunctions\IQueryBuilderFilterFunction;
 use Nextras\Orm\Mapper\Dbal\QueryBuilderHelper;
 use Nextras\Orm\Mapper\Memory\CustomFunctions\IArrayFilterFunction;
 
+/**
+ * Class LikeFilterFunction
+ * Provides LIKE functionality to ORM
+ * Original source: https://nextras.org/orm/docs/3.1/collection-functions
+ * @package App\Models\Orm
+ * @author Petr Křehlík
+ */
 final class LikeFilterFunction implements IArrayFilterFunction, IQueryBuilderFilterFunction
 {
     public function processArrayFilter(ArrayCollectionHelper $helper, IEntity $entity, array $args): bool

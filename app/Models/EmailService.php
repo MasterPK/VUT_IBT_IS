@@ -8,7 +8,12 @@ use Nette\Database\Context;
 use Nette\Mail\IMailer;
 use Nette\Mail\Message;
 
-
+/**
+ * Class EmailService
+ * Provides functions to handle emails.
+ * @package App\Models
+ * @author Petr Křehlík
+ */
 class EmailService
 {
 

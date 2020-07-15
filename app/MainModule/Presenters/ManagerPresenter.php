@@ -21,6 +21,12 @@ use Nextras\Orm\Collection\Collection;
 use Tracy\Debugger;
 use Vodacek\Forms\Controls\DateInput;
 
+/**
+ * Class ManagerPresenter
+ * Manager operations
+ * @author Petr Křehlík
+ * @package App\MainModule\Presenters
+ */
 class ManagerPresenter extends MainPresenter
 {
 
@@ -32,6 +38,9 @@ class ManagerPresenter extends MainPresenter
 
     private $idShift;
 
+    /**
+     * Check permission.
+     */
     public function startup()
     {
         parent::startup();
@@ -1017,8 +1026,6 @@ class ManagerPresenter extends MainPresenter
     public function newShiftFormValidate(Form $form)
     {
         $values = $form->getValues();
-
-        Debugger::barDump($values);
 
         if ($values->start >= $values->end) {
             $form->addError("", false);

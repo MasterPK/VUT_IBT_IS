@@ -10,6 +10,11 @@ use Nette\Security\Permission;
 use Nittro;
 use App\Controls;
 
+/**
+ * Class BasePresenter
+ * @package App\MainModule\CorePresenters
+ * @author Petr Křehlík
+ */
 class BasePresenter extends Nittro\Bridges\NittroUI\Presenter
 {
 

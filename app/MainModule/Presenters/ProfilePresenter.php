@@ -11,6 +11,12 @@ use Exception;
 use Nette\Application\UI\Form;
 use Nette\Utils\ArrayHash;
 
+/**
+ * Class ProfilePresenter
+ * Final presenter for profile settings.
+ * @package App\MainModule\Presenters
+ * @author Petr Křehlík
+ */
 final class ProfilePresenter extends MainPresenter
 {
     /** @var DatabaseService @inject */
