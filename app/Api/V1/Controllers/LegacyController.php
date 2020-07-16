@@ -33,6 +33,7 @@ use Tracy\Debugger;
  * Adds some new functionality but it is backwards compatible with old Api.
  * @Tag("Legacy station")
  * @ControllerPath("/")
+ * @author Petr Křehlík
  */
 final class LegacyController extends App\Api\V1\BaseControllers\BaseController
 {

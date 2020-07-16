@@ -9,6 +9,11 @@ use Nette;
 use Nette\Security\Identity;
 use Nette\Utils\Json;
 
+/**
+ * Class Authenticator
+ * @package App\Security
+ * @author Petr Křehlík
+ */
 class Authenticator implements Nette\Security\IAuthenticator
 {
 

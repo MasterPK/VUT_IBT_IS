@@ -20,6 +20,7 @@ use Apitte\Core\Annotation\Controller\Tag;
 /**
  * @Tag("API Core")
  * @ControllerPath("/")
+ * @author Petr Křehlík
  */
 final class OpenApiController extends MainController
 {

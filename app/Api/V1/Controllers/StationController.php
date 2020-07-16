@@ -31,6 +31,7 @@ use Tracy\Debugger;
 /**
  * @Tag("Station")
  * @ControllerPath("/station")
+ * @author Petr Křehlík
  */
 final class StationController extends MainController
 {

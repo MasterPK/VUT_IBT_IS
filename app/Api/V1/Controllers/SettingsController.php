@@ -26,6 +26,7 @@ use App\Security\Permissions;
 /**
  * @Tag("Setting")
  * @ControllerPath("/setting")
+ * @author Petr Křehlík
  */
 final class SettingsController extends MainController
 {

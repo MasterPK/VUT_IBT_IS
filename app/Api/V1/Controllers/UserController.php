@@ -29,6 +29,7 @@ use Nette\Utils\DateTime;
 /**
  * @Tag("User")
  * @ControllerPath("/user")
+ * @author Petr Křehlík
  */
 final class UserController extends MainController
 {

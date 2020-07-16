@@ -28,7 +28,9 @@
 		"nextras/orm": "^3.1",
 		"voda/date-input": "^2.0",
 		"apitte/core": "^0.6.0",
-		"nette/utils": "3.1.2 as 3.0.3"
+		"nette/utils": "3.1.2 as 3.0.3",
+		"apitte/openapi": "^0.6.0",
+		"apitte/middlewares": "^0.6.0"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0"

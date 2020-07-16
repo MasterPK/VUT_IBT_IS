@@ -8,6 +8,7 @@ use Apitte\Core\UI\Controller\IController;
 
 /**
  * @GroupPath("/api")
+ * @author Petr Křehlík
  */
 class BaseController implements IController
 {

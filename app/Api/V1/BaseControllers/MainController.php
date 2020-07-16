@@ -17,6 +17,7 @@ use Nette\Database\Context;
 
 /**
  * Helper class that inject needed objects.
+ * @author Petr Křehlík
  */
 abstract class MainController extends BaseController
 {

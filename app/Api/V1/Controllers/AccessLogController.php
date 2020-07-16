@@ -26,6 +26,7 @@ use Tracy\Debugger;
 /**
  * @Tag("Logs")
  * @ControllerPath("/log")
+ * @author Petr Křehlík
  */
 class AccessLogController extends MainController
 {

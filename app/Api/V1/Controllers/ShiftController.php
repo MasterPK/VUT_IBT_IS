@@ -26,6 +26,7 @@ use App\Api\V1\BaseControllers\MainController;
 /**
  * @Tag("Shift")
  * @ControllerPath("/shift")
+ * @author Petr Křehlík
  */
 final class ShiftController extends MainController
 {

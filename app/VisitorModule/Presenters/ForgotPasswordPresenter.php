@@ -12,7 +12,11 @@ use Nette;
 use Nette\Application\UI\Form;
 use App\Controls\AlertControl;
 
-
+/**
+ * Class ForgotPasswordPresenter
+ * @package App\VisitorModule\Presenters
+ * @author Petr Křehlík
+ */
 final class ForgotPasswordPresenter extends BasePresenter
 {
 

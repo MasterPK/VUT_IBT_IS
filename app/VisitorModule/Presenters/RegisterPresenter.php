@@ -1,7 +1,5 @@
 <?php
-/**
- * @author Petr Křehlík
- */
+
 declare(strict_types=1);
 
 namespace App\VisitorModule\Presenters;
@@ -11,6 +9,11 @@ use Nette;
 use App;
 use Nette\Utils\DateTime;
 
+/**
+ * Class RegisterPresenter
+ * @author Petr Křehlík
+ * @package App\VisitorModule\Presenters
+ */
 class RegisterPresenter extends BasePresenter
 {
 
