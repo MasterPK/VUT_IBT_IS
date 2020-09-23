@@ -73,7 +73,8 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
      * @param $content
      * @return ApiResponse
      */
-    private function prepareResponse(ApiResponse $response,$content){
+    private function prepareResponse(ApiResponse $response, $content)
+    {
         $hash = (string)md5(json_encode($content));
         return $response->writeJsonBody(["m" => $content, "h" => $hash]);
     }
@@ -95,7 +96,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
      * @return ApiResponse
      * @throws Exception
      */
-    public function addNewRfid(ApiRequest $request, ApiResponse $response):ApiResponse
+    public function addNewRfid(ApiRequest $request, ApiResponse $response): ApiResponse
     {
         $this->checkToken($request);
 
@@ -108,14 +109,14 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
         }
 
         if ($this->orm->users->getBy(["rfid" => $entity->rfid]) || $this->orm->newRfids->getBy(["rfid" => $entity->rfid])) {
-            return $this->prepareResponse($response,["s" => "ok", "m" => "RFID already exists. Nothing changed."]);
+            return $this->prepareResponse($response, ["s" => "ok", "m" => "RFID already exists. Nothing changed."]);
         }
 
         $entity->createdAt = new DateTime();
 
         $this->orm->newRfids->persistAndFlush($entity);
 
-        return $this->prepareResponse($response,["s" => "ok"]);
+        return $this->prepareResponse($response, ["s" => "ok"]);
     }
 
     /**
@@ -135,14 +136,14 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
      * @param ApiResponse $response
      * @return ApiResponse
      */
-    public function newEmail(ApiRequest $request, ApiResponse $response):ApiResponse
+    public function newEmail(ApiRequest $request, ApiResponse $response): ApiResponse
     {
-        $to=$request->getParameter("to");
-        $header=$request->getParameter("header");
-        $content=$request->getParameter("content");
+        $to = $request->getParameter("to");
+        $header = $request->getParameter("header");
+        $content = $request->getParameter("content");
 
-        $this->emailService->sendEmail($to,$header,$content);
-        return $this->prepareResponse($response,["s" => "ok"]);
+        $this->emailService->sendEmail($to, $header, $content);
+        return $this->prepareResponse($response, ["s" => "ok"]);
     }
 
 
@@ -157,10 +158,10 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
      * @param ApiResponse $response
      * @return ApiResponse
      */
-    public function emailHandle(ApiRequest $request, ApiResponse $response):ApiResponse
+    public function emailHandle(ApiRequest $request, ApiResponse $response): ApiResponse
     {
         $err_count = $this->emailService->handle();
-        return $this->prepareResponse($response,["s" => "ok", "email_err" => $err_count]);
+        return $this->prepareResponse($response, ["s" => "ok", "email_err" => $err_count]);
     }
 
     /**
@@ -196,7 +197,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
      * @return ApiResponse
      * @throws Exception
      */
-    public function saveTemp(ApiRequest $request, ApiResponse $response):ApiResponse
+    public function saveTemp(ApiRequest $request, ApiResponse $response): ApiResponse
     {
         $id_temp_sensor = $request->getParameter('id_temp_sensor');
         $temp = $request->getParameters()['temp'];
@@ -206,7 +207,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
         $row = $this->database->table('temp_sensors')->where("id_temp_sensor = ?", $id_temp_sensor)->fetch();
 
         if (!$row) {
-            throw new ClientErrorException("Sensor doesnt exist!",400);
+            throw new ClientErrorException("Sensor doesnt exist!", 400);
         }
 
         $this->database->table('temp_sensors_log')->insert([
@@ -216,7 +217,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
             "datetime" => new Datetime
         ]);
 
-        return $this->prepareResponse($response,["s" => "ok"]);
+        return $this->prepareResponse($response, ["s" => "ok"]);
     }
 
 
@@ -247,7 +248,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
         $status = $request->getParameter('status');
 
         //check existing station and user
-        $station = $this->orm->stations->getBy(["apiToken"=>$token]);
+        $station = $this->orm->stations->getBy(["apiToken" => $token]);
 
         if (!$station) {
             throw new ClientErrorException("Station doesnt exist!", 400);
@@ -326,12 +327,10 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
 
                     }
                 }
-                if($user->present == 1)
-                {
-                    $user->present=0;
-                }else
-                {
-                    $user->present=1;
+                if ($user->present == 1) {
+                    $user->present = 0;
+                } else {
+                    $user->present = 1;
                 }
             }
             $this->orm->users->persistAndFlush($user);
@@ -348,7 +347,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
             throw new ServerErrorException("Error while saving in database!", 500);
         }
 
-        return $this->prepareResponse($apiResponse,["s" => "ok"]);
+        return $this->prepareResponse($apiResponse, ["s" => "ok"]);
     }
 
     /**
@@ -377,7 +376,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
         $row = $this->database->table('stations_x_users')->where("id_station = ?", $station->id);
 
         if (!$row) {
-            return $this->prepareResponse($apiResponse,["s" => "ok", "u" => ""]);
+            return $this->prepareResponse($apiResponse, ["s" => "ok", "u" => ""]);
         }
         $response = ["s" => "ok", "u" => array()];
         $count = 0;
@@ -400,7 +399,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
 
         $this->database->table('stations')->where("id", $station->id)->update(["last_update" => new Datetime]);
 
-        return $this->prepareResponse($apiResponse,$response);
+        return $this->prepareResponse($apiResponse, $response);
     }
 
     /**
@@ -429,7 +428,7 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
         $row = $this->database->table('stations_x_users')->where("id_station = ?", $station->id);
 
         if (!$row) {
-            return $this->prepareResponse($apiResponse,["s" => "ok", "u" => ""]);
+            return $this->prepareResponse($apiResponse, ["s" => "ok", "u" => ""]);
         }
         $response = ["s" => "ok", "u" => array()];
         $count = 0;
@@ -440,10 +439,10 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
             }
             if ($user["registration"] == 1 && !empty($user["rfid"])) {
                 if (($value["perm"] == 2 || $value["perm"] == 3) && $user["pin"] != "") {
-                    array_push($response["u"], [$user["rfid"],$value["perm"],$user["pin"]]);
+                    array_push($response["u"], [$user["rfid"], $value["perm"], $user["pin"]]);
                     $count++;
                 } else if ($value["perm"] == 1) {
-                    array_push($response["u"], [$user["rfid"],$value["perm"]]);
+                    array_push($response["u"], [$user["rfid"], $value["perm"]]);
                     $count++;
                 }
             }
@@ -452,6 +451,40 @@ final class LegacyController extends App\Api\V1\BaseControllers\BaseController
 
         $this->database->table('stations')->where("id", $station->id)->update(["last_update" => new Datetime]);
 
-        return $this->prepareResponse($apiResponse,$response);
+        return $this->prepareResponse($apiResponse, $response);
     }
+
+    /**
+     * Set station IP.
+     * @Path("/set-station-ip")
+     * @Method("GET")
+     * @RequestParameters({
+     * 		@RequestParameter(name="token", type="string", description="Station API token", in="query"),
+     *      @RequestParameter(name="ip", type="string", description="New IP", in="query")
+     * })
+     * @Responses({
+     *     @Response(code="200", description="Success"),
+     *     @Response(code="400", description="Bad request")
+     * })
+     * @param ApiRequest $request
+     * @param ApiResponse $apiResponse
+     * @return ApiResponse
+     * @throws Exception
+     */
+    public function updateStationIP(ApiRequest $request, ApiResponse $apiResponse): ApiResponse
+    {
+        $this->checkToken($request);
+
+        $station = $this->orm->stations->getBy(["apiToken" => $request->getParameter("token")]);
+
+        $station->ip=$request->getParameter("ip");
+
+        $this->orm->stations->persistAndFlush($station);
+
+        $response = ["s" => "ok"];
+
+        return $this->prepareResponse($apiResponse, $response);
+
+    }
+
 }

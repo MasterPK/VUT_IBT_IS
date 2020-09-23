@@ -1,0 +1,63 @@
+{
+  "name": "nettrine/dbal",
+  "description": "Doctrine DBAL for Nette Framework",
+  "keywords": [
+    "nette",
+    "doctrine",
+    "dbal",
+    "database",
+    "mysql",
+    "postgres",
+    "sqlite"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://github.com/nettrine/dbal",
+  "authors": [
+    {
+      "name": "Milan Felix Šulc",
+      "homepage": "https://f3l1x.io"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "contributte/di": "^0.4.2",
+    "doctrine/dbal": "^2.9.2",
+    "nettrine/cache": "^0.1.0"
+  },
+  "require-dev": {
+    "contributte/console": "^0.5.0",
+    "mockery/mockery": "^1.2.2",
+    "nettrine/cache": "^0.1.0",
+    "ninjify/qa": "^0.9.0",
+    "phpstan/extension-installer": "^1.0",
+    "phpstan/phpstan-deprecation-rules": "^0.11.0",
+    "phpstan/phpstan-nette": "^0.11.0",
+    "phpstan/phpstan-shim": "^0.11.5",
+    "phpunit/phpunit": "^8.1.0",
+    "psr/log": "^1.1",
+    "tracy/tracy": "~2.6.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Nettrine\\DBAL\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Cases\\": "tests/cases",
+      "Tests\\Fixtures\\": "tests/fixtures",
+      "Tests\\Toolkit\\": "tests/toolkit"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.7.x-dev"
+    }
+  }
+}

@@ -17,6 +17,7 @@ use Nextras\Orm\Relationships\ManyHasMany;
  * @property string             $description
  * @property DateTimeImmutable  $lastUpdate
  * @property string             $apiToken
+ * @property string             $ip
  * @property int                $mode {enum self::MODE_*}
  * @property ManyHasMany|User[] $users  {m:m User::$stations, isMain=true}
  */

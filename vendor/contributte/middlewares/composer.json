@@ -1,0 +1,61 @@
+{
+  "name": "contributte/middlewares",
+  "description": "Middleware / Relay / PSR-7 support to Nette Framework",
+  "keywords": [
+    "middleware",
+    "relay",
+    "nette"
+  ],
+  "type": "library",
+  "license": "MIT",
+  "homepage": "https://github.com/contributte/middlewares",
+  "authors": [
+    {
+      "name": "Milan Felix Sulc",
+      "homepage": "https://f3l1x.io"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "contributte/di": "^0.4.0",
+    "contributte/psr7-http-message": "^0.6.0"
+  },
+  "require-dev": {
+    "nette/application": "~3.0.0",
+    "nette/http": "~3.0.1",
+    "ninjify/nunjuck": "~0.2",
+    "ninjify/qa": "~0.8.0",
+    "phpstan/extension-installer": "^1.0",
+    "phpstan/phpstan-deprecation-rules": "^0.11",
+    "phpstan/phpstan-nette": "^0.11",
+    "phpstan/phpstan-shim": "^0.11",
+    "phpstan/phpstan-strict-rules": "^0.11",
+    "psr/log": "^1.0",
+    "tracy/tracy": "~2.6.1"
+  },
+  "suggest": {
+    "tracy/tracy": "to use TracyMiddleware",
+    "nette/http": "to use NetteMiddlewareExtension & NetteMiddlewareApplication",
+    "nette/application": "to use PresenterMiddleware"
+  },
+  "autoload": {
+    "psr-4": {
+      "Contributte\\Middlewares\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Fixtures\\": "tests/fixtures"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.10.x-dev"
+    }
+  }
+}
