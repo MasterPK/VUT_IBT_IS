@@ -42,4 +42,20 @@ final class OpenApiController extends MainController
         return $response->writeJsonBody($openApi->toArray());
     }
 
+    /**
+     * Get API schema.
+     * @Path("/status")
+     * @Method("GET")
+     * @Responses({
+     *     @Response(code="200", description="Success"),
+     * })
+     * @param ApiRequest $request
+     * @param ApiResponse $response
+     * @return ApiResponse
+     */
+    public function getStatus(ApiRequest $request, ApiResponse $response): ApiResponse
+    {
+        return $response->writeJsonBody(["s" => "ok"]);
+    }
+
 }
