@@ -11,12 +11,12 @@
             "version": "v0.6.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/apitte/core.git",
+                "url": "https://github.com/contributte/apitte-core.git",
                 "reference": "560dd949850a1db0f2f47425a105e42e2d868f2e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apitte/core/zipball/560dd949850a1db0f2f47425a105e42e2d868f2e",
+                "url": "https://api.github.com/repos/contributte/apitte-core/zipball/560dd949850a1db0f2f47425a105e42e2d868f2e",
                 "reference": "560dd949850a1db0f2f47425a105e42e2d868f2e",
                 "shasum": ""
             },
@@ -78,6 +78,16 @@
                 "nette",
                 "rest"
             ],
+            "funding": [
+                {
+                    "url": "https://contributte.org/partners.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/f3l1x",
+                    "type": "github"
+                }
+            ],
             "time": "2019-07-04T10:53:42+00:00"
         },
         {
@@ -85,12 +95,12 @@
             "version": "v0.6.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/apitte/middlewares.git",
+                "url": "https://github.com/contributte/apitte-middlewares.git",
                 "reference": "304c352e69d74ad0091d0f774127d566a9ba421b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apitte/middlewares/zipball/304c352e69d74ad0091d0f774127d566a9ba421b",
+                "url": "https://api.github.com/repos/contributte/apitte-middlewares/zipball/304c352e69d74ad0091d0f774127d566a9ba421b",
                 "reference": "304c352e69d74ad0091d0f774127d566a9ba421b",
                 "shasum": ""
             },
@@ -138,6 +148,16 @@
                 "apitte",
                 "middlewares"
             ],
+            "funding": [
+                {
+                    "url": "https://contributte.org/partners.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/f3l1x",
+                    "type": "github"
+                }
+            ],
             "time": "2019-07-06T19:55:18+00:00"
         },
         {
@@ -145,12 +165,12 @@
             "version": "v0.6.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/apitte/openapi.git",
+                "url": "https://github.com/contributte/apitte-openapi.git",
                 "reference": "10956a74cbba3b5d6169c4db1b9cfe052d8a0d01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/apitte/openapi/zipball/10956a74cbba3b5d6169c4db1b9cfe052d8a0d01",
+                "url": "https://api.github.com/repos/contributte/apitte-openapi/zipball/10956a74cbba3b5d6169c4db1b9cfe052d8a0d01",
                 "reference": "10956a74cbba3b5d6169c4db1b9cfe052d8a0d01",
                 "shasum": ""
             },
@@ -206,6 +226,16 @@
                 "json",
                 "openapi",
                 "rest"
+            ],
+            "funding": [
+                {
+                    "url": "https://contributte.org/partners.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/f3l1x",
+                    "type": "github"
+                }
             ],
             "time": "2019-07-06T19:55:07+00:00"
         },
@@ -790,16 +820,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.6.1",
+            "version": "1.8.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "239400de7a173fe9901b9ac7c06497751f00727a"
+                "reference": "337e3ad8e5716c15f9657bd214d16cc5e69df268"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/239400de7a173fe9901b9ac7c06497751f00727a",
-                "reference": "239400de7a173fe9901b9ac7c06497751f00727a",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/337e3ad8e5716c15f9657bd214d16cc5e69df268",
+                "reference": "337e3ad8e5716c15f9657bd214d16cc5e69df268",
                 "shasum": ""
             },
             "require": {
@@ -812,24 +842,24 @@
             },
             "require-dev": {
                 "ext-zlib": "*",
-                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.8"
+                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20 || ^8.5.8 || ^9.3.10"
             },
             "suggest": {
-                "zendframework/zend-httphandlerrunner": "Emit PSR-7 responses"
+                "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.6-dev"
+                    "dev-master": "1.7-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Psr7\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Psr7\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -837,12 +867,33 @@
             ],
             "authors": [
                 {
+                    "name": "Graham Campbell",
+                    "email": "hello@gjcampbell.co.uk",
+                    "homepage": "https://github.com/GrahamCampbell"
+                },
+                {
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
                 },
                 {
+                    "name": "George Mponos",
+                    "email": "gmponos@gmail.com",
+                    "homepage": "https://github.com/gmponos"
+                },
+                {
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com",
+                    "homepage": "https://github.com/Nyholm"
+                },
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com",
+                    "homepage": "https://github.com/sagikazarmark"
+                },
+                {
                     "name": "Tobias Schultze",
+                    "email": "webmaster@tubo-world.de",
                     "homepage": "https://github.com/Tobion"
                 }
             ],
@@ -857,7 +908,21 @@
                 "uri",
                 "url"
             ],
-            "time": "2019-07-01T23:21:34+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/psr7",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-03-20T21:51:18+00:00"
         },
         {
             "name": "kdyby/strict-objects",
@@ -2276,6 +2341,7 @@
             ],
             "description": "Nette Tokenizer",
             "homepage": "https://nette.org",
+            "abandoned": true,
             "time": "2019-09-13T11:28:17+00:00"
         },
         {
@@ -2892,12 +2958,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Ctype\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Ctype\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -2968,12 +3034,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Mbstring\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Mbstring\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -3220,11 +3286,11 @@
                 }
             },
             "autoload": {
-                "classmap": [
-                    "src"
-                ],
                 "files": [
                     "src/Tracy/shortcuts.php"
+                ],
+                "classmap": [
+                    "src"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
